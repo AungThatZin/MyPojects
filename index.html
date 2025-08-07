@@ -56,7 +56,8 @@
       border-radius: 12px;
       overflow: hidden;
       box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
-      transition: transform 0.3s ease, box-shadow 0.3s ease;
+      transition: all 0.3s ease;
+      position: relative;
     }
     
     .project-card:hover {
@@ -69,8 +70,10 @@
       display: flex;
       align-items: center;
       justify-content: center;
+      position: relative;
     }
     
+    /* Color Schemes for Projects */
     .project-header-1 {
       background: linear-gradient(45deg, #3498db, #2ecc71);
     }
@@ -83,8 +86,25 @@
       background: linear-gradient(45deg, #9b59b6, #34495e);
     }
     
+    .project-header-4 {
+      background: linear-gradient(45deg, #1abc9c, #16a085);
+    }
+    
+    .project-header-5 {
+      background: linear-gradient(45deg, #e84393, #fd79a8);
+    }
+    
+    .project-header-6 {
+      background: linear-gradient(45deg, #6c5ce7, #a29bfe);
+    }
+    
     .project-emoji {
       font-size: 4rem;
+      transition: transform 0.3s ease;
+    }
+    
+    .project-card:hover .project-emoji {
+      transform: scale(1.1);
     }
     
     .project-content {
@@ -94,12 +114,14 @@
     .project-title {
       margin: 0 0 15px 0;
       color: #2c3e50;
+      font-size: 1.5rem;
     }
     
     .project-description {
       color: #7f8c8d;
       line-height: 1.6;
       margin-bottom: 20px;
+      min-height: 60px;
     }
     
     .project-link {
@@ -109,7 +131,13 @@
       border-radius: 5px;
       text-decoration: none;
       font-weight: 600;
-      transition: background 0.3s ease;
+      transition: all 0.3s ease;
+      box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+    }
+    
+    .project-link:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 4px 8px rgba(0,0,0,0.15);
     }
     
     .project-link-1 {
@@ -124,8 +152,16 @@
       background: #9b59b6;
     }
     
-    .project-link:hover {
-      opacity: 0.9;
+    .project-link-4 {
+      background: #1abc9c;
+    }
+    
+    .project-link-5 {
+      background: #e84393;
+    }
+    
+    .project-link-6 {
+      background: #6c5ce7;
     }
     
     footer {
@@ -133,6 +169,17 @@
       margin-top: 80px;
       color: #7f8c8d;
       font-size: 0.9rem;
+    }
+
+    /* Responsive adjustments */
+    @media (max-width: 768px) {
+      .projects-grid {
+        grid-template-columns: 1fr;
+      }
+      
+      h1 {
+        font-size: 2.2rem;
+      }
     }
   </style>
 </head>
@@ -147,42 +194,78 @@
 
     <!-- Projects Grid -->
     <div class="projects-grid">
-      <!-- Project 1 Card -->
+      <!-- Project 1 -->
       <div class="project-card">
         <div class="project-header project-header-1">
           <span class="project-emoji">🚀</span>
         </div>
         <div class="project-content">
-          <h2 class="project-title">Project 1</h2>
-          <p class="project-description">An innovative solution showcasing my skills in web development and design.</p>
+          <h2 class="project-title">Gemini Clone</h2>
+          <p class="project-description">A responsive clone of the Gemini AI interface with interactive elements.</p>
           <a href="Gemini Clone/index.html" class="project-link project-link-1">View Project</a>
         </div>
       </div>
 
-      <!-- Project 2 Card -->
+      <!-- Project 2 -->
       <div class="project-card">
         <div class="project-header project-header-2">
-          <span class="project-emoji">🎮</span>
+          <span class="project-emoji">🔗</span>
         </div>
         <div class="project-content">
-          <h2 class="project-title">Project 2</h2>
-          <p class="project-description">An interactive game application demonstrating my programming creativity.</p>
+          <h2 class="project-title">QR Generator</h2>
+          <p class="project-description">A dynamic QR code generator with customizable options and download feature.</p>
           <a href="QR Generator/index.html" class="project-link project-link-2">View Project</a>
         </div>
       </div>
 
-      <!-- Project 3 Card -->
+      <!-- Project 3 -->
       <div class="project-card">
         <div class="project-header project-header-3">
-          <span class="project-emoji">🧪</span>
+          <span class="project-emoji">🖼️</span>
         </div>
         <div class="project-content">
-          <h2 class="project-title">Project 3</h2>
-          <p class="project-description">An experimental project pushing boundaries with new technologies.</p>
+          <h2 class="project-title">NFT Website</h2>
+          <p class="project-description">A responsive NFT marketplace with modern design and smooth animations.</p>
           <a href="Responsive NFT Website/index.html" class="project-link project-link-3">View Project</a>
         </div>
       </div>
-    </div>
+
+      <!-- Project 4 (Example new project) -->
+      <div class="project-card">
+        <div class="project-header project-header-4">
+          <span class="project-emoji">📊</span>
+        </div>
+        <div class="project-content">
+          <h2 class="project-title">Pixuale Art</h2>
+          <p class="project-description">Pixuale Generator with Cool design.</p>
+          <a href="#" class="project-link project-link-4">Check is out</a>
+        </div>
+      </div>
+
+      <!-- Project 5 (Example new project) -->
+      <div class="project-card">
+        <div class="project-header project-header-5">
+          <span class="project-emoji">🎵</span>
+        </div>
+        <div class="project-content">
+          <h2 class="project-title">Music Player</h2>
+          <p class="project-description">Custom audio player with playlist management and visualizer effects.</p>
+          <a href="#" class="project-link project-link-5">Coming Soon</a>
+        </div>
+      </div>
+
+      <!-- Project 6 (Example new project) -->
+      <!-- <div class="project-card">
+        <div class="project-header project-header-6">
+          <span class="project-emoji">🛒</span>
+        </div>
+        <div class="project-content">
+          <h2 class="project-title">E-commerce Store</h2>
+          <p class="project-description">Full-featured online store with cart functionality and product filtering.</p>
+          <a href="#" class="project-link project-link-6">Coming Soon</a>
+        </div>
+      </div>
+    </div> -->
 
     <!-- Footer -->
     <footer>
