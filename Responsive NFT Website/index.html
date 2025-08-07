@@ -12,7 +12,7 @@
 <body>
 
     <nav>
-        <a href="#" class="logo">AsmrProg</a>
+        <a href="#" class="logo">CodebyATz</a>
         <div class="links">
             <a href="#">Home</a>
             <a href="#">Features</a>
@@ -27,7 +27,7 @@
 
     <header>
         <div class="left">
-            <h1>Let's Buy Some <span>AsmrGraph</span></h1>
+            <h1>Let's Buy Some <span>ATz Tools</span></h1>
             <p>Lorem ipsum dolor sit amet, consectetur adipisicing elit. Itaque, eaque harum. Nobis ipsam magni labore?
             </p>
             <a href="#">
@@ -213,5 +213,16 @@
     </footer>
 
 </body>
-
+<!-- Add before </body> -->
+<canvas id="webgl-bg"></canvas>
+<script>
+    const canvas = document.getElementById('webgl-bg');
+    canvas.style.position = 'fixed';
+    canvas.style.top = '0';
+    canvas.style.left = '0';
+    canvas.style.width = '100%';
+    canvas.style.height = '100%';
+    canvas.style.zIndex = '-1';
+    // Add Three.js or other WebGL code here for 3D background
+</script>
 </html>
