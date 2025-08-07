@@ -1,0 +1,193 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Aung Thant Zin's Projects</title>
+  <style>
+    body {
+      font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+      margin: 0;
+      padding: 0;
+      background: linear-gradient(135deg, #f5f7fa 0%, #c3cfe2 100%);
+      min-height: 100vh;
+    }
+    
+    .container {
+      max-width: 1200px;
+      margin: 0 auto;
+      padding: 40px 20px;
+    }
+    
+    header {
+      text-align: center;
+      margin-bottom: 50px;
+    }
+    
+    h1 {
+      color: #2c3e50;
+      font-size: 2.8rem;
+      margin-bottom: 10px;
+      font-weight: 700;
+    }
+    
+    .subtitle {
+      color: #7f8c8d;
+      font-size: 1.2rem;
+      margin-top: 0;
+    }
+    
+    .header-line {
+      height: 4px;
+      width: 80px;
+      background: linear-gradient(to right, #3498db, #9b59b6);
+      margin: 20px auto;
+      border-radius: 2px;
+    }
+    
+    .projects-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(350px, 1fr));
+      gap: 30px;
+    }
+    
+    .project-card {
+      background: white;
+      border-radius: 12px;
+      overflow: hidden;
+      box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
+      transition: transform 0.3s ease, box-shadow 0.3s ease;
+    }
+    
+    .project-card:hover {
+      transform: translateY(-5px);
+      box-shadow: 0 15px 35px rgba(0, 0, 0, 0.15);
+    }
+    
+    .project-header {
+      height: 180px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+    
+    .project-header-1 {
+      background: linear-gradient(45deg, #3498db, #2ecc71);
+    }
+    
+    .project-header-2 {
+      background: linear-gradient(45deg, #e74c3c, #f39c12);
+    }
+    
+    .project-header-3 {
+      background: linear-gradient(45deg, #9b59b6, #34495e);
+    }
+    
+    .project-emoji {
+      font-size: 4rem;
+    }
+    
+    .project-content {
+      padding: 25px;
+    }
+    
+    .project-title {
+      margin: 0 0 15px 0;
+      color: #2c3e50;
+    }
+    
+    .project-description {
+      color: #7f8c8d;
+      line-height: 1.6;
+      margin-bottom: 20px;
+    }
+    
+    .project-link {
+      display: inline-block;
+      color: white;
+      padding: 10px 20px;
+      border-radius: 5px;
+      text-decoration: none;
+      font-weight: 600;
+      transition: background 0.3s ease;
+    }
+    
+    .project-link-1 {
+      background: #3498db;
+    }
+    
+    .project-link-2 {
+      background: #e74c3c;
+    }
+    
+    .project-link-3 {
+      background: #9b59b6;
+    }
+    
+    .project-link:hover {
+      opacity: 0.9;
+    }
+    
+    footer {
+      text-align: center;
+      margin-top: 80px;
+      color: #7f8c8d;
+      font-size: 0.9rem;
+    }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <!-- Header Section -->
+    <header>
+      <h1>Aung Thant Zin</h1>
+      <p class="subtitle">My Project Collection</p>
+      <div class="header-line"></div>
+    </header>
+
+    <!-- Projects Grid -->
+    <div class="projects-grid">
+      <!-- Project 1 Card -->
+      <div class="project-card">
+        <div class="project-header project-header-1">
+          <span class="project-emoji">🚀</span>
+        </div>
+        <div class="project-content">
+          <h2 class="project-title">Project 1</h2>
+          <p class="project-description">An innovative solution showcasing my skills in web development and design.</p>
+          <a href="project1/" class="project-link project-link-1">View Project</a>
+        </div>
+      </div>
+
+      <!-- Project 2 Card -->
+      <div class="project-card">
+        <div class="project-header project-header-2">
+          <span class="project-emoji">🎮</span>
+        </div>
+        <div class="project-content">
+          <h2 class="project-title">Project 2</h2>
+          <p class="project-description">An interactive game application demonstrating my programming creativity.</p>
+          <a href="project2/" class="project-link project-link-2">View Project</a>
+        </div>
+      </div>
+
+      <!-- Project 3 Card -->
+      <div class="project-card">
+        <div class="project-header project-header-3">
+          <span class="project-emoji">🧪</span>
+        </div>
+        <div class="project-content">
+          <h2 class="project-title">Project 3</h2>
+          <p class="project-description">An experimental project pushing boundaries with new technologies.</p>
+          <a href="project3/" class="project-link project-link-3">View Project</a>
+        </div>
+      </div>
+    </div>
+
+    <!-- Footer -->
+    <footer>
+      <p>© 2023 Aung Thant Zin. All projects are proudly created by me.</p>
+    </footer>
+  </div>
+</body>
+</html>
