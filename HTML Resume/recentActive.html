@@ -1,0 +1,413 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>My Projects & Current Active</title>
+  <link href="https://maxcdn.bootstrapcdn.com/font-awesome/4.3.0/css/font-awesome.min.css" rel="stylesheet"/>
+  <link rel="stylesheet" href="style.css">
+  <style>
+
+  
+  </style>
+</head>
+<body>
+
+  <div class="container">
+ <div class="profile-nav">
+  <!-- Search Bar -->
+  <div class="search-container">
+    <i class="fa fa-search"></i>
+    <input type="text" placeholder="Search...">
+    <div class="search-tooltip">Find settings, pages, etc.</div>
+  </div>
+
+  <!-- User Quick View -->
+  <!-- <div class="user-quickview">
+    <div class="avatar">
+      <img src="img/photo_2025-05-17_20-53-29.jpg" alt="User">
+      <div class="online-status"></div>
+    </div>
+    <div class="user-meta">
+      <span class="username">Aung Thant Zin</span>
+      <span class="user-title">Developer</span>
+    </div>
+  </div> -->
+
+  <!-- Main Menu -->
+<div class="profile-menu">
+  <ul id="nav-menu">
+    <li>
+      <a href="index.html" class="nav-link">
+        <i class="fa fa-user"></i>
+        <span>Profile</span>
+        <div class="menu-tooltip">View your profile</div>
+      </a>
+    </li>
+    <li>
+      <a href="recentActive.html" class="nav-link">
+        <i class="fa fa-line-chart"></i>
+        <span>Dashboard</span>
+        <div class="menu-tooltip">Analytics & stats</div>
+      </a>
+    </li>
+    <li>
+      <a href="#" class="menu-disabled">
+        <i class="fa fa-calendar"></i>
+        <span>Calendar</span>
+        <div class="menu-tooltip">Schedule & events</div>
+      </a>
+    </li>
+    <li>
+      <a href="#" class="menu-disabled">
+        <i class="fa fa-envelope"></i>
+        <span>Messages</span>
+        <span class="notification-badge">12</span>
+      </a>
+    </li>
+    <li>
+      <a href="#" class="menu-disabled">
+        <i class="fa fa-cog"></i>
+        <span>Settings</span>
+        <div class="menu-tooltip">Account settings</div>
+      </a>
+    </li>
+  </ul>
+
+  <div class="menu-divider">Shortcuts</div>
+
+  <ul class="secondary-menu">
+    <li>
+      <a href="#" class="menu-disabled">
+        <i class="fa fa-bookmark"></i>
+        <span>Bookmarks</span>
+      </a>
+    </li>
+    <li>
+      <a href="#" class="menu-disabled">
+        <i class="fa fa-file-text"></i>
+        <span>Documents</span>
+      </a>
+    </li>
+  </ul>
+</div>
+
+  <!-- Footer with Dark Mode Toggle -->
+  <div class="profile-footer">
+    <div class="dark-mode-toggle">
+      <i class="fa fa-moon-o"></i>
+      <label class="switch">
+        <input type="checkbox" id="darkModeToggle">
+        <span class="slider round"></span>
+      </label>
+      <i class="fa fa-sun-o"></i>
+    </div>
+    <p>Last active: 2 hours ago</p>
+    <div class="system-status">
+      <span class="status-dot online"></span>
+      <span>System operational</span>
+    </div>
+  </div>
+</div>
+
+
+    <div class="profile-info">
+      <h2 class="section-title">My Tools</h2>
+      <div class="tools-grid">
+        <div class="tool-card">
+    <div class="tool-icon">
+<i class="fas fa-stethoscope"></i> <!-- Medical-appropriate icon -->
+    </div>
+    <h3 class="tool-name">AI Health Assistant</h3>
+    <p class="tool-desc">Describe your symptoms for personalized health guidance</p>
+    <a href="https://app.relevanceai.com/form/d7b62b/d52a7254-2f4c-4e11-a0d6-79dc4bf89beb?version=latest" class="tool-link">
+      <i class="fas fa-stethoscope"></i> Start Health Check
+    </a>
+  </div>
+        
+        <div class="tool-card">
+  <div class="tool-icon">
+    <i class="fa fa-globe"></i> <!-- Website icon -->
+  </div>
+  <h3 class="tool-name">Responsive NFT Web Design</h3>
+  <p class="tool-desc">A modern NFT marketplace platform showcasing digital art collections with responsive design</p>
+  
+  <a href="https://app.relevanceai.com/form/d7b62b/fd0f085b-ce87-4474-8d29-a644f6a8dc97" class="tool-link">
+    View Code</a>
+</div>
+        
+        <div class="tool-card">
+          <div class="tool-icon">
+            <i class="fa fa-chrome"></i>
+          </div>
+          <h3 class="tool-name">Chrome DevTools</h3>
+          <p class="tool-desc">Essential debugging and performance analysis toolset</p>
+          <a href="#" class="tool-link">Learn More</a>
+        </div>
+        
+        <div class="tool-card">
+          <div class="tool-icon">
+            <i class="fa fa-terminal"></i>
+          </div>
+          <h3 class="tool-name">Command Line</h3>
+          <p class="tool-desc">Custom shell setup with productivity plugins and shortcuts</p>
+          <a href="#" class="tool-link">See Config</a>
+        </div>
+      </div>
+
+      <div class="tab-container">
+        <div class="tabs">
+          <div class="tab active" onclick="openTab(event, 'projects')">UIUX</div>
+          <div class="tab" onclick="openTab(event, 'resources')">Web Project</div>
+        </div>
+        
+        <div id="projects" class="tab-content active">
+          <h3 class="section-title">Recent Projects</h3>
+          <div class="projects-grid">
+           
+            
+          
+            <div class="card">
+        <div class="picture">
+          <img src="img/NFTAtz.png" alt="Responsive NFT Web Design">
+ <div class="card-overlay">
+<a href="https://aungthatzin.github.io/MyPojects/Responsive%20NFT%20Website/" class="demo-button">
+  <i class="fa fa-play-circle"></i> Live Demo
+</a>         </div>
+        </div>
+        <div class="card-details">
+  <h3 class="tool-name">Responsive NFT Web Design</h3>
+          <p class="card-desc">A modern NFT marketplace platform showcasing digital art collections with responsive design</p>
+        </div>
+      <div class="stack-container">
+        <div class="stack-container">
+        <span class="stack-tag">
+          <i class="fa fa-html5"></i> HTML
+        </span>
+        <span class="stack-tag">
+          <i class="fa fa-css3"></i> CSS
+        </span>
+        <span class="stack-tag">
+          <i class="fa fa-code"></i> JavaScript
+        </span>
+      </div>
+  <!-- Add more tech stack items as needed -->
+</div>
+  <div class="button-container">
+    <a href="https://app.relevanceai.com/form/d7b62b/fd0f085b-ce87-4474-8d29-a644f6a8dc97" class="card-button">View Setup</a>
+  </div>
+</div>
+<div class="card">
+        <div class="picture">
+          <img src="img/Gemini.png" alt="Extract Website Content">
+<div class="card-overlay">
+<a href="https://aungthatzin.github.io/MyPojects/Gemini%20Clone/" class="demo-button">
+  <i class="fa fa-play-circle"></i> Live Demo
+</a>          </div>
+        </div>
+        <div class="card-details">
+          <h3 class="card-title">Gemini Clone</h3>
+          <p class="card-desc">AI chat interface UI replica created with HTML/CSS. Implements responsive message bubbles, typing indicators, and a polished input area. Uses CSS flexbox for perfect alignment across all devices.</p>
+        </div>
+      <div class="stack-container">
+        <div class="stack-container">
+        <span class="stack-tag">
+          <i class="fa fa-html5"></i> HTML
+        </span>
+        <span class="stack-tag">
+          <i class="fa fa-css3"></i> CSS
+        </span>
+        <span class="stack-tag">
+          <i class="fa fa-code"></i> JavaScript
+        </span>
+      </div>
+  <!-- Add more tech stack items as needed -->
+</div>
+  <div class="button-container">
+    <a href="https://app.relevanceai.com/form/d7b62b/fd0f085b-ce87-4474-8d29-a644f6a8dc97" class="card-button">View Setup</a>
+  </div>
+</div>
+<div class="card">
+        <div class="picture">
+          <img src="img/PixuelArt.png" alt="Extract Website Content">
+        <div class="card-overlay">
+<a href="https://aungthatzin.github.io/MyPojects/Pixule%20art/" class="demo-button">
+  <i class="fa fa-play-circle"></i> Live Demo
+</a>         </div>
+        </div>
+        <div class="card-details">
+          <h3 class="card-title">Pixuale Art</h3>
+          <p class="card-desc">Digital art showcase using CSS animations and hover effects. Implements masonry-style image grid with pure CSS. Includes artist profile cards with creative hover transformations.</p>
+        </div>
+      <div class="stack-container">
+        <div class="stack-container">
+        <span class="stack-tag">
+          <i class="fa fa-html5"></i> HTML
+        </span>
+        <span class="stack-tag">
+          <i class="fa fa-css3"></i> CSS
+        </span>
+        <span class="stack-tag">
+          <i class="fa fa-code"></i> JavaScript
+        </span>
+      </div>
+  <!-- Add more tech stack items as needed -->
+</div>
+  <div class="button-container">
+    <a href="https://app.relevanceai.com/form/d7b62b/fd0f085b-ce87-4474-8d29-a644f6a8dc97" class="card-button">View Setup</a>
+  </div>
+</div>
+<div class="card">
+        <div class="picture">
+          <img src="img/QRGenerator.png" alt="Extract Website Content">
+        <div class="card-overlay">
+<a href="https://aungthatzin.github.io/MyPojects/QR%20Generator/" class="demo-button">
+  <i class="fa fa-play-circle"></i> Live Demo
+</a>         </div>
+        </div>
+        <div class="card-details">
+          <h3 class="card-title">QR Generator</h3>
+          <p class="card-desc">Clean QR code generator interface built with HTML/CSS. Features a centered form with custom-styled inputs and download button. Includes responsive error states and confirmation messages</p>
+        </div>
+      <div class="stack-container">
+        <div class="stack-container">
+        <span class="stack-tag">
+          <i class="fa fa-html5"></i> HTML
+        </span>
+        <span class="stack-tag">
+          <i class="fa fa-css3"></i> CSS
+        </span>
+        <span class="stack-tag">
+          <i class="fa fa-code"></i> JavaScript
+        </span>
+      </div>
+  <!-- Add more tech stack items as needed -->
+</div>
+  <div class="button-container">
+    <a href="https://github.com/AungThatZin/MyPojects/tree/main/QR%20Generator" class="card-button">View Setup</a>
+  </div>
+</div>
+
+
+          </div>
+        </div>
+        <div id="resources" class="tab-content">
+          <h3 class="section-title">Web Development Resources</h3>
+           <div class="projects-grid">
+           
+            
+          
+            <div class="card">
+        <div class="picture">
+          <img src="img/NFTAtz.png" alt="Extract Website Content">
+        <div class="card-overlay">
+<a href="https://aungthatzin.github.io/MyPojects/Responsive%20NFT%20Website/" class="demo-button">
+    <i class="fa fa-eye"></i> View Demo
+
+</a>        </div>
+        </div>
+        <div class="card-details">
+          <h3 class="card-title">Responsive NFT Webpage</h3>
+          <p class="card-desc">A modern NFT marketplace platform showcasing digital art collections with responsive design</p>
+        </div>
+      <div class="stack-container">
+        <div class="stack-container">
+        <span class="stack-tag">
+          <i class="fa fa-html5"></i> HTML
+        </span>
+        <span class="stack-tag">
+          <i class="fa fa-css3"></i> CSS
+        </span>
+        <span class="stack-tag">
+          <i class="fa fa-code"></i> JavaScript
+        </span>
+      </div>
+  <!-- Add more tech stack items as needed -->
+</div>
+  <div class="button-container">
+    <a href="https://app.relevanceai.com/form/d7b62b/fd0f085b-ce87-4474-8d29-a644f6a8dc97" class="card-button">View Setup</a>
+  </div>
+</div>
+<div class="card">
+        <div class="picture">
+          <img src="img/Gemini.png" alt="Extract Website Content">
+        <div class="card-overlay">
+<a href="https://aungthatzin.github.io/MyPojects/Gemini%20Clone/" class="demo-button">
+  <i class="fa fa-play-circle"></i> Live Demo
+</a>        </div>
+        </div>
+        <div class="card-details">
+          <h3 class="card-title">Extract Website Content</h3>
+          <p class="card-desc">Scrape key details from the prospect's homepage/pricing page</p>
+        </div>
+      <div class="stack-container">
+        <div class="stack-container">
+        <span class="stack-tag">
+          <i class="fa fa-html5"></i> HTML
+        </span>
+        <span class="stack-tag">
+          <i class="fa fa-css3"></i> CSS
+        </span>
+        <span class="stack-tag">
+          <i class="fa fa-code"></i> JavaScript
+        </span>
+      </div>
+  <!-- Add more tech stack items as needed -->
+</div>
+  <div class="button-container">
+    <a href="https://app.relevanceai.com/form/d7b62b/fd0f085b-ce87-4474-8d29-a644f6a8dc97" class="card-button">View Setup</a>
+  </div>
+</div>
+
+
+          </div>
+        </div>
+      </div>
+      
+         
+    <!--Gride Other Backend Projects --> 
+  </div>
+  <div id="projects" class="project-showcause panel">
+          <h3 class="section-title">Current Building Projects</h3>
+          <div class="projects-grid">
+            <div class="card">
+              <div class="picture">
+                <img src="img/AIToolProject.png" alt="Extract Website Content">
+              <div class="card-overlay">
+<a href="#" class="demo-button">
+  <i class="fa fa-play-circle"></i> Live Demo
+</a>        </div>
+              </div>
+              <div class="card-details">
+                <h3 class="card-title">AI Tool Generator</h3>
+                <p class="card-desc">Scrape key details from the prospect's homepage/pricing page</p>
+              </div>
+            <div class="stack-container">
+              <div class="stack-container">
+              <span class="stack-tag">
+                <i class="fa fa-html5"></i> HTML
+              </span>
+              <span class="stack-tag">
+                <i class="fa fa-css3"></i> CSS
+              </span>
+              <span class="stack-tag">
+                <i class="fa fa-code"></i> JavaScript
+              </span>
+            </div>
+  <!-- Add more tech stack items as needed -->
+    </div>
+  <div class="button-container">
+    <a href="https://app.relevanceai.com/form/d7b62b/fd0f085b-ce87-4474-8d29-a644f6a8dc97" class="card-button">View Setup</a>
+  </div>
+</div>
+
+   <!-- <button class="theme-toggle">
+        <i class="fas fa-moon"></i>
+    </button> -->
+
+          </div>
+        </div>
+       
+  <script src="script.js"></script>
+</body>
+</html>
