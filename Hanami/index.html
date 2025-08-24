@@ -1,0 +1,723 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Hanami Beauty Store</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;600;700&family=Poppins:wght@300;400;500&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        /* Reset and Base Styles */
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
+        :root {
+            --pink: #f8d7dc;
+            --beige: #f5f0e6;
+            --ivory: #fffff0;
+            --lavender: #e6e6fa;
+            --gold: #d4af37;
+            --dark-pink: #e8b4bc;
+            --text: #333333;
+            --shadow: 0 4px 20px rgba(0, 0, 0, 0.08);
+        }
+        
+        body {
+            font-family: 'Poppins', sans-serif;
+            color: var(--text);
+            background-color: var(--ivory);
+            line-height: 1.6;
+        }
+        
+        h1, h2, h3, h4 {
+            font-family: 'Playfair Display', serif;
+            font-weight: 600;
+            margin-bottom: 1rem;
+            color: var(--text);
+        }
+        
+        p {
+            margin-bottom: 1.5rem;
+        }
+        
+        .container {
+            width: 100%;
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 0 1.5rem;
+        }
+        
+        .btn {
+            display: inline-block;
+            background-color: var(--pink);
+            color: var(--text);
+            padding: 12px 28px;
+            border-radius: 50px;
+            text-decoration: none;
+            font-weight: 500;
+            border: none;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            box-shadow: var(--shadow);
+        }
+        
+        .btn-gold {
+            background-color: var(--gold);
+            color: white;
+        }
+        
+        .btn:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 6px 25px rgba(0, 0, 0, 0.15);
+        }
+        
+        section {
+            padding: 4rem 0;
+        }
+        
+        .section-title {
+            text-align: center;
+            margin-bottom: 3rem;
+            position: relative;
+        }
+        
+        .section-title:after {
+            content: '';
+            display: block;
+            width: 60px;
+            height: 3px;
+            background: var(--gold);
+            margin: 10px auto;
+        }
+        
+        /* Header Styles */
+        header {
+            background-color: rgba(255, 255, 255, 0.95);
+            box-shadow: var(--shadow);
+            position: fixed;
+            width: 100%;
+            top: 0;
+            z-index: 1000;
+            padding: 1rem 0;
+        }
+        
+        .header-container {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+        
+        .logo {
+            font-family: 'Playfair Display', serif;
+            font-size: 1.8rem;
+            font-weight: 700;
+            color: var(--gold);
+            text-decoration: none;
+            display: flex;
+            align-items: center;
+        }
+        
+        .logo i {
+            margin-right: 8px;
+            animation: flicker 3s infinite alternate;
+        }
+        
+        @keyframes flicker {
+            0%, 100% { opacity: 1; }
+            50% { opacity: 0.8; }
+            80% { opacity: 0.9; }
+        }
+        
+        .nav-menu {
+            display: flex;
+            list-style: none;
+        }
+        
+        .nav-menu li {
+            margin-left: 1.5rem;
+        }
+        
+        .nav-menu a {
+            text-decoration: none;
+            color: var(--text);
+            font-weight: 500;
+            transition: color 0.3s;
+        }
+        
+        .nav-menu a:hover {
+            color: var(--gold);
+        }
+        
+        .cart-icon {
+            font-size: 1.4rem;
+            color: var(--text);
+            position: relative;
+        }
+        
+        .cart-count {
+            position: absolute;
+            top: -8px;
+            right: -8px;
+            background-color: var(--gold);
+            color: white;
+            font-size: 0.7rem;
+            width: 18px;
+            height: 18px;
+            border-radius: 50%;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+        }
+        
+        .hamburger {
+            display: none;
+            cursor: pointer;
+        }
+        
+        /* Hero Section */
+        .hero {
+            background: linear-gradient(to right, rgba(255, 255, 240, 0.9), rgba(230, 230, 250, 0.7)), url('https://images.unsplash.com/photo-1596461404969-9ae70f2830c1?ixlib=rb-4.0.3') center/cover no-repeat;
+            height: 80vh;
+            display: flex;
+            align-items: center;
+            margin-top: 70px;
+            border-radius: 0 0 30px 30px;
+        }
+        
+        .hero-content {
+            max-width: 600px;
+        }
+        
+        .hero-title {
+            font-size: 2.5rem;
+            margin-bottom: 1.5rem;
+            color: var(--text);
+        }
+        
+        .hero-desc {
+            font-size: 1.1rem;
+            margin-bottom: 2rem;
+        }
+        
+        /* Products Section */
+        .products-grid {
+            display: grid;
+            grid-template-columns: 1fr;
+            gap: 2rem;
+        }
+        
+        .product-card {
+            background: white;
+            border-radius: 20px;
+            overflow: hidden;
+            box-shadow: var(--shadow);
+            transition: transform 0.3s ease;
+        }
+        
+        .product-card:hover {
+            transform: translateY(-10px);
+        }
+        
+        .product-img {
+            height: 200px;
+            overflow: hidden;
+        }
+        
+        .product-img img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            transition: transform 0.5s ease;
+        }
+        
+        .product-card:hover .product-img img {
+            transform: scale(1.1);
+        }
+        
+        .product-info {
+            padding: 1.5rem;
+        }
+        
+        .product-title {
+            font-size: 1.2rem;
+            margin-bottom: 0.5rem;
+        }
+        
+        .product-desc {
+            font-size: 0.9rem;
+            color: #666;
+            margin-bottom: 1rem;
+        }
+        
+        .product-price {
+            font-weight: 600;
+            color: var(--gold);
+            font-size: 1.2rem;
+            margin-bottom: 1rem;
+        }
+        
+        .add-to-cart {
+            width: 100%;
+            text-align: center;
+            background: var(--lavender);
+        }
+        
+        /* About Section */
+        .about {
+            background: linear-gradient(to bottom, var(--pink), var(--beige));
+            border-radius: 30px;
+        }
+        
+        .about-content {
+            text-align: center;
+            max-width: 800px;
+            margin: 0 auto;
+        }
+        
+        /* Team Section */
+        .team {
+            background: linear-gradient(to right, var(--pink), var(--ivory));
+            border-radius: 30px;
+        }
+        
+        .team-grid {
+            display: grid;
+            grid-template-columns: 1fr;
+            gap: 2rem;
+        }
+        
+        .team-member {
+            text-align: center;
+            background: white;
+            padding: 2rem;
+            border-radius: 20px;
+            box-shadow: var(--shadow);
+        }
+        
+        .team-img {
+            width: 150px;
+            height: 150px;
+            border-radius: 50%;
+            object-fit: cover;
+            margin: 0 auto 1rem;
+            border: 5px solid var(--beige);
+        }
+        
+        .team-name {
+            font-size: 1.4rem;
+            margin-bottom: 0.5rem;
+        }
+        
+        .team-role {
+            color: var(--gold);
+            font-weight: 500;
+            margin-bottom: 1rem;
+        }
+        
+        /* Testimonials */
+        .testimonials {
+            background-color: var(--beige);
+            border-radius: 30px;
+        }
+        
+        .testimonial-card {
+            background: white;
+            padding: 2rem;
+            border-radius: 20px;
+            box-shadow: var(--shadow);
+            margin-bottom: 2rem;
+            text-align: center;
+        }
+        
+        .testimonial-text {
+            font-style: italic;
+            margin-bottom: 1.5rem;
+        }
+        
+        .testimonial-author {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+        
+        .author-img {
+            width: 60px;
+            height: 60px;
+            border-radius: 50%;
+            object-fit: cover;
+            margin-right: 1rem;
+        }
+        
+        /* Contact Section */
+        .contact {
+            background: linear-gradient(to bottom, var(--lavender), var(--pink));
+            border-radius: 30px;
+        }
+        
+        .contact-form {
+            max-width: 600px;
+            margin: 0 auto;
+            background: white;
+            padding: 2rem;
+            border-radius: 20px;
+            box-shadow: var(--shadow);
+        }
+        
+        .form-group {
+            margin-bottom: 1.5rem;
+        }
+        
+        .form-group label {
+            display: block;
+            margin-bottom: 0.5rem;
+            font-weight: 500;
+        }
+        
+        .form-group input,
+        .form-group textarea {
+            width: 100%;
+            padding: 12px;
+            border: 1px solid #ddd;
+            border-radius: 10px;
+            font-family: 'Poppins', sans-serif;
+        }
+        
+        .form-group textarea {
+            min-height: 150px;
+        }
+        
+        /* Footer */
+        footer {
+            background: var(--text);
+            color: white;
+            padding: 3rem 0;
+            text-align: center;
+            margin-top: 4rem;
+        }
+        
+        .footer-content {
+            display: flex;
+            flex-direction: column;
+            gap: 2rem;
+        }
+        
+        .social-links {
+            display: flex;
+            justify-content: center;
+            gap: 1.5rem;
+            margin-top: 1rem;
+        }
+        
+        .social-links a {
+            color: white;
+            font-size: 1.5rem;
+            transition: color 0.3s;
+        }
+        
+        .social-links a:hover {
+            color: var(--gold);
+        }
+        
+        /* Responsive Styles */
+        @media (min-width: 768px) {
+            .hero-title {
+                font-size: 3.5rem;
+            }
+            
+            .products-grid {
+                grid-template-columns: repeat(2, 1fr);
+            }
+            
+            .team-grid {
+                grid-template-columns: repeat(2, 1fr);
+            }
+        }
+        
+        @media (min-width: 992px) {
+            .products-grid {
+                grid-template-columns: repeat(3, 1fr);
+            }
+            
+            .nav-menu {
+                display: flex !important;
+            }
+            
+            .hamburger {
+                display: none;
+            }
+        }
+        
+        @media (max-width: 991px) {
+            .hamburger {
+                display: block;
+                font-size: 1.5rem;
+            }
+            
+            .nav-menu {
+                display: none;
+                flex-direction: column;
+                position: absolute;
+                top: 70px;
+                left: 0;
+                width: 100%;
+                background: white;
+                padding: 1rem;
+                box-shadow: var(--shadow);
+            }
+            
+            .nav-menu.active {
+                display: flex;
+            }
+            
+            .nav-menu li {
+                margin: 1rem 0;
+            }
+        }
+        
+        /* Animations */
+        .fade-in {
+            animation: fadeIn 1s ease;
+        }
+        
+        @keyframes fadeIn {
+            from { opacity: 0; }
+            to { opacity: 1; }
+        }
+        
+        .slide-up {
+            animation: slideUp 1s ease;
+        }
+        
+        @keyframes slideUp {
+            from { transform: translateY(50px); opacity: 0; }
+            to { transform: translateY(0); opacity: 1; }
+        }
+    </style>
+</head>
+<body>
+    <!-- Header -->
+    <header>
+        <div class="container header-container">
+            <a href="#" class="logo"><i class="fas fa-spa"></i> Hanami</a>
+            
+            <div class="hamburger">
+                <i class="fas fa-bars"></i>
+            </div>
+            
+            <ul class="nav-menu">
+                <li><a href="#">Home</a></li>
+                <li><a href="#">Shop</a></li>
+                <li><a href="#">About</a></li>
+                <li><a href="#">Contact</a></li>
+                <li><a href="#" class="cart-icon">
+                    <i class="fas fa-shopping-cart"></i>
+                    <span class="cart-count">3</span>
+                </a></li>
+            </ul>
+        </div>
+    </header>
+
+    <!-- Hero Section -->
+    <section class="hero">
+        <div class="container hero-content fade-in">
+            <h1 class="hero-title">Light Your Beauty</h1>
+            <p class="hero-desc">Discover our exquisite collection of beauty candles and hair care products crafted with natural ingredients for your wellness routine.</p>
+            <a href="#" class="btn btn-gold">Shop Now</a>
+        </div>
+    </section>
+
+    <!-- Products Section -->
+    <section class="products">
+        <div class="container">
+            <h2 class="section-title">Our Products</h2>
+            <div class="products-grid">
+                <!-- Product 1 -->
+                <div class="product-card slide-up">
+                    <div class="product-img">
+                        <img src="https://images.unsplash.com/photo-1545852528-fa22f7fcd63e?ixlib=rb-4.0.3&auto=format&fit=crop&w=500&q=80" alt="Sakura Blossom Candle">
+                    </div>
+                    <div class="product-info">
+                        <h3 class="product-title">Sakura Blossom Candle</h3>
+                        <p class="product-desc">Infused with cherry blossom essence for a calming atmosphere.</p>
+                        <p class="product-price">24000MMK</p>
+                        <a href="#" class="btn add-to-cart">Add to Cart</a>
+                    </div>
+                </div>
+                
+                <!-- Product 2 -->
+                <div class="product-card slide-up">
+                    <div class="product-img">
+                        <img src="https://images.unsplash.com/photo-1600917887726-2d69224ba1d4?ixlib=rb-4.0.3&auto=format&fit=crop&w=500&q=80" alt="Lavender Dream Candle">
+                    </div>
+                    <div class="product-info">
+                        <h3 class="product-title">Lavender Dream Candle</h3>
+                        <p class="product-desc">Soothing lavender fragrance to enhance your relaxation time.</p>
+                        <p class="product-price">26000MMK</p>
+                        <a href="#" class="btn add-to-cart">Add to Cart</a>
+                    </div>
+                </div>
+                
+                <!-- Product 3 -->
+                <div class="product-card slide-up">
+                    <div class="product-img">
+                        <img src="https://images.unsplash.com/photo-1596461404969-9ae70f2830c1?ixlib=rb-4.0.3&auto=format&fit=crop&w=500&q=80" alt="Hair Repair Serum">
+                    </div>
+                    <div class="product-info">
+                        <h3 class="product-title">Hair Repair Serum</h3>
+                        <p class="product-desc">Nourish your hair with our argan oil infused formula.</p>
+                        <p class="product-price">45000MMK</p>
+                        <a href="#" class="btn add-to-cart">Add to Cart</a>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- About Section -->
+    <section class="about">
+        <div class="container">
+            <h2 class="section-title">About Hanami</h2>
+            <div class="about-content fade-in">
+                <p>Hanami was founded in 2025 with a simple mission: to create beauty products that enhance your self-care rituals. Our name draws inspiration from the Japanese tradition of appreciating the transient beauty of flowers.</p>
+                <p>Each of our candles is hand-poured using sustainable soy wax and premium essential oils. Our hair care line is crafted with natural ingredients that nourish and revitalize.</p>
+                <p>We believe that taking time for yourself is an essential part of beauty, and our products are designed to help you create moments of peace in your daily routine.</p>
+            </div>
+        </div>
+    </section>
+
+    <!-- Team Section -->
+    <section class="team">
+        <div class="container">
+            <h2 class="section-title">Our Team</h2>
+            <div class="team-grid">
+                <div class="team-member slide-up">
+                    <img src="image/image.png" alt="Hanami" class="team-img">
+                    <h3 class="team-name">Hanami</h3>
+                    <p class="team-role">Founder & CEO</p>
+                    <p>With a background in aromatherapy and cosmetics, Hanami brings passion and expertise to every product.</p>
+                </div>
+                
+                <div class="team-member slide-up">
+                    <img src="image/MMM_0557-78.jpg" alt="Nahoya" class="team-img">
+                    <h3 class="team-name">Nahoya</h3>
+                    <p class="team-role">Developer</p>
+                    <p>Nahoya ensures our online presence is as beautiful and functional as our products.</p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Testimonials -->
+    <section class="testimonials">
+        <div class="container">
+            <h2 class="section-title">Customer Reviews</h2>
+            
+            <div class="testimonial-card fade-in">
+                <p class="testimonial-text">"The Sakura Blossom Candle has become a essential part of my evening routine. The scent is delicate and not overpowering. It helps me relax after a long day."</p>
+                <div class="testimonial-author">
+                    <img src="https://images.unsplash.com/photo-1487412720507-e7ab37603c6f?ixlib=rb-4.0.3&auto=format&fit=crop&w=500&q=80" alt="Sarah M." class="author-img">
+                    <div>
+                        <h4>Sarah M.</h4>
+                        <p>Verified Customer</p>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="testimonial-card fade-in">
+                <p class="testimonial-text">"I've been using the Hair Repair Serum for three weeks now and already see a difference. My hair is shinier and feels healthier. Plus the rose scent is delightful!"</p>
+                <div class="testimonial-author">
+                    <img src="https://images.unsplash.com/photo-1567532939604-b6b5b0db1604?ixlib=rb-4.0.3&auto=format&fit=crop&w=500&q=80" alt="Jessica T." class="author-img">
+                    <div>
+                        <h4>Jessica T.</h4>
+                        <p>Verified Customer</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Contact Section -->
+    <section class="contact">
+        <div class="container">
+            <h2 class="section-title">Get In Touch</h2>
+            
+            <div class="contact-form slide-up">
+                <div class="form-group">
+                    <label for="name">Your Name</label>
+                    <input type="text" id="name" placeholder="Enter your name">
+                </div>
+                
+                <div class="form-group">
+                    <label for="email">Email Address</label>
+                    <input type="email" id="email" placeholder="Enter your email">
+                </div>
+                
+                <div class="form-group">
+                    <label for="message">Your Message</label>
+                    <textarea id="message" placeholder="How can we help you?"></textarea>
+                </div>
+                
+                <button type="submit" class="btn btn-gold" style="width: 100%">Send Message</button>
+            </div>
+        </div>
+    </section>
+
+    <!-- Footer -->
+    <footer>
+        <div class="container footer-content">
+            <div>
+                <h3>Hanami Beauty</h3>
+                <p>Lighting up your beauty routine</p>
+            </div>
+            
+            <div>
+                <p>123 Blossom Street, Flower City</p>
+                <p>contact@hanamibeauty.com</p>
+                <p>(123) 456-7890</p>
+            </div>
+            
+            <div>
+                <div class="social-links">
+                    <a href="#"><i class="fab fa-instagram"></i></a>
+                    <a href="#"><i class="fab fa-pinterest"></i></a>
+                    <a href="#"><i class="fab fa-facebook"></i></a>
+                    <a href="#"><i class="fab fa-tiktok"></i></a>
+                </div>
+            </div>
+        </div>
+    </footer>
+
+    <script>
+        // Hamburger menu toggle
+        document.querySelector('.hamburger').addEventListener('click', function() {
+            document.querySelector('.nav-menu').classList.toggle('active');
+        });
+        
+        // Simple scroll animation
+        document.addEventListener('DOMContentLoaded', function() {
+            const animatedElements = document.querySelectorAll('.slide-up, .fade-in');
+            
+            const observer = new IntersectionObserver((entries) => {
+                entries.forEach(entry => {
+                    if (entry.isIntersecting) {
+                        entry.target.style.animationPlayState = 'running';
+                        observer.unobserve(entry.target);
+                    }
+                });
+            }, {
+                threshold: 0.1
+            });
+            
+            animatedElements.forEach(el => {
+                el.style.animationPlayState = 'paused';
+                observer.observe(el);
+            });
+        });
+    </script>
+</body>
+</html>
