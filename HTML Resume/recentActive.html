@@ -1,413 +1,300 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-  <title>My Projects & Current Active</title>
-  <link href="https://maxcdn.bootstrapcdn.com/font-awesome/4.3.0/css/font-awesome.min.css" rel="stylesheet"/>
-  <link rel="stylesheet" href="style.css">
-  <style>
-
-  
-  </style>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Developer Portfolio - Projects</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+   <link rel="stylesheet" href="style.css">
 </head>
 <body>
-
-  <div class="container">
- <div class="profile-nav">
-  <!-- Search Bar -->
-  <div class="search-container">
-    <i class="fa fa-search"></i>
-    <input type="text" placeholder="Search...">
-    <div class="search-tooltip">Find settings, pages, etc.</div>
-  </div>
-
-  <!-- User Quick View -->
-  <!-- <div class="user-quickview">
-    <div class="avatar">
-      <img src="img/photo_2025-05-17_20-53-29.jpg" alt="User">
-      <div class="online-status"></div>
-    </div>
-    <div class="user-meta">
-      <span class="username">Aung Thant Zin</span>
-      <span class="user-title">Developer</span>
-    </div>
-  </div> -->
-
-  <!-- Main Menu -->
-<div class="profile-menu">
-  <ul id="nav-menu">
-    <li>
-      <a href="index.html" class="nav-link">
-        <i class="fa fa-user"></i>
-        <span>Profile</span>
-        <div class="menu-tooltip">View your profile</div>
-      </a>
-    </li>
-    <li>
-      <a href="recentActive.html" class="nav-link">
-        <i class="fa fa-line-chart"></i>
-        <span>Dashboard</span>
-        <div class="menu-tooltip">Analytics & stats</div>
-      </a>
-    </li>
-    <li>
-      <a href="#" class="menu-disabled">
-        <i class="fa fa-calendar"></i>
-        <span>Calendar</span>
-        <div class="menu-tooltip">Schedule & events</div>
-      </a>
-    </li>
-    <li>
-      <a href="#" class="menu-disabled">
-        <i class="fa fa-envelope"></i>
-        <span>Messages</span>
-        <span class="notification-badge">12</span>
-      </a>
-    </li>
-    <li>
-      <a href="#" class="menu-disabled">
-        <i class="fa fa-cog"></i>
-        <span>Settings</span>
-        <div class="menu-tooltip">Account settings</div>
-      </a>
-    </li>
-  </ul>
-
-  <div class="menu-divider">Shortcuts</div>
-
-  <ul class="secondary-menu">
-    <li>
-      <a href="#" class="menu-disabled">
-        <i class="fa fa-bookmark"></i>
-        <span>Bookmarks</span>
-      </a>
-    </li>
-    <li>
-      <a href="#" class="menu-disabled">
-        <i class="fa fa-file-text"></i>
-        <span>Documents</span>
-      </a>
-    </li>
-  </ul>
-</div>
-
-  <!-- Footer with Dark Mode Toggle -->
-  <div class="profile-footer">
-    <div class="dark-mode-toggle">
-      <i class="fa fa-moon-o"></i>
-      <label class="switch">
-        <input type="checkbox" id="darkModeToggle">
-        <span class="slider round"></span>
-      </label>
-      <i class="fa fa-sun-o"></i>
-    </div>
-    <p>Last active: 2 hours ago</p>
-    <div class="system-status">
-      <span class="status-dot online"></span>
-      <span>System operational</span>
-    </div>
-  </div>
-</div>
-
-
-    <div class="profile-info">
-      <h2 class="section-title">My Tools</h2>
-      <div class="tools-grid">
-        <div class="tool-card">
-    <div class="tool-icon">
-<i class="fas fa-stethoscope"></i> <!-- Medical-appropriate icon -->
-    </div>
-    <h3 class="tool-name">AI Health Assistant</h3>
-    <p class="tool-desc">Describe your symptoms for personalized health guidance</p>
-    <a href="https://app.relevanceai.com/form/d7b62b/d52a7254-2f4c-4e11-a0d6-79dc4bf89beb?version=latest" class="tool-link">
-      <i class="fas fa-stethoscope"></i> Start Health Check
-    </a>
-  </div>
-        
-        <div class="tool-card">
-  <div class="tool-icon">
-    <i class="fa fa-globe"></i> <!-- Website icon -->
-  </div>
-  <h3 class="tool-name">Responsive NFT Web Design</h3>
-  <p class="tool-desc">A modern NFT marketplace platform showcasing digital art collections with responsive design</p>
-  
-  <a href="https://app.relevanceai.com/form/d7b62b/fd0f085b-ce87-4474-8d29-a644f6a8dc97" class="tool-link">
-    View Code</a>
-</div>
-        
-        <div class="tool-card">
-          <div class="tool-icon">
-            <i class="fa fa-chrome"></i>
-          </div>
-          <h3 class="tool-name">Chrome DevTools</h3>
-          <p class="tool-desc">Essential debugging and performance analysis toolset</p>
-          <a href="#" class="tool-link">Learn More</a>
-        </div>
-        
-        <div class="tool-card">
-          <div class="tool-icon">
-            <i class="fa fa-terminal"></i>
-          </div>
-          <h3 class="tool-name">Command Line</h3>
-          <p class="tool-desc">Custom shell setup with productivity plugins and shortcuts</p>
-          <a href="#" class="tool-link">See Config</a>
-        </div>
-      </div>
-
-      <div class="tab-container">
-        <div class="tabs">
-          <div class="tab active" onclick="openTab(event, 'projects')">UIUX</div>
-          <div class="tab" onclick="openTab(event, 'resources')">Web Project</div>
-        </div>
-        
-        <div id="projects" class="tab-content active">
-          <h3 class="section-title">Recent Projects</h3>
-          <div class="projects-grid">
-           
-            
-          
-            <div class="card">
-        <div class="picture">
-          <img src="img/NFTAtz.png" alt="Responsive NFT Web Design">
- <div class="card-overlay">
-<a href="https://aungthatzin.github.io/MyPojects/Responsive%20NFT%20Website/" class="demo-button">
-  <i class="fa fa-play-circle"></i> Live Demo
-</a>         </div>
-        </div>
-        <div class="card-details">
-  <h3 class="tool-name">Responsive NFT Web Design</h3>
-          <p class="card-desc">A modern NFT marketplace platform showcasing digital art collections with responsive design</p>
-        </div>
-      <div class="stack-container">
-        <div class="stack-container">
-        <span class="stack-tag">
-          <i class="fa fa-html5"></i> HTML
-        </span>
-        <span class="stack-tag">
-          <i class="fa fa-css3"></i> CSS
-        </span>
-        <span class="stack-tag">
-          <i class="fa fa-code"></i> JavaScript
-        </span>
-      </div>
-  <!-- Add more tech stack items as needed -->
-</div>
-  <div class="button-container">
-    <a href="https://app.relevanceai.com/form/d7b62b/fd0f085b-ce87-4474-8d29-a644f6a8dc97" class="card-button">View Setup</a>
-  </div>
-</div>
-<div class="card">
-        <div class="picture">
-          <img src="img/Gemini.png" alt="Extract Website Content">
-<div class="card-overlay">
-<a href="https://aungthatzin.github.io/MyPojects/Gemini%20Clone/" class="demo-button">
-  <i class="fa fa-play-circle"></i> Live Demo
-</a>          </div>
-        </div>
-        <div class="card-details">
-          <h3 class="card-title">Gemini Clone</h3>
-          <p class="card-desc">AI chat interface UI replica created with HTML/CSS. Implements responsive message bubbles, typing indicators, and a polished input area. Uses CSS flexbox for perfect alignment across all devices.</p>
-        </div>
-      <div class="stack-container">
-        <div class="stack-container">
-        <span class="stack-tag">
-          <i class="fa fa-html5"></i> HTML
-        </span>
-        <span class="stack-tag">
-          <i class="fa fa-css3"></i> CSS
-        </span>
-        <span class="stack-tag">
-          <i class="fa fa-code"></i> JavaScript
-        </span>
-      </div>
-  <!-- Add more tech stack items as needed -->
-</div>
-  <div class="button-container">
-    <a href="https://app.relevanceai.com/form/d7b62b/fd0f085b-ce87-4474-8d29-a644f6a8dc97" class="card-button">View Setup</a>
-  </div>
-</div>
-<div class="card">
-        <div class="picture">
-          <img src="img/PixuelArt.png" alt="Extract Website Content">
-        <div class="card-overlay">
-<a href="https://aungthatzin.github.io/MyPojects/Pixule%20art/" class="demo-button">
-  <i class="fa fa-play-circle"></i> Live Demo
-</a>         </div>
-        </div>
-        <div class="card-details">
-          <h3 class="card-title">Pixuale Art</h3>
-          <p class="card-desc">Digital art showcase using CSS animations and hover effects. Implements masonry-style image grid with pure CSS. Includes artist profile cards with creative hover transformations.</p>
-        </div>
-      <div class="stack-container">
-        <div class="stack-container">
-        <span class="stack-tag">
-          <i class="fa fa-html5"></i> HTML
-        </span>
-        <span class="stack-tag">
-          <i class="fa fa-css3"></i> CSS
-        </span>
-        <span class="stack-tag">
-          <i class="fa fa-code"></i> JavaScript
-        </span>
-      </div>
-  <!-- Add more tech stack items as needed -->
-</div>
-  <div class="button-container">
-    <a href="https://app.relevanceai.com/form/d7b62b/fd0f085b-ce87-4474-8d29-a644f6a8dc97" class="card-button">View Setup</a>
-  </div>
-</div>
-<div class="card">
-        <div class="picture">
-          <img src="img/QRGenerator.png" alt="Extract Website Content">
-        <div class="card-overlay">
-<a href="https://aungthatzin.github.io/MyPojects/QR%20Generator/" class="demo-button">
-  <i class="fa fa-play-circle"></i> Live Demo
-</a>         </div>
-        </div>
-        <div class="card-details">
-          <h3 class="card-title">QR Generator</h3>
-          <p class="card-desc">Clean QR code generator interface built with HTML/CSS. Features a centered form with custom-styled inputs and download button. Includes responsive error states and confirmation messages</p>
-        </div>
-      <div class="stack-container">
-        <div class="stack-container">
-        <span class="stack-tag">
-          <i class="fa fa-html5"></i> HTML
-        </span>
-        <span class="stack-tag">
-          <i class="fa fa-css3"></i> CSS
-        </span>
-        <span class="stack-tag">
-          <i class="fa fa-code"></i> JavaScript
-        </span>
-      </div>
-  <!-- Add more tech stack items as needed -->
-</div>
-  <div class="button-container">
-    <a href="https://github.com/AungThatZin/MyPojects/tree/main/QR%20Generator" class="card-button">View Setup</a>
-  </div>
-</div>
-
-
-          </div>
-        </div>
-        <div id="resources" class="tab-content">
-          <h3 class="section-title">Web Development Resources</h3>
-           <div class="projects-grid">
-           
-            
-          
-            <div class="card">
-        <div class="picture">
-          <img src="img/NFTAtz.png" alt="Extract Website Content">
-        <div class="card-overlay">
-<a href="https://aungthatzin.github.io/MyPojects/Responsive%20NFT%20Website/" class="demo-button">
-    <i class="fa fa-eye"></i> View Demo
-
-</a>        </div>
-        </div>
-        <div class="card-details">
-          <h3 class="card-title">Responsive NFT Webpage</h3>
-          <p class="card-desc">A modern NFT marketplace platform showcasing digital art collections with responsive design</p>
-        </div>
-      <div class="stack-container">
-        <div class="stack-container">
-        <span class="stack-tag">
-          <i class="fa fa-html5"></i> HTML
-        </span>
-        <span class="stack-tag">
-          <i class="fa fa-css3"></i> CSS
-        </span>
-        <span class="stack-tag">
-          <i class="fa fa-code"></i> JavaScript
-        </span>
-      </div>
-  <!-- Add more tech stack items as needed -->
-</div>
-  <div class="button-container">
-    <a href="https://app.relevanceai.com/form/d7b62b/fd0f085b-ce87-4474-8d29-a644f6a8dc97" class="card-button">View Setup</a>
-  </div>
-</div>
-<div class="card">
-        <div class="picture">
-          <img src="img/Gemini.png" alt="Extract Website Content">
-        <div class="card-overlay">
-<a href="https://aungthatzin.github.io/MyPojects/Gemini%20Clone/" class="demo-button">
-  <i class="fa fa-play-circle"></i> Live Demo
-</a>        </div>
-        </div>
-        <div class="card-details">
-          <h3 class="card-title">Extract Website Content</h3>
-          <p class="card-desc">Scrape key details from the prospect's homepage/pricing page</p>
-        </div>
-      <div class="stack-container">
-        <div class="stack-container">
-        <span class="stack-tag">
-          <i class="fa fa-html5"></i> HTML
-        </span>
-        <span class="stack-tag">
-          <i class="fa fa-css3"></i> CSS
-        </span>
-        <span class="stack-tag">
-          <i class="fa fa-code"></i> JavaScript
-        </span>
-      </div>
-  <!-- Add more tech stack items as needed -->
-</div>
-  <div class="button-container">
-    <a href="https://app.relevanceai.com/form/d7b62b/fd0f085b-ce87-4474-8d29-a644f6a8dc97" class="card-button">View Setup</a>
-  </div>
-</div>
-
-
-          </div>
-        </div>
-      </div>
-      
-         
-    <!--Gride Other Backend Projects --> 
-  </div>
-  <div id="projects" class="project-showcause panel">
-          <h3 class="section-title">Current Building Projects</h3>
-          <div class="projects-grid">
-            <div class="card">
-              <div class="picture">
-                <img src="img/AIToolProject.png" alt="Extract Website Content">
-              <div class="card-overlay">
-<a href="#" class="demo-button">
-  <i class="fa fa-play-circle"></i> Live Demo
-</a>        </div>
-              </div>
-              <div class="card-details">
-                <h3 class="card-title">AI Tool Generator</h3>
-                <p class="card-desc">Scrape key details from the prospect's homepage/pricing page</p>
-              </div>
-            <div class="stack-container">
-              <div class="stack-container">
-              <span class="stack-tag">
-                <i class="fa fa-html5"></i> HTML
-              </span>
-              <span class="stack-tag">
-                <i class="fa fa-css3"></i> CSS
-              </span>
-              <span class="stack-tag">
-                <i class="fa fa-code"></i> JavaScript
-              </span>
+    <div class="container">
+        <!-- Sidebar Navigation -->
+        <div class="sidebar">
+            <div class="logo">
+                <i class="fas fa-code"></i>
+                <span class="logo-text">DevPortfolio</span>
             </div>
-  <!-- Add more tech stack items as needed -->
-    </div>
-  <div class="button-container">
-    <a href="https://app.relevanceai.com/form/d7b62b/fd0f085b-ce87-4474-8d29-a644f6a8dc97" class="card-button">View Setup</a>
-  </div>
-</div>
-
-   <!-- <button class="theme-toggle">
-        <i class="fas fa-moon"></i>
-    </button> -->
-
-          </div>
+            
+            <ul class="nav-links">
+                <li class="nav-item" data-page="profile">
+                    <i class="fas fa-user"></i>
+                    <span>Profile</span>
+                </li>
+                <li class="nav-item active" data-page="projects">
+                    <i class="fas fa-briefcase"></i>
+                    <span>Projects</span>
+                </li>
+            </ul>
+            
+            <div class="theme-toggle">
+                <div class="toggle-btn">
+                    <div class="toggle-thumb"></div>
+                </div>
+            </div>
         </div>
-       
-  <script src="script.js"></script>
+        
+        <!-- Main Content -->
+        <div class="main-content">
+            <!-- Projects Page -->
+            <div class="page active" id="projects">
+                <div class="projects-header">
+                    <h2 class="section-title">My Projects</h2>
+                    
+                    <div class="filter-tabs">
+                        <div class="filter-tab active" data-filter="all">All Projects</div>
+                        <div class="filter-tab" data-filter="uiux">UI/UX Design</div>
+                        <div class="filter-tab" data-filter="web">Web Development</div>
+                    </div>
+                </div>
+                
+                <div class="projects-grid">
+                    <!-- UI/UX Projects -->
+                    <div class="project-card" data-category="uiux">
+                        <img src="img/NFTAtz.png" alt="E-Commerce UI Design" class="project-thumb">
+                        <div class="project-content">
+                            <h3 class="project-title">Responsive NFT Web Design</h3>
+                            <p class="project-description">A modern NFT marketplace platform showcasing digital art collections with responsive design</p>
+                            
+                            <div class="project-meta">
+                                <span class="project-tech">Figma, Adobe XD</span>
+                                <span class="project-status status-complete">Completed</span>
+                            </div>
+                            
+                            <div class="project-skills">
+                                <span class="skill-tag">UI Design</span>
+                                <span class="skill-tag">User Experience</span>
+                                <span class="skill-tag">Dashboard</span>
+                            </div>
+                            
+                            <div class="project-actions">
+                                <button class="btn btn-primary">
+                                    <i class="fas fa-eye"></i>
+                                    Preview
+                                </button>
+                                <button class="btn btn-secondary">
+                                    <i class="fab fa-figma"></i>
+                                    Design File
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <div class="project-card" data-category="uiux">
+                        <img src="img/Gemini.png" alt="Mobile App Design" class="project-thumb">
+                        <div class="project-content">
+                            <h3 class="project-title">Gemini Clone</h3>
+                            <p class="project-description">AI chat interface UI replica created with HTML/CSS. Implements responsive message bubbles, typing indicators, and a polished input area. Uses CSS flexbox for perfect alignment across all devices.</p>
+                            
+                            <div class="project-meta">
+                                <span class="project-tech">Figma, Illustrator</span>
+                                <span class="project-status status-complete">Completed</span>
+                            </div>
+                            
+                            <div class="project-skills">
+                                <span class="skill-tag">Mobile UI</span>
+                                <span class="skill-tag">App Design</span>
+                                <span class="skill-tag">Fitness</span>
+                            </div>
+                            
+                            <div class="project-actions">
+                                <button class="btn btn-primary">
+                                    <i class="fas fa-eye"></i>
+                                    Preview
+                                </button>
+                                <button class="btn btn-secondary">
+                                    <i class="fab fa-figma"></i>
+                                    Design File
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <!-- Web Development Projects -->
+                    <div class="project-card" data-category="web">
+                        <img src="img/PixuelArt.png" alt="E-Commerce Platform" class="project-thumb">
+                        <div class="project-content">
+                            <h3 class="project-title">Pixuale Art</h3>
+                            <p class="project-description">Full-featured online store with product catalog, shopping cart, and secure payment processing.</p>
+                            
+                            <div class="project-meta">
+                                <span class="project-tech">React, Node.js, MongoDB</span>
+                                <span class="project-status status-complete">Completed</span>
+                            </div>
+                            
+                            <div class="project-skills">
+                                <span class="skill-tag">React</span>
+                                <span class="skill-tag">Express</span>
+                                <span class="skill-tag">MongoDB</span>
+                                <span class="skill-tag">Stripe API</span>
+                            </div>
+                            
+                            <div class="project-actions">
+                                <button class="btn btn-primary">
+                                    <i class="fas fa-external-link-alt"></i>
+                                    Live Demo
+                                </button>
+                                <button class="btn btn-secondary">
+                                    <i class="fab fa-github"></i>
+                                    Source Code
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <div class="project-card" data-category="web">
+                        <img src="https://images.unsplash.com/photo-1557821552-17105176677c?ixlib=rb-4.0.3&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=800&q=80" alt="Task Management App" class="project-thumb">
+                        <div class="project-content">
+                            <h3 class="project-title">Task Management AI</h3>
+                            <p class="project-description">AI-powered task manager with natural language processing and intelligent scheduling.</p>
+                            
+                            <div class="project-meta">
+                                <span class="project-tech">Python, TensorFlow, NLP</span>
+                                <span class="project-status status-progress">In Progress</span>
+                            </div>
+                            
+                            <div class="project-skills">
+                                <span class="skill-tag">Python</span>
+                                <span class="skill-tag">AI</span>
+                                <span class="skill-tag">NLP</span>
+                                <span class="skill-tag">TensorFlow</span>
+                            </div>
+                            
+                            <div class="project-actions">
+                                <button class="btn btn-primary">
+                                    <i class="fas fa-external-link-alt"></i>
+                                    Live Demo
+                                </button>
+                                <button class="btn btn-secondary">
+                                    <i class="fab fa-github"></i>
+                                    Source Code
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <div class="project-card" data-category="web">
+                        <img src="https://images.unsplash.com/photo-1460925895917-afdab827c52f?ixlib=rb-4.0.3&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=800&q=80" alt="Banking System" class="project-thumb">
+                        <div class="project-content">
+                            <h3 class="project-title">Banking System</h3>
+                            <p class="project-description">Secure banking application with transaction processing, account management, and admin dashboard.</p>
+                            
+                            <div class="project-meta">
+                                <span class="project-tech">Java, Spring Boot, SQL</span>
+                                <span class="project-status status-complete">Completed</span>
+                            </div>
+                            
+                            <div class="project-skills">
+                                <span class="skill-tag">Java</span>
+                                <span class="skill-tag">Spring</span>
+                                <span class="skill-tag">MySQL</span>
+                                <span class="skill-tag">Security</span>
+                            </div>
+                            
+                            <div class="project-actions">
+                                <button class="btn btn-primary">
+                                    <i class="fas fa-external-link-alt"></i>
+                                    Live Demo
+                                </button>
+                                <button class="btn btn-secondary">
+                                    <i class="fab fa-github"></i>
+                                    Source Code
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <div class="project-card" data-category="web">
+                        <img src="https://images.unsplash.com/photo-1550439062-609e1531270e?ixlib=rb-4.0.3&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=800&q=80" alt="Portfolio Website" class="project-thumb">
+                        <div class="project-content">
+                            <h3 class="project-title">Portfolio Website</h3>
+                            <p class="project-description">Responsive portfolio website with dark/light mode, project showcase, and interactive elements.</p>
+                            
+                            <div class="project-meta">
+                                <span class="project-tech">HTML, CSS, JavaScript</span>
+                                <span class="project-status status-complete">Completed</span>
+                            </div>
+                            
+                            <div class="project-skills">
+                                <span class="skill-tag">HTML</span>
+                                <span class="skill-tag">CSS</span>
+                                <span class="skill-tag">JS</span>
+                                <span class="skill-tag">Responsive</span>
+                            </div>
+                            
+                            <div class="project-actions">
+                                <button class="btn btn-primary">
+                                    <i class="fas fa-external-link-alt"></i>
+                                    Live Demo
+                                </button>
+                                <button class="btn btn-secondary">
+                                    <i class="fab fa-github"></i>
+                                    Source Code
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // DOM Elements
+        const body = document.body;
+        const toggleBtn = document.querySelector('.toggle-btn');
+        const navItems = document.querySelectorAll('.nav-item');
+        const filterTabs = document.querySelectorAll('.filter-tab');
+        const projectCards = document.querySelectorAll('.project-card');
+        
+        // Toggle Dark/Light Mode
+        toggleBtn.addEventListener('click', () => {
+            body.classList.toggle('dark-mode');
+        });
+        
+        // Navigation
+        navItems.forEach(item => {
+            item.addEventListener('click', () => {
+                // Remove active class from all items
+                navItems.forEach(navItem => navItem.classList.remove('active'));
+                
+                // Add active class to clicked item
+                item.classList.add('active');
+                
+                // Navigate to the corresponding page
+                const pageId = item.getAttribute('data-page');
+                if (pageId === 'profile') {
+                    window.location.href = 'index.html';
+                }
+            });
+        });
+        
+        // Filter Projects
+        filterTabs.forEach(tab => {
+            tab.addEventListener('click', () => {
+                // Remove active class from all tabs
+                filterTabs.forEach(t => t.classList.remove('active'));
+                
+                // Add active class to clicked tab
+                tab.classList.add('active');
+                
+                // Filter projects
+                const filter = tab.getAttribute('data-filter');
+                
+                projectCards.forEach(card => {
+                    if (filter === 'all') {
+                        card.style.display = 'block';
+                    } else {
+                        if (card.getAttribute('data-category') === filter) {
+                            card.style.display = 'block';
+                        } else {
+                            card.style.display = 'none';
+                        }
+                    }
+                });
+            });
+        });
+    </script>
 </body>
 </html>

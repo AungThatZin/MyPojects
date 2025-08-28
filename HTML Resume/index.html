@@ -1,130 +1,52 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-  <title>Profile Page</title>
-  <link href="https://maxcdn.bootstrapcdn.com/font-awesome/4.3.0/css/font-awesome.min.css" rel="stylesheet"/>
-
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Developer Portfolio</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+      <link href="https://maxcdn.bootstrapcdn.com/font-awesome/4.3.0/css/font-awesome.min.css" rel="stylesheet"/>
   <link rel="stylesheet" href="style.css">
 </head>
 <body>
+    <div class="container">
+        <!-- Sidebar Navigation -->
+        <div class="sidebar">
+            <div class="logo">
+                <i class="fas fa-code"></i>
+                <span class="logo-text">DevPortfolio</span>
+            </div>
+            
+        <ul class="nav-links">
+  <li class="nav-item active" data-page="profile">
+    <i class="fas fa-user"></i>
+    <span>Profile</span>
+  </li>
 
-  <div class="container">
-    <div class="profile-nav">
-  <!-- Search Bar -->
-  <div class="search-container">
-    <i class="fa fa-search"></i>
-    <input type="text" placeholder="Search...">
-    <div class="search-tooltip">Find settings, pages, etc.</div>
-  </div>
+  <li class="nav-item" data-page="projects">
+    <i class="fas fa-briefcase"></i>
+    <span>Projects</span>
+  </li>
+</ul>
 
-  <!-- User Quick View -->
-  <!-- <div class="user-quickview">
-    <div class="avatar">
-      <img src="img/photo_2025-05-17_20-53-29.jpg" alt="User">
-      <div class="online-status"></div>
-    </div>
-    <div class="user-meta">
-      <span class="username">Aung Thant Zin</span>
-      <span class="user-title">Developer</span>
-    </div>
-  </div> -->
-
-  <!-- Main Menu -->
- <div class="profile-menu">
-  <ul id="nav-menu">
-    <li>
-      <a href="index.html" class="nav-link">
-        <i class="fa fa-user"></i>
-        <span>Profile</span>
-        <div class="menu-tooltip">View your profile</div>
-      </a>
-    </li>
-    <li>
-      <a href="recentActive.html" class="nav-link">
-        <i class="fa fa-line-chart"></i>
-        <span>Dashboard</span>
-        <div class="menu-tooltip">Analytics & stats</div>
-      </a>
-    </li>
-    <li>
-      <a href="#" class="menu-disabled">
-        <i class="fa fa-calendar"></i>
-        <span>Calendar</span>
-        <div class="menu-tooltip">Schedule & events</div>
-      </a>
-    </li>
-    <li>
-      <a href="#" class="menu-disabled">
-        <i class="fa fa-envelope"></i>
-        <span>Messages</span>
-        <span class="notification-badge">12</span>
-      </a>
-    </li>
-    <li>
-      <a href="#" class="menu-disabled">
-        <i class="fa fa-cog"></i>
-        <span>Settings</span>
-        <div class="menu-tooltip">Account settings</div>
-      </a>
-    </li>
-  </ul>
-
-  <div class="menu-divider">Shortcuts</div>
-
-  <ul class="secondary-menu">
-    <li>
-      <a href="#" class="menu-disabled">
-        <i class="fa fa-bookmark"></i>
-        <span>Bookmarks</span>
-      </a>
-    </li>
-    <li>
-      <a href="#" class="menu-disabled">
-        <i class="fa fa-file-text"></i>
-        <span>Documents</span>
-      </a>
-    </li>
-  </ul>
-</div>
-
-  <!-- Footer with Dark Mode Toggle -->
-  <div class="profile-footer" >
-    <div class="dark-mode-toggle">
-      <i class="fa fa-moon-o"></i>
-      <label class="switch">
-        <input type="checkbox" id="darkModeToggle" >
-        <span class="slider round"></span>
-      </label>
-      <i class="fa fa-sun-o"></i>
-    </div>
-    <p >Last active: 2 hours ago</p>
-    <div class="system-status">
-      <span class="status-dot online"></span>
-      <span>System operational</span>
-    </div>
-  </div>
-</div>
-
-
-
-  
-
-  <div class="profile-info">
-  <!-- Profile Card Section -->
-  <div class="modern-profile-card panel">
-    <div class="profile-photo-container">
-      <img src="img/photo_2025-05-17_20-53-29.jpg" alt="Aung Thant Zin" class="profile-image">
-      <div class="photo-overlay">
-        <i class="fa fa-camera"></i>
-        <span>Update Photo</span>
-      </div>
-    </div>
-
-    <div class="profile-info-container">
-      <div class="profile-header">
-        <h1 class="profile-name">Aung Thant Zin</h1>
+            
+            <div class="theme-toggle">
+                <div class="toggle-btn">
+                    <div class="toggle-thumb"></div>
+                </div>
+            </div>
+        </div>
+        
+        <!-- Main Content -->
+        <div class="main-content">
+            <!-- Profile Page -->
+            <div class="page active" id="profile">
+                <div class="profile-header">
+                    <img src="img/photo_2025-05-17_20-53-29.jpg" alt="Profile Photo" class="profile-img">
+                    
+                    <div class="profile-details">
+                         <h1 class="profile-name">Aung Thant Zin</h1>
         <p class="profile-title">Full Stack Developer</p>
         <div class="profile-bio">
           Passionate Software Engineer who loves building clean and functional web applications.
@@ -134,84 +56,42 @@
           <a href="#"><i class="fa fa-linkedin"></i></a>
           <a href="#"><i class="fa fa-twitter"></i></a>
         </div>
-      </div>
-      
-      <div class="profile-details">
-        <div class="detail-item">
-          <span class="detail-icon"><i class="fa fa-globe"></i></span>
-          <div class="detail-content">
-            <span class="detail-label">Country</span>
-            <span class="detail-value">Myanmar</span>
-          </div>
-        </div>
-        
-        <div class="detail-item">
-  <span class="detail-icon"><i class="fa fa-birthday-cake"></i></span>
-  <div class="detail-content">
-    <span class="detail-label">Birthday</span>
-    <span class="detail-value">[12/8/2007] <span class="age">18 </span></span>
-  </div>
-</div>
-
-        <div class="detail-item">
-          <span class="detail-icon"><i class="fa fa-briefcase"></i></span>
-          <div class="detail-content">
-            <span class="detail-label">Occupation</span>
-            <span class="detail-value">Full Stack Developer</span>
-          </div>
-        </div>
-        
-      
-        
-        <div class="detail-item">
-          <span class="detail-icon"><i class="fa fa-phone"></i></span>
-          <div class="detail-content">
-            <span class="detail-label">Mobile</span>
-            <span class="detail-value">[+95 789597299]</span>
-          </div>
-        </div>
-      </div>
-        <div class="detail-item email">
-          <span class="detail-icon"><i class="fa fa-envelope"></i></span>
-          <div class="detail-content">
-            <span class="detail-label">Email</span>
-            <span class="detail-value">aungthantzin2007@gmail.com</span>
-          </div>
-        </div>
-      <div class="profile-actions">
-      <a href="https://t.me/Kamadoshinjiro" target="_blank" style="text-decoration: none;">
-  <button class="contact-btn">
-    <i class="fa fa-paper-plane"></i> Contact Me
-  </button>
-</a>
-
-        <button class="resume-btn">
-          <i class="fa fa-download"></i> Download CV
-        </button>
-      </div>
-    </div>
-  </div>
-
-  <!-- Post Section (now below profile) -->
-  <!-- <div class="post-panel panel">
-    <h2 class="section-title"><i class="fa fa-pencil"></i> Share Your Thoughts</h2>
-    <form class="post-form">
-      <textarea placeholder="What's inspiring you today?" rows="3" class="post-textarea"></textarea>
-      <div class="post-options">
-        <div class="attachment-options">
-          <button type="button" class="attachment-btn"><i class="fa fa-map-marker"></i></button>
-          <button type="button" class="attachment-btn"><i class="fa fa-camera"></i></button>
-          <button type="button" class="attachment-btn"><i class="fa fa-film"></i></button>
-          <button type="button" class="attachment-btn"><i class="fa fa-microphone"></i></button>
-        </div>
-        <button type="submit" class="post-submit-btn">Post</button>
-      </div>
-    </form>
-  </div> -->
-
-  <!-- IT History Timeline -->
-  <div class="history-panel panel">
-    <h2 class="section-title"><i class="fa fa-code"></i> My IT Journey</h2>
+                        
+                        <div class="profile-info">
+                            <div class="info-item">
+                                <i class="fas fa-map-marker-alt"></i>
+                                <span>United States</span>
+                            </div>
+                            <div class="info-item">
+                                <i class="fas fa-birthday-cake"></i>
+                                <span>March 15, 1992</span>
+                            </div>
+                            <div class="info-item">
+                                <i class="fas fa-mobile-alt"></i>
+                                <span>+1 (923) 094-2032</span>
+                            </div>
+                            <div class="info-item">
+                                <i class="fas fa-envelope"></i>
+                                <span>alex.johnson@example.com</span>
+                            </div>
+                        </div>
+                        
+                        <div class="contact-actions">
+                            <button class="btn btn-primary">
+                                <i class="fas fa-download"></i>
+                                Download CV
+                            </button>
+                            <button class="btn btn-secondary">
+                                <i class="fab fa-telegram"></i>
+                                Telegram
+                            </button>
+                        </div>
+                    </div>
+                </div>
+                
+                <!-- IT Journey Section -->
+                <div class="section panel">
+                    <h2 class="section-title"><i class="fa fa-code"></i> My IT Journey</h2>
     <div class="timeline-preview">
       <div class="timeline-item">
         <div class="timeline-left">
@@ -236,115 +116,128 @@
         </div>
       </div>
     </div>
-  <button class="view-more-btn" onclick="openJourneyModal()">
+                    
+                  
+                    <button class="view-more-btn" id="explore-journey">
   <span class="btn-icon"><i class="fa fa-book"></i></span>
   <span class="btn-text">Explore My Full Journey</span>
   <span class="btn-arrow"><i class="fa fa-chevron-right"></i></span>
 </button>
-</div>
-</div>
+                </div>
 
-<!-- Modal Structure -->
-
-
-      <!-- Skills Section -->
- <div class="about-sections-layout">
-  <!-- Left Column -->
-  <div class="left-column">
-    <div class="panel skills-section">
-      <h3 class="section-title"><i class="fa fa-laptop-code"></i> Technical Skills</h3>
-
-      <div class="skills-grid">
-        <!-- Web Development Skills -->
-        <div class="skill-category">
-          <h4 class="category-title"><i class="fa fa-code"></i> Web Development</h4>
-          <div class="skill-items">
-            <div class="skill-item" data-level="90">
-              <span class="skill-name">HTML5</span>
-              <div class="skill-bar"><div class="skill-progress" style="width: 90%"></div></div>
-              <span class="skill-percent">90%</span>
-            </div>
-            <div class="skill-item" data-level="85">
-              <span class="skill-name">CSS3</span>
-              <div class="skill-bar"><div class="skill-progress" style="width: 85%"></div></div>
-              <span class="skill-percent">85%</span>
-            </div>
-            <div class="skill-item" data-level="80">
-              <span class="skill-name">JavaScript</span>
-              <div class="skill-bar"><div class="skill-progress" style="width: 80%"></div></div>
-              <span class="skill-percent">80%</span>
-            </div>
-            <div class="skill-item" data-level="75">
-              <span class="skill-name">jQuery</span>
-              <div class="skill-bar"><div class="skill-progress" style="width: 75%"></div></div>
-              <span class="skill-percent">75%</span>
-            </div>
-            <div class="skill-item" data-level="70">
-              <span class="skill-name">Angular</span>
-              <div class="skill-bar"><div class="skill-progress" style="width: 70%"></div></div>
-              <span class="skill-percent">70%</span>
-            </div>
-          </div>
-        </div>
-
-        <!-- Backend & Database Skills -->
-        <div class="skill-category">
-          <h4 class="category-title"><i class="fa fa-server"></i> Backend & Database</h4>
-          <div class="skill-items">
-            <div class="skill-item" data-level="80">
-              <span class="skill-name">Java</span>
-              <div class="skill-bar"><div class="skill-progress" style="width: 80%"></div></div>
-              <span class="skill-percent">80%</span>
-            </div>
-            <div class="skill-item" data-level="75">
-              <span class="skill-name">Python</span>
-              <div class="skill-bar"><div class="skill-progress" style="width: 75%"></div></div>
-              <span class="skill-percent">75%</span>
-            </div>
-            <div class="skill-item" data-level="85">
-              <span class="skill-name">SQL</span>
-              <div class="skill-bar"><div class="skill-progress" style="width: 85%"></div></div>
-              <span class="skill-percent">85%</span>
-            </div>
-            <div class="skill-item" data-level="70">
-              <span class="skill-name">Spring Boot</span>
-              <div class="skill-bar"><div class="skill-progress" style="width: 70%"></div></div>
-              <span class="skill-percent">70%</span>
-            </div>
-            <div class="skill-item" data-level="65">
-              <span class="skill-name">PHP/Laravel</span>
-              <div class="skill-bar"><div class="skill-progress" style="width: 65%"></div></div>
-              <span class="skill-percent">65%</span>
-            </div>
-          </div>
-        </div>
-      </div>
-
-      <div class="vintage-experience">
-        <div class="vintage-card">
-          <div class="vintage-header">
-            <span class="vintage-icon">⌛</span>
-            <h3>Old Language Experience</h3>
-          </div>
-          <div class="vintage-content">
-            <p class="vintage-text">
-              I have experience about old languages - not that much but little bit I have.
-              I studied <span class="highlight">VBA</span> and <span class="highlight">COBOL</span> at school,
-              and learned and maintenance <span class="highlight">JCL</span> at work about 3 months.
-            </p>
-            <div class="vintage-stamps">
-              <span class="stamp school">SCHOOL</span>
-              <span class="stamp work">WORK</span>
-            </div>
-          </div>
-        </div>
-      </div>
-    </div>
-  </div>
-
-  <!-- Right Column -->
-  <div class="right-column">
-    <div class="panel language-section">
+                
+                <!-- Legacy Experience Section -->
+                <div class="section">
+                    <h2 class="section-title">Legacy Experience</h2>
+                    
+                    <div class="legacy-experience">
+                        <div class="legacy-header">
+                            <div class="legacy-icon">
+                                <i class="fas fa-history"></i>
+                            </div>
+                            <h3>Old Language Experience</h3>
+                        </div>
+                        <p>I have experience about old languages - not that much but little bit I have. I studied VBA and COBOL at school, and learned and maintenance JCL at work about 3 months.</p>
+                        
+                        <div class="legacy-tags">
+                            <span class="legacy-tag school">SCHOOL</span>
+                            <span class="legacy-tag work">WORK</span>
+                        </div>
+                    </div>
+                </div>
+                                 <div class="section-main">
+            <div class="section penel">
+                    <h2 class="section-title">Technical Skills</h2>
+                    
+                    <div class="skills-grid">
+                        <div class="skill-category">
+                            <h3 class="category-title">Web Development</h3>
+                            
+                            <div class="skill-item">
+                                <div class="skill-header">
+                                    <span class="skill-name">HTML/CSS</span>
+                                    <span class="skill-percentage">90%</span>
+                                </div>
+                                <div class="skill-progress">
+                                    <div class="skill-progress-bar" style="width: 90%"></div>
+                                </div>
+                            </div>
+                            
+                            <div class="skill-item">
+                                <div class="skill-header">
+                                    <span class="skill-name">JavaScript</span>
+                                    <span class="skill-percentage">85%</span>
+                                </div>
+                                <div class="skill-progress">
+                                    <div class="skill-progress-bar" style="width: 85%"></div>
+                                </div>
+                            </div>
+                            
+                            <div class="skill-item">
+                                <div class="skill-header">
+                                    <span class="skill-name">React</span>
+                                    <span class="skill-percentage">80%</span>
+                                </div>
+                                <div class="skill-progress">
+                                    <div class="skill-progress-bar" style="width: 80%"></div>
+                                </div>
+                            </div>
+                            
+                            <div class="skill-item">
+                                <div class="skill-header">
+                                    <span class="skill-name">Angular</span>
+                                    <span class="skill-percentage">75%</span>
+                                </div>
+                                <div class="skill-progress">
+                                    <div class="skill-progress-bar" style="width: 75%"></div>
+                                </div>
+                            </div>
+                        </div>
+                        
+                        <div class="skill-category">
+                            <h3 class="category-title">Backend & Database</h3>
+                            
+                            <div class="skill-item">
+                                <div class="skill-header">
+                                    <span class="skill-name">Java</span>
+                                    <span class="skill-percentage">88%</span>
+                                </div>
+                                <div class="skill-progress">
+                                    <div class="skill-progress-bar" style="width: 88%"></div>
+                                </div>
+                            </div>
+                            
+                            <div class="skill-item">
+                                <div class="skill-header">
+                                    <span class="skill-name">Python</span>
+                                    <span class="skill-percentage">85%</span>
+                                </div>
+                                <div class="skill-progress">
+                                    <div class="skill-progress-bar" style="width: 85%"></div>
+                                </div>
+                            </div>
+                            
+                            <div class="skill-item">
+                                <div class="skill-header">
+                                    <span class="skill-name">Spring Boot</span>
+                                    <span class="skill-percentage">82%</span>
+                                </div>
+                                <div class="skill-progress">
+                                    <div class="skill-progress-bar" style="width: 82%"></div>
+                                </div>
+                            </div>
+                            
+                            <div class="skill-item">
+                                <div class="skill-header">
+                                    <span class="skill-name">SQL</span>
+                                    <span class="skill-percentage">90%</span>
+                                </div>
+                                <div class="skill-progress">
+                                    <div class="skill-progress-bar" style="width: 90%"></div>
+                                </div>
+                            </div>
+                        </div>
+                                   <div class="panel language-section">
       <h3 class="section-title"><i class="fa fa-language"></i> Language Skills</h3>
 
       <div class="language-levels">
@@ -387,228 +280,254 @@
 
 </div>
       </div>
-    
-
-    <div class="ai-legacy-section">
-      <h3 class="section-title"><i class="fa fa-robot"></i> AI Development & Learning</h3>
-
-      <div class="ai-projects">
-        <div class="ai-project">
-          <div class="ai-header">
-            <h4>Custom AI Tool</h4>
-            <span class="ai-status learning">Learning (90%)</span>
-          </div>
-          <div class="ai-description">
-            I can create AI tools and understand how to use them with AI agents.
-          </div>
-        </div>
-
-        <div class="ai-project">
-          <div class="ai-header">
-            <h4>AI Agent System</h4>
-            <span class="ai-status early">Early Stage (20%)</span>
-          </div>
-          <div class="ai-description">
-            Building an autonomous agent framework with API integration capabilities for customer service automation.
-          </div>
-        </div>
-      </div>
-    </div>
-  </div>
-</div>
-
+                      
+                    </div>
+               
+                  </div>
+                
+                <!-- Language Skills Section -->
    
-<!-- AI & Legacy Section -->
+                
 
+                                 </div>
 
-<!-- Vintage Experience Section -->
-
-<div id="journeyModal" class="modal">
-  <div class="modal-content">
-    <div class="modal-header">
-      <h2><i class="fa fa-code"></i> My Complete IT Journey</h2>
-      <span class="close" onclick="closeJourneyModal()">&times;</span>
-    </div>
-    <div class="modal-body">
-      <!-- Your existing timeline content -->
-      <div class="timeline">
-        <!-- Learning Python -->
-        <div class="timeline-items">
-          <div class="timeline-content">
-            <div class="timeline-date">2020 - 4 months</div>
-            <h3 class="timeline-header">It all began with Python.</h3>
-            <div class="timeline-body">
-<p>I was just 14 when I stumbled upon an online course and decided—on a whim, really—to dive into the world of programming. For three months, I dedicated myself to it, line by line, bug by bug. I still remember the moment I passed the final exam. It wasn’t just a certificate—I understood it. For the first time, I truly grasped what programming was and how it all worked behind the scenes. It was like opening a door to an entirely new universe    </p>
-         <div class="tech-tags">
-                <span class="tech-tag">Python</span>
-                <span class="tech-tag">Programming Fundamentals</span>
-                <span class="tech-tag">Python Advance</span>
-              </div>
+                <!-- Technical Skills Section -->
+             
+                <!-- AI Development Section -->
+                <div class="section">
+                    <!-- <h2 class="section-title">AI Development & Learning</h2> -->
+                    
+                    <div class="ai-card">
+                        <h3>Building the Future with AI</h3>
+                        <p>Currently learning how to build AI agents and exploring ways AI can replace repetitive jobs. Focusing on creating intelligent systems that enhance productivity and automate complex workflows.</p>
+                    </div>
+                </div>
             </div>
-          </div>
+            
+            <!-- Projects Page -->
+            <!-- <div class="page" id="projects">
+                <h2 class="section-title">My Projects</h2>
+                <p style="margin-bottom: 24px;">Here are some of the projects I've worked on. Each one represents different skills and technologies I've mastered over the years.</p>
+                
+                <div class="journey-cards">
+                    <div class="journey-card">
+                        <div class="journey-year">E-Commerce Platform</div>
+                        <div class="journey-duration">React, Node.js, MongoDB</div>
+                        <h3 class="journey-title">Full-featured online store with payment processing</h3>
+                        <div class="journey-skills">
+                            <span class="skill-tag">React</span>
+                            <span class="skill-tag">Express</span>
+                            <span class="skill-tag">Stripe API</span>
+                        </div>
+                    </div>
+                    
+                    <div class="journey-card">
+                        <div class="journey-year">Task Management AI</div>
+                        <div class="journey-duration">Python, TensorFlow, NLP</div>
+                        <h3 class="journey-title">AI-powered task manager with natural language processing</h3>
+                        <div class="journey-skills">
+                            <span class="skill-tag">Python</span>
+                            <span class="skill-tag">AI</span>
+                            <span class="skill-tag">NLP</span>
+                        </div>
+                    </div>
+                    
+                    <div class="journey-card">
+                        <div class="journey-year">Portfolio Website</div>
+                        <div class="journey-duration">HTML, CSS, JavaScript</div>
+                        <h3 class="journey-title">Responsive portfolio with dark/light mode (this site)</h3>
+                        <div class="journey-skills">
+                            <span class="skill-tag">HTML</span>
+                            <span class="skill-tag">CSS</span>
+                            <span class="skill-tag">JS</span>
+                        </div>
+                    </div>
+                    
+                    <div class="journey-card">
+                        <div class="journey-year">Banking System</div>
+                        <div class="journey-duration">Java, Spring Boot, SQL</div>
+                        <h3 class="journey-title">Secure banking application with transaction processing</h3>
+                        <div class="journey-skills">
+                            <span class="skill-tag">Java</span>
+                            <span class="skill-tag">Spring</span>
+                            <span class="skill-tag">MySQL</span>
+                        </div>
+                    </div>
+                </div>
+            </div> -->
         </div>
-        
-        <!-- Ace Aspiration IT School -->
-        <div class="timeline-items">
-          <div class="timeline-content">
-            <div class="timeline-date">2021 - 1 month</div>
-            <h3 class="timeline-header">Java Fundamentals at Ace Aspiration</h3>
-            <div class="timeline-body">
-              <p>Not long after, I enrolled in a local IT school called Ace Aspiration. By then, I was 16, eager to build on what I had learned. There, I studied the fundamentals of Java for a month. It was a shift—new syntax, new logic—but I passed the exam and was cleared to move on.
-That’s when things got more serious</p>
-              <div class="tech-tags">
-                <span class="tech-tag">Java Fundamentals</span>
-              </div>
-            </div>
-          </div>
-        </div>
-        
-        <!-- Java Web Development -->
-        <div class="timeline-items">
-          <div class="timeline-content">
-            <div class="timeline-date">2021 - 8 months</div>
-            <h3 class="timeline-header">Advanced Java Web Development</h3>
-            <div class="timeline-body">
-              <p>I joined the Java Web Development class. The curriculum was intense: Spring MVC, Servlets, HTML, CSS, Git, SQL… At first, it felt like a storm of complexity. The web wasn’t just code—it was structure, design, flow, and connection.
-
-I struggled. I doubted myself. Sometimes it felt like I was drowning in concepts I couldn’t quite grasp. But I didn’t give up. I kept practicing—again and again—until things slowly began to make sense. Bit by bit, project by project, I started to climb out of the fog.
-
-Eventually, I became something I hadn’t expected so soon: a professional at CRUD operations. I could write queries straight from memory—no search, no Stack Overflow, just me and the logic. Honestly, it still makes me laugh when I think about it.
-
-After eight months, I could finally see how the pieces fit together. I was almost 17, and I had made it through the storm.</p>
-              <div class="tech-tags">
-                <span class="tech-tag">Java Web</span>
-                <span class="tech-tag">Spring MVC</span>
-                <span class="tech-tag">Servlet</span>
-                <span class="tech-tag">HTML/CSS</span>
-                <span class="tech-tag">SQL</span>
-                <span class="tech-tag">Git</span>
-              </div>
-            </div>
-          </div>
-        </div>
-        
-        <!-- On Job Training -->
-        <div class="timeline-items">
-          <div class="timeline-content">
-            <div class="timeline-date">2022 - 6 months</div>
-            <h3 class="timeline-header">On Job Training</h3>
-            <div class="timeline-body">
-              <p>I entered an on-the-job training program—no more simulations, this was hands-on. I learned Angular CLI, Spring Boot, even COBOL and Excel VBA. MySQL, version control, team collaboration—it was like learning how to survive in the wild after spending years in the classroom.
-
-For the final project, I worked on something real: an announcement system. We built it using Angular and integrated it with Telegram. The idea was simple but powerful: whenever a message was announced, all staff would receive it via Telegram and email. The system would then track who had read the message and who hadn’t—and report it all back to HR or the original announcer.
-
-It was a challenge. But when it worked, when the message was delivered, and the reports came back in clean and precise—I felt like I had built something that truly mattered.
-
-And this… is only the beginning.</p>
-              <div class="tech-tags">
-                <span class="tech-tag">Angular</span>
-                <span class="tech-tag">Spring Boot</span>
-                <span class="tech-tag">COBOL</span>
-                <span class="tech-tag">Excel VBA</span>
-                <span class="tech-tag">Telegram API</span>
-              </div>
-            </div>
-          </div>
-        </div>
-         <div class="work-experience">
-    <div class=" modal-header">
-       <h2><i class="fa fa-code"></i>Work Experence</h2>
     </div>
     
-    <!-- First Job -->
-    <div class="timeline-items">
-      <div class="timeline-content">
-        <div class="timeline-date">2022 - 3 months</div>
-        <h3 class="timeline-header">JCL Developer (Japan Company)</h3>
-        <div class="timeline-body">
-          <p>After finishing my on-the-job training, I got my first official job offer.
-The company was called DAT—Daiwa Ace Technology. I still remember how excited I was when I got the call. It felt like a big break.
-But sometimes, reality doesn’t match our hopes.
-At DAT, I was placed in the JCL team. No modern code, no familiar tools—just legacy systems. JCL, COBOL, Excel VBA… everything ran on the mainframe. It was like stepping into a time capsule. I wanted to learn and grow, but this wasn’t the direction I saw for myself. After just three months, I made the tough decision to leave.
-It wasn’t easy, walking away from my first job. But I knew I had to keep searching for something that aligned with my goals.</p>
-          <div class="tech-tags">
-            <span class="tech-tag">JCL</span>
-            <span class="tech-tag">COBOL</span>
-            <span class="tech-tag">Mainframe</span>
-          </div>
-          <!-- <button class="read-more-btn" data-modal="jcl-journey">
-            <i class="fa fa-book"></i> Read Journal
-          </button> -->
+    <!-- Journey Modal -->
+    <div class="modal" id="journey-modal">
+        <div class="modal-content">
+            <span class="close-modal">&times;</span>
+            <h2>My IT Journey</h2>
+            
+            <div class="timeline">
+                <div class="timeline-item">
+                    <div class="timeline-content">
+                        <div class="timeline-year">2020 - 4 months</div>
+                        <h3>It all began with Python.</h3>
+                        <p>I was just 14 when I stumbled upon an online course and decided—on a whim, really—to dive into the world of programming. For three months, I dedicated myself to it, line by line, bug by bug. I still remember the moment I passed the final exam. It wasn’t just a certificate—I understood it. For the first time, I truly grasped what programming was and how it all worked behind the scenes. It was like opening a door to an entirely new universe.</p>
+                        <div class="journey-skills">
+                            <span class="skill-tag">Python</span>
+                            <span class="skill-tag">Programming Fundamentals</span>
+                            <span class="skill-tag">Python Advance</span>
+                        </div>
+                    </div>
+                    <div class="timeline-marker">1</div>
+                    <div class="timeline-connector"></div>
+                </div>
+                
+                <div class="timeline-item">
+                    <div class="timeline-content">
+                        <div class="timeline-year">2021 - 1 month</div>
+                        <h3>Java Fundamentals at Ace Aspiration</h3>
+                        <p>Not long after, I enrolled in a local IT school called Ace Aspiration. By then, I was 16, eager to build on what I had learned. There, I studied the fundamentals of Java for a month. It was a shift—new syntax, new logic—but I passed the exam and was cleared to move on. That’s when things got more serious.</p>
+                        <div class="journey-skills">
+                            <span class="skill-tag">Java Fundamentals</span>
+                        </div>
+                    </div>
+                    <div class="timeline-marker">2</div>
+                    <div class="timeline-connector"></div>
+                </div>
+                
+                <div class="timeline-item">
+                    <div class="timeline-content">
+                        <div class="timeline-year">2021 - 8 months</div>
+                        <h3>Advanced Java Web Development</h3>
+                        <p>I joined the Java Web Development class. The curriculum was intense: Spring MVC, Servlets, HTML, CSS, Git, SQL… At first, it felt like a storm of complexity. The web wasn’t just code—it was structure, design, flow, and connection. I struggled. I doubted myself. Sometimes it felt like I was drowning in concepts I couldn’t quite grasp. But I didn’t give up. I kept practicing—again and again—until things slowly began to make sense. Bit by bit, project by project, I started to climb out of the fog. Eventually, I became something I hadn’t expected so soon: a professional at CRUD operations. I could write queries straight from memory—no search, no Stack Overflow, just me and the logic. Honestly, it still makes me laugh when I think about it. After eight months, I could finally see how the pieces fit together. I was almost 17, and I had made it through the storm.</p>
+                        <div class="journey-skills">
+                            <span class="skill-tag">Java Web</span>
+                            <span class="skill-tag">Spring MVC</span>
+                            <span class="skill-tag">Servlet</span>
+                            <span class="skill-tag">HTML/CSS</span>
+                            <span class="skill-tag">SQL</span>
+                            <span class="skill-tag">Git</span>
+                        </div>
+                    </div>
+                    <div class="timeline-marker">3</div>
+                    <div class="timeline-connector"></div>
+                </div>
+                
+                <div class="timeline-item">
+                    <div class="timeline-content">
+                        <div class="timeline-year">2022 - 6 months</div>
+                        <h3>On Job Training</h3>
+                        <p>I entered an on-the-job training program—no more simulations, this was hands-on. I learned Angular CLI, Spring Boot, even COBOL and Excel VBA. MySQL, version control, team collaboration—it was like learning how to survive in the wild after spending years in the classroom. For the final project, I worked on something real: an announcement system. We built it using Angular and integrated it with Telegram. The idea was simple but powerful: whenever a message was announced, all staff would receive it via Telegram and email. The system would then track who had read the message and who hadn’t—and report it all back to HR or the original announcer. It was a challenge. But when it worked, when the message was delivered, and the reports came back in clean and precise—I felt like I had built something that truly mattered. And this… is only the beginning.</p>
+                        <div class="journey-skills">
+                            <span class="skill-tag">Angular</span>
+                            <span class="skill-tag">Spring Boot</span>
+                            <span class="skill-tag">COBOL</span>
+                            <span class="skill-tag">Excel VBA</span>
+                            <span class="skill-tag">Telegram API</span>
+                            <span class="skill-tag">Work Experience</span>
+                        </div>
+                    </div>
+                    <div class="timeline-marker">4</div>
+                    <div class="timeline-connector"></div>
+                </div>
+                
+                <div class="timeline-item">
+                    <div class="timeline-content">
+                        <div class="timeline-year">2022 - 3 months</div>
+                        <h3>JCL Developer (Japan Company)</h3>
+                        <p>After finishing my on-the-job training, I got my first official job offer. The company was called DAT—Daiwa Ace Technology. I still remember how excited I was when I got the call. It felt like a big break. But sometimes, reality doesn’t match our hopes. At DAT, I was placed in the JCL team. No modern code, no familiar tools—just legacy systems. JCL, COBOL, Excel VBA… everything ran on the mainframe. It was like stepping into a time capsule. I wanted to learn and grow, but this wasn’t the direction I saw for myself. After just three months, I made the tough decision to leave. It wasn’t easy, walking away from my first job. But I knew I had to keep searching for something that aligned with my goals.</p>
+                        <div class="journey-skills">
+                            <span class="skill-tag">JCL</span>
+                            <span class="skill-tag">COBOL</span>
+                            <span class="skill-tag">Mainframe</span>
+                        </div>
+                    </div>
+                    <div class="timeline-marker">5</div>
+                    <div class="timeline-connector"></div>
+                </div>
+                
+                <div class="timeline-item">
+                    <div class="timeline-content">
+                        <div class="timeline-year">2022 - Present</div>
+                        <h3>PHP Developer</h3>
+                        <p>I spent the next month job-hunting, hoping for another chance. And then, finally—it came. I got hired again. This time, I joined a company where modern technology was at the heart of the work. I was placed in the PHP team, and everything felt new and exciting again. This was where I truly got hands-on experience with Git and GitHub. I faced conflict after conflict—literally—and learned how to resolve them. I became comfortable navigating branches, merges, and pull requests like second nature. I was also assigned tasks using HTML, CSS, and jQuery. And then came PHP—both Laravel and pure PHP projects. Not just that, I even got to work on Linux server setups with both LAMP and LEMP stacks. It wasn’t always smooth. But this time, it felt right.</p>
+                        <div class="journey-skills">
+                            <span class="skill-tag">PHP</span>
+                            <span class="skill-tag">Laravel</span>
+                            <span class="skill-tag">C#</span>
+                            <span class="skill-tag">JavaScript</span>
+                            <span class="skill-tag">jQuery</span>
+                            <span class="skill-tag">Git</span>
+                        </div>
+                    </div>
+                    <div class="timeline-marker">6</div>
+                </div>
+            </div>
+            
+            <div style="margin-top: 40px; text-align: center; font-style: italic;">
+                <p>How would you rate my storytelling if you read till the end?</p>
+            </div>
         </div>
-      </div>
     </div>
-    
-    <!-- Current Job -->
-    <div class="timeline-items">
-      <div class="timeline-content">
-        <div class="timeline-date">2022 - Present</div>
-        <h3 class="timeline-header">PHP Developer</h3>
-        <div class="timeline-body">
-          <p>I spent the next month job-hunting, hoping for another chance. And then, finally—it came.
-I got hired again. This time, I joined a company where modern technology was at the heart of the work. I was placed in the PHP team, and everything felt new and exciting again.
-This was where I truly got hands-on experience with Git and GitHub. I faced conflict after conflict—literally—and learned how to resolve them. I became comfortable navigating branches, merges, and pull requests like second nature.
-I was also assigned tasks using HTML, CSS, and jQuery. And then came PHP—both Laravel and pure PHP projects. Not just that, I even got to work on Linux server setups with both LAMP and LEMP stacks.
-It wasn’t always smooth. But this time, it felt right.
-</p>
-          <div class="tech-tags">
-  <span class="tech-tag">PHP</span>
-  <span class="tech-tag">Laravel</span>
-  <span class="tech-tag">C#</span>
-  <span class="tech-tag">JavaScript</span>
-  <span class="tech-tag">jQuery</span>
-  <span class="tech-tag">Git</span>
-</div>
-<div class="story-rating">
-  <p class="rating-prompt">How would you rate my storytelling if you read till the end?</p>
-  <div class="rating-stars">
-    <input type="radio" id="star5" name="rating" value="5" />
-    <label for="star5" title="5 stars">★</label>
-    <input type="radio" id="star4" name="rating" value="4" />
-    <label for="star4" title="4 stars">★</label>
-    <input type="radio" id="star3" name="rating" value="3" />
-    <label for="star3" title="3 stars">★</label>
-    <input type="radio" id="star2" name="rating" value="2" />
-    <label for="star2" title="2 stars">★</label>
-    <input type="radio" id="star1" name="rating" value="1" />
-    <label for="star1" title="1 star">★</label>
-  </div>
-</div>
-      </div>
-    </div>
-  </div>
-      </div>
-   
-    </div>
-    <div class="modal-footer">
-      <button class="modal-close-btn" onclick="closeJourneyModal()">Close Journey</button>
-    </div>
-  </div>
-</div>
-  
-  <script src="script.js"></script>
-  <script>
-    // Add this script to handle the animation
-document.addEventListener('DOMContentLoaded', function() {
-  const timelineItems = document.querySelectorAll('.timeline-item');
-  
-  function checkVisibility() {
-    timelineItems.forEach(item => {
-      const itemTop = item.getBoundingClientRect().top;
-      const windowHeight = window.innerHeight;
-      
-      if (itemTop < windowHeight * 0.8) {
-        item.classList.add('visible');
-      }
-    });
-  }
-  
-  // Check on load
-  checkVisibility();
-  
-  // Check on scroll
-  window.addEventListener('scroll', checkVisibility);
+
+    <script>
+        // DOM Elements
+        const body = document.body;
+        const toggleBtn = document.querySelector('.toggle-btn');
+        const navItems = document.querySelectorAll('.nav-item');
+        const pages = document.querySelectorAll('.page');
+        const exploreBtn = document.getElementById('explore-journey');
+        const modal = document.getElementById('journey-modal');
+        const closeModal = document.querySelector('.close-modal');
+        
+        // Toggle Dark/Light Mode
+        toggleBtn.addEventListener('click', () => {
+            body.classList.toggle('dark-mode');
+        });
+        
+        // Navigation
+        navItems.forEach(item => {
+            item.addEventListener('click', () => {
+                // Remove active class from all items
+                navItems.forEach(navItem => navItem.classList.remove('active'));
+                
+                // Add active class to clicked item
+                item.classList.add('active');
+                
+                // Show the corresponding page
+                const pageId = item.getAttribute('data-page');
+                pages.forEach(page => {
+                    page.classList.remove('active');
+                    if (page.id === pageId) {
+                        page.classList.add('active');
+                    }
+                });
+            });
+        });
+        
+        // Modal functionality
+        exploreBtn.addEventListener('click', () => {
+            modal.style.display = 'flex';
+        });
+        
+        closeModal.addEventListener('click', () => {
+            modal.style.display = 'none';
+        });
+        
+        window.addEventListener('click', (e) => {
+            if (e.target === modal) {
+                modal.style.display = 'none';
+            }
+        });
+        document.querySelectorAll('.nav-item').forEach(item => {
+  item.addEventListener('click', () => {
+    const page = item.getAttribute('data-page');
+    if (page === "profile") {
+      window.location.href = "index.html";
+    } else if (page === "projects") {
+      window.location.href = "recentActive.html";
+    }
+  });
 });
-  </script>
+
+    </script>
 </body>
 </html>
