@@ -52,36 +52,36 @@
           Passionate Software Engineer who loves building clean and functional web applications.
         </div>
         <div class="social-links">
-          <a href="#"><i class="fa fa-github"></i></a>
-          <a href="#"><i class="fa fa-linkedin"></i></a>
-          <a href="#"><i class="fa fa-twitter"></i></a>
+          <a href="https://github.com/AungThatZin"><i class="fa fa-github"></i></a>
+          <a href="https://www.linkedin.com/in/aung-thant-zin-50b3062a5/"><i class="fa fa-linkedin"></i></a>
+          <a href=""><i class="fa fa-facebook"></i></a>
         </div>
                         
                         <div class="profile-info">
                             <div class="info-item">
                                 <i class="fas fa-map-marker-alt"></i>
-                                <span>United States</span>
+                                   <span>Myanmar → Thailand</span>
+
                             </div>
                             <div class="info-item">
                                 <i class="fas fa-birthday-cake"></i>
-                                <span>March 15, 1992</span>
+                                <span>August 12, 2007</span>
                             </div>
                             <div class="info-item">
                                 <i class="fas fa-mobile-alt"></i>
-                                <span>+1 (923) 094-2032</span>
+                                <span>+95 9789597299</span>
                             </div>
                             <div class="info-item">
                                 <i class="fas fa-envelope"></i>
-                                <span>alex.johnson@example.com</span>
+                                <span>aungthantzin2007@gmail.com</span>
                             </div>
                         </div>
                         
                         <div class="contact-actions">
-                            <button class="btn btn-primary">
-                                <i class="fas fa-download"></i>
-                                Download CV
-                            </button>
-                            <button class="btn btn-secondary">
+                           <button class="btn btn-primary" onclick="downloadCV()">
+    <i class="fas fa-download"></i> Download CV
+</button>
+                            <button class="btn btn-secondary" onclick="openTelegram()">
                                 <i class="fab fa-telegram"></i>
                                 Telegram
                             </button>
@@ -108,7 +108,7 @@
         </div>
         <div class="timeline-content">
           <h3>Started Programming</h3>
-          <p class="timeline-date">2015</p>
+          <p class="timeline-date">2021</p>
           <p>Began my journey with basic HTML and CSS, creating simple static websites</p>
         </div>
       </div>
@@ -119,8 +119,8 @@
         </div>
         <div class="timeline-content">
           <h3>First Web Project</h3>
-          <p class="timeline-date">2017</p>
-          <p>Built my first complete web application with JavaScript and Node.js</p>
+          <p class="timeline-date">2022</p>
+          <p>Built my first complete web application with JSP and Spring Boot</p>
         </div>
       </div>
     </div>
@@ -280,7 +280,7 @@
       <div class="progress-step passed">N5</div>
       <div class="progress-step certified">N4 Certified</div>
       <div class="progress-step finished">N3 Completed</div>
-      <div class="progress-step waiting">N2 (Waiting Results)</div>
+      <div class="progress-step waiting">N2 Completed</div>
       <div class="progress-step studying">N1 (Current Study)</div>
     </div>
   </div>
@@ -472,6 +472,18 @@
             
             <div style="margin-top: 40px; text-align: center; font-style: italic;">
                 <p>How would you rate my storytelling if you read till the end?</p>
+                <div class="rating-stars">
+    <input type="radio" id="star5" name="rating" value="5" />
+    <label for="star5" title="5 stars">★</label>
+    <input type="radio" id="star4" name="rating" value="4" />
+    <label for="star4" title="4 stars">★</label>
+    <input type="radio" id="star3" name="rating" value="3" />
+    <label for="star3" title="3 stars">★</label>
+    <input type="radio" id="star2" name="rating" value="2" />
+    <label for="star2" title="2 stars">★</label>
+    <input type="radio" id="star1" name="rating" value="1" />
+    <label for="star1" title="1 star">★</label>
+  </div>
             </div>
         </div>
     </div>
@@ -535,7 +547,20 @@
     }
   });
 });
+function downloadCV() {
+    // Path to your PDF file inside the project
+    const fileUrl = "CV/Resume-Career-Objective.pdf";  
+    const link = document.createElement("a");
+    link.href = fileUrl;
+    link.download = "CV/Resume-Career-Objective.pdf";
+    document.body.appendChild(link);
+    link.click();
+    document.body.removeChild(link);
+}
 
+function openTelegram(){
+    window.open("https://t.me/@Kamadoshinjiro","_blank");
+}
     </script>
 </body>
 </html>
