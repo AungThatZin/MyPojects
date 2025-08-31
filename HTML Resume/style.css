@@ -978,7 +978,9 @@
 }
 .language-section{
   margin-bottom: 60px;
-  width: 700px;
+  width: 600px;
+  /* max-width: 700px;
+  min-width: 200px; */
 }
 
 .language-levels {
