@@ -1,113 +1,77 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.5">
-  <title>🔒 Focus · personal distraction tracker</title>
-  <!-- Tailwind CSS via CDN (lightweight) -->
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.5" />
+  <title>🔒 Focus · distraction tracker (cloud sync)</title>
+  <!-- Tailwind CSS via CDN -->
   <script src="https://cdn.tailwindcss.com"></script>
-  <!-- jQuery (DOM manipulation & animations) -->
+  <!-- jQuery -->
   <script src="https://code.jquery.com/jquery-3.7.1.min.js" integrity="sha256-/JqT3SQfawRcv/BIHPThkBvs0OEvtFFmqPF/lYI/Cxo=" crossorigin="anonymous"></script>
-  <!-- Font Awesome 6 (icons) -->
-  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+  <!-- Font Awesome 6 -->
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css" />
+
+  <!-- ============ FIREBASE SDK (modular CDN) ============ -->
+  <!-- Firebase App (core) -->
+  <script src="https://www.gstatic.com/firebasejs/10.14.1/firebase-app-compat.js"></script>
+  <!-- Firebase Firestore -->
+  <script src="https://www.gstatic.com/firebasejs/10.14.1/firebase-firestore-compat.js"></script>
+
   <style>
-    /* smooth transitions & dark base */
-    body {
-      background: #0b0f17;
-      font-family: system-ui, -apple-system, 'Segoe UI', Roboto, sans-serif;
-    }
-    .card-dark {
-      background: #141a26;
-      border: 1px solid #2a3344;
-      transition: box-shadow 0.15s ease, transform 0.1s ease;
-    }
-    .card-dark:hover {
-      box-shadow: 0 8px 20px rgba(0,0,0,0.5);
-    }
-    .badge-cat {
-      font-weight: 500;
-      letter-spacing: 0.01em;
-      padding: 0.2rem 0.8rem;
-      border-radius: 9999px;
-      font-size: 0.7rem;
-    }
-    /* category color mapping */
+    body { background: #0b0f17; font-family: system-ui, -apple-system, 'Segoe UI', Roboto, sans-serif; }
+    .card-dark { background: #141a26; border: 1px solid #2a3344; transition: box-shadow 0.15s ease, transform 0.1s ease; }
+    .card-dark:hover { box-shadow: 0 8px 20px rgba(0,0,0,0.5); }
+    .badge-cat { font-weight: 500; letter-spacing: 0.01em; padding: 0.2rem 0.8rem; border-radius: 9999px; font-size: 0.7rem; }
     .cat-telegram { background: #2b6f9e; color: #e8f0fe; }
     .cat-tiktok { background: #b33b5c; color: #fde7ed; }
     .cat-adult { background: #8b2f4a; color: #f8e3e8; }
     .cat-social { background: #4f6f8f; color: #e3edf5; }
     .cat-other { background: #3d4a5c; color: #e4e9f0; }
-    /* severity / delete */
-    .btn-delete {
-      transition: all 0.15s ease;
-    }
-    .btn-delete:hover {
-      color: #f87171;
-      transform: scale(1.1);
-    }
-    .filter-btn {
-      background: #1f2a3a;
-      color: #a7b6cf;
-      border: 1px solid #2f3b4f;
-      transition: 0.1s ease;
-    }
-    .filter-btn.active {
-      background: #2f4b7a;
-      color: white;
-      border-color: #4a7ab5;
-    }
-    .filter-btn:hover {
-      background: #2a3a52;
-      color: #e2eaf5;
-    }
-    .fade-row {
-      transition: opacity 0.2s ease, transform 0.2s ease;
-    }
-    /* scrollable table container */
-    .table-wrap {
-      overflow-x: auto;
-    }
-    /* quick log button large & responsive */
+    .filter-btn { background: #1f2a3a; color: #a7b6cf; border: 1px solid #2f3b4f; transition: 0.1s ease; }
+    .filter-btn.active { background: #2f4b7a; color: white; border-color: #4a7ab5; }
+    .filter-btn:hover { background: #2a3a52; color: #e2eaf5; }
+    .fade-row { transition: opacity 0.2s ease, transform 0.2s ease; }
+    .table-wrap { overflow-x: auto; }
     .quick-btn {
-      padding: 0.6rem 0.8rem;
-      font-size: 0.85rem;
-      font-weight: 500;
-      border-radius: 1rem;
-      transition: all 0.1s ease;
-      text-align: center;
-      min-width: 80px;
-      flex: 1 0 auto;
+      padding: 0.6rem 0.8rem; font-size: 0.85rem; font-weight: 500; border-radius: 1rem;
+      transition: all 0.1s ease; text-align: center; min-width: 80px; flex: 1 0 auto;
       border: 1px solid transparent;
     }
-    .quick-btn:active {
-      transform: scale(0.94);
-    }
-    .quick-btn i {
-      margin-right: 6px;
-    }
-    @media (max-width: 500px) {
-      .quick-btn { font-size: 0.7rem; padding: 0.5rem 0.4rem; min-width: 60px; }
-    }
+    .quick-btn:active { transform: scale(0.94); }
+    .quick-btn i { margin-right: 6px; }
+    @media (max-width: 500px) { .quick-btn { font-size: 0.7rem; padding: 0.5rem 0.4rem; min-width: 60px; } }
+    /* sync status dot */
+    .sync-dot { display: inline-block; width: 10px; height: 10px; border-radius: 50%; margin-right: 6px; }
+    .sync-online { background: #4ade80; box-shadow: 0 0 8px #4ade8066; }
+    .sync-offline { background: #f87171; box-shadow: 0 0 8px #f8717166; }
+    .sync-syncing { background: #facc15; box-shadow: 0 0 8px #facc1566; animation: pulse 1s infinite; }
+    @keyframes pulse { 0% { opacity: 0.6; } 50% { opacity: 1; } 100% { opacity: 0.6; } }
   </style>
 </head>
 <body>
 
 <div class="max-w-5xl mx-auto px-4 sm:px-6 py-6 md:py-10 text-slate-200">
 
-  <!-- Header -->
+  <!-- Header with sync status -->
   <header class="flex flex-wrap items-center justify-between mb-6 gap-2">
     <div>
       <h1 class="text-2xl md:text-3xl font-semibold tracking-tight flex items-center gap-2 text-white">
         <i class="fas fa-brain text-indigo-400"></i> Focus<span class="text-indigo-300">/</span>track
       </h1>
-      <p class="text-slate-400 text-sm mt-0.5">zero‑friction · private · dark</p>
+      <p class="text-slate-400 text-sm mt-0.5">zero‑friction · private · cloud sync</p>
     </div>
-    <div class="text-sm text-slate-400 bg-[#141a26] px-4 py-1.5 rounded-full border border-[#2a3344] flex items-center gap-2">
-      <i class="far fa-clock text-indigo-300"></i> <span id="liveClock" class="font-mono text-slate-300"></span>
+    <div class="flex items-center gap-3">
+      <div id="syncStatus" class="text-xs text-slate-400 bg-[#141a26] px-3 py-1.5 rounded-full border border-[#2a3344] flex items-center">
+        <span class="sync-dot sync-offline" id="syncDot"></span>
+        <span id="syncLabel">offline</span>
+      </div>
+      <div class="text-sm text-slate-400 bg-[#141a26] px-4 py-1.5 rounded-full border border-[#2a3344] flex items-center gap-2">
+        <i class="far fa-clock text-indigo-300"></i> <span id="liveClock" class="font-mono text-slate-300"></span>
+      </div>
     </div>
   </header>
 
-  <!-- QUICK LOG SECTION: 1-click buttons + optional detail -->
+  <!-- QUICK LOG SECTION -->
   <section class="card-dark rounded-2xl p-4 md:p-5 mb-7">
     <div class="flex flex-wrap items-center gap-1.5 mb-3">
       <span class="text-xs font-medium text-slate-400 uppercase tracking-wider flex items-center gap-1.5">
@@ -115,7 +79,6 @@
       </span>
       <span class="text-[10px] text-slate-500 ml-1">(tap button → instant)</span>
     </div>
-    <!-- category quick buttons -->
     <div class="flex flex-wrap gap-2 mb-3" id="quickBtnGroup">
       <button class="quick-btn cat-telegram" data-cat="Telegram Notifications"><i class="fab fa-telegram"></i> Telegram</button>
       <button class="quick-btn cat-tiktok" data-cat="TikTok / Short Videos"><i class="fab fa-tiktok"></i> TikTok</button>
@@ -123,7 +86,6 @@
       <button class="quick-btn cat-social" data-cat="Social Media / Browsing"><i class="fas fa-globe"></i> Social</button>
       <button class="quick-btn cat-other" data-cat="Other / Custom"><i class="fas fa-ellipsis"></i> Other</button>
     </div>
-    <!-- optional detail field + extra submit (for 'other' or notes) -->
     <div class="flex flex-wrap items-center gap-2 mt-1">
       <div class="flex-1 min-w-[140px]">
         <input id="detailInput" type="text" placeholder="Optional note (e.g. 'scrolled 15m')" class="w-full bg-[#1a2433] border border-[#2f3b4f] rounded-xl px-3 py-1.5 text-sm text-slate-200 placeholder-slate-500 focus:ring-1 focus:ring-indigo-400 focus:outline-none">
@@ -135,7 +97,7 @@
     <p class="text-[10px] text-slate-500 mt-2 flex items-center gap-1"><i class="far fa-clock"></i> timestamp auto‑captured</p>
   </section>
 
-  <!-- DASHBOARD: cards -->
+  <!-- DASHBOARD -->
   <section class="grid grid-cols-1 sm:grid-cols-3 gap-4 mb-7">
     <div class="card-dark rounded-2xl p-4 flex items-center gap-3">
       <div class="w-10 h-10 rounded-full bg-indigo-900/40 flex items-center justify-center text-indigo-300 text-lg"><i class="fas fa-list"></i></div>
@@ -158,7 +120,6 @@
         <i class="fas fa-clock-rotate-left text-indigo-400"></i> History
       </h2>
       <div class="flex flex-wrap items-center gap-1.5">
-        <!-- filter pills -->
         <button class="filter-btn active text-xs px-3 py-1 rounded-full" data-filter="all">All</button>
         <button class="filter-btn text-xs px-3 py-1 rounded-full" data-filter="Telegram Notifications">Telegram</button>
         <button class="filter-btn text-xs px-3 py-1 rounded-full" data-filter="TikTok / Short Videos">TikTok</button>
@@ -188,7 +149,22 @@
   (function($) {
     "use strict";
 
-    // ---------- CONFIG ----------
+    // ============================================================
+    //  🔥 FIREBASE CONFIGURATION — PASTE YOUR KEYS HERE
+    // ============================================================
+const firebaseConfig = {
+  apiKey: "AIzaSyBma59s9-RLk5KTp1COwEzYWr_sWLRMMF4",
+  authDomain: "productivity-4d09b.firebaseapp.com",
+  projectId: "productivity-4d09b",
+  storageBucket: "productivity-4d09b.firebasestorage.app",
+  messagingSenderId: "260853498434",
+  appId: "1:260853498434:web:4dc53b5e1873b3317e23db",
+  measurementId: "G-R6M4Q8X9G5"
+};
+
+    // ============================================================
+
+    // ---------- STATE ----------
     const STORAGE_KEY = 'focus_distraction_logs';
     const CATEGORY_MAP = {
       'Telegram Notifications': 'cat-telegram',
@@ -198,41 +174,61 @@
       'Other / Custom': 'cat-other'
     };
 
-    // ---------- MODEL ----------
-    function loadLogs() {
+    let currentFilter = 'all';
+    let logsCache = [];               // local copy
+    let firestoreUnsubscribe = null;
+    let isFirebaseReady = false;
+    let db = null;
+
+    // ---------- UI sync status ----------
+    function setSyncStatus(state) {
+      const dot = $('#syncDot');
+      const label = $('#syncLabel');
+      dot.removeClass('sync-online sync-offline sync-syncing');
+      if (state === 'online') {
+        dot.addClass('sync-online');
+        label.text('synced');
+      } else if (state === 'syncing') {
+        dot.addClass('sync-syncing');
+        label.text('syncing...');
+      } else {
+        dot.addClass('sync-offline');
+        label.text('offline');
+      }
+    }
+
+    // ---------- MODEL (local fallback) ----------
+    function loadLocalLogs() {
       try {
         const raw = localStorage.getItem(STORAGE_KEY);
         return raw ? JSON.parse(raw) : [];
       } catch (_) { return []; }
     }
-    function saveLogs(logs) { localStorage.setItem(STORAGE_KEY, JSON.stringify(logs)); }
+    function saveLocalLogs(logs) {
+      localStorage.setItem(STORAGE_KEY, JSON.stringify(logs));
+    }
 
     // ---------- HELPERS ----------
     function formatTime(iso) {
       const d = new Date(iso);
       return d.toLocaleString(undefined, { month: 'short', day: 'numeric', hour: '2-digit', minute: '2-digit' });
     }
-
     function isToday(iso) {
       const d = new Date(iso);
       const now = new Date();
       return d.getDate() === now.getDate() && d.getMonth() === now.getMonth() && d.getFullYear() === now.getFullYear();
     }
+    function generateId() { return Date.now() + '_' + Math.random().toString(36).substring(2, 7); }
 
-    // compute metrics
     function computeMetrics(logs) {
       const today = logs.filter(l => isToday(l.timestamp));
       const total = today.length;
-      // top distractor (today)
-      let freq = {};
-      let maxCount = 0;
-      let top = '—';
+      let freq = {}, maxCount = 0, top = '—';
       today.forEach(l => {
         freq[l.category] = (freq[l.category] || 0) + 1;
         if (freq[l.category] > maxCount) { maxCount = freq[l.category]; top = l.category; }
       });
       if (today.length === 0) top = '—';
-      // focus streak: time since last log (any log) in minutes
       let streak = '—';
       if (logs.length > 0) {
         const sorted = [...logs].sort((a,b) => new Date(b.timestamp) - new Date(a.timestamp));
@@ -245,19 +241,15 @@
       return { total, top, streak };
     }
 
-    // ---------- RENDER ----------
-    let currentFilter = 'all';
-
+    // ---------- RENDER (from logsCache) ----------
     function renderAll() {
-      const logs = loadLogs();
+      const logs = logsCache;
       const sorted = [...logs].sort((a,b) => new Date(b.timestamp) - new Date(a.timestamp));
-      // metrics
       const metrics = computeMetrics(logs);
       $('#totalToday').text(metrics.total);
       $('#topDistractor').text(metrics.top);
       $('#focusStreak').text(metrics.streak);
 
-      // filter
       let filtered = sorted;
       if (currentFilter !== 'all') {
         filtered = sorted.filter(l => l.category === currentFilter);
@@ -269,7 +261,7 @@
         $('#emptyState').show();
       } else {
         $('#emptyState').hide();
-        filtered.forEach((log, idx) => {
+        filtered.forEach((log) => {
           const catClass = CATEGORY_MAP[log.category] || 'cat-other';
           const timeStr = formatTime(log.timestamp);
           const note = log.note || '';
@@ -287,7 +279,6 @@
         });
       }
 
-      // bind delete events
       $('.deleteBtn').off('click').on('click', function(e) {
         e.stopPropagation();
         const id = $(this).data('id');
@@ -295,71 +286,151 @@
       });
     }
 
-    // ---------- CRUD ----------
+    // ---------- CRUD (sync-aware) ----------
     function addLog(category, note) {
-      const logs = loadLogs();
       const entry = {
-        id: Date.now() + '_' + Math.random().toString(36).substring(2, 7),
+        id: generateId(),
         timestamp: new Date().toISOString(),
         category: category,
         note: (note || '').trim() || ''
       };
-      logs.push(entry);
-      saveLogs(logs);
+      // optimistic local update
+      logsCache.push(entry);
+      saveLocalLogs(logsCache);
       renderAll();
-      // optional: clear detail field after log
+
+      if (isFirebaseReady && db) {
+        setSyncStatus('syncing');
+        db.collection('distractions').doc(entry.id).set(entry)
+          .then(() => { setSyncStatus('online'); })
+          .catch(() => { setSyncStatus('offline'); });
+      } else {
+        setSyncStatus('offline');
+      }
       $('#detailInput').val('');
     }
 
     function deleteLogById(id) {
-      let logs = loadLogs();
-      const newLogs = logs.filter(l => l.id !== id);
-      if (newLogs.length === logs.length) return;
-      saveLogs(newLogs);
-      // fade animation then render
-      const row = $(`tr[data-id="${id}"]`);
-      if (row.length) {
-        row.css({ opacity: 0, transform: 'scale(0.97)' });
-        setTimeout(() => renderAll(), 160);
+      const logToDelete = logsCache.find(l => l.id === id);
+      if (!logToDelete) return;
+      logsCache = logsCache.filter(l => l.id !== id);
+      saveLocalLogs(logsCache);
+      renderAll();
+
+      if (isFirebaseReady && db) {
+        setSyncStatus('syncing');
+        db.collection('distractions').doc(id).delete()
+          .then(() => { setSyncStatus('online'); })
+          .catch(() => { setSyncStatus('offline'); });
       } else {
-        renderAll();
+        setSyncStatus('offline');
       }
     }
 
     function clearAllLogs() {
-      if (loadLogs().length === 0) return;
-      if (confirm('🧹 Delete all distraction logs permanently?')) {
-        saveLogs([]);
+      if (logsCache.length === 0) return;
+      if (!confirm('🧹 Delete all distraction logs permanently?')) return;
+      const ids = logsCache.map(l => l.id);
+      logsCache = [];
+      saveLocalLogs(logsCache);
+      renderAll();
+
+      if (isFirebaseReady && db && ids.length > 0) {
+        setSyncStatus('syncing');
+        const batch = db.batch();
+        ids.forEach(id => {
+          const ref = db.collection('distractions').doc(id);
+          batch.delete(ref);
+        });
+        batch.commit()
+          .then(() => { setSyncStatus('online'); })
+          .catch(() => { setSyncStatus('offline'); });
+      } else {
+        setSyncStatus('offline');
+      }
+    }
+
+    // ---------- FIREBASE INIT & LISTENER ----------
+    function initFirebase() {
+      // check if config is filled (basic check)
+      if (FIREBASE_CONFIG.apiKey === 'YOUR_API_KEY') {
+        console.warn('⚠️ Firebase config not set. Using local storage only.');
+        setSyncStatus('offline');
+        return;
+      }
+      try {
+        firebase.initializeApp(FIREBASE_CONFIG);
+        db = firebase.firestore();
+
+        // enable offline persistence (optional)
+        db.enablePersistence({ synchronizeTabs: true })
+          .catch((err) => { console.warn('Firestore persistence:', err); });
+
+        isFirebaseReady = true;
+        setSyncStatus('syncing');
+
+        // realtime listener
+        firestoreUnsubscribe = db.collection('distractions')
+          .orderBy('timestamp', 'desc')
+          .onSnapshot((snapshot) => {
+            const remoteLogs = [];
+            snapshot.forEach(doc => {
+              const data = doc.data();
+              if (data && data.id) {
+                remoteLogs.push(data);
+              }
+            });
+            // merge: use remote as source of truth, but keep local for offline edits?
+            // We'll replace cache with remote data (since it's the source of truth)
+            // But we want to avoid overwriting local changes that haven't synced?
+            // For simplicity, we use remote as master.
+            logsCache = remoteLogs;
+            saveLocalLogs(logsCache);
+            renderAll();
+            setSyncStatus('online');
+          }, (error) => {
+            console.warn('Firestore listener error:', error);
+            setSyncStatus('offline');
+            // fallback to local
+            logsCache = loadLocalLogs();
+            renderAll();
+          });
+
+      } catch (e) {
+        console.warn('Firebase init failed:', e);
+        setSyncStatus('offline');
+        logsCache = loadLocalLogs();
         renderAll();
       }
     }
 
     // ---------- EVENT BINDING ----------
     $(document).ready(function() {
+      // initial load (local)
+      logsCache = loadLocalLogs();
+      renderAll();
+
+      // Try Firebase
+      initFirebase();
 
       // 1-click quick buttons
       $('#quickBtnGroup').on('click', 'button', function() {
         const cat = $(this).data('cat');
         if (cat) {
-          // optional: grab detail if any, but we treat as separate
           const note = $('#detailInput').val().trim();
           addLog(cat, note);
-          // after log, clear detail and keep focus
-          $('#detailInput').val('');
           $('#detailInput').focus();
         }
       });
 
-      // log with detail button (uses current category? we'll use 'Other / Custom' as default or auto-detect)
+      // log with detail
       $('#logWithDetailBtn').on('click', function() {
         const note = $('#detailInput').val().trim();
-        // if no note, we still log as 'Other'
         addLog('Other / Custom', note || 'manual log');
-        $('#detailInput').val('');
         $('#detailInput').focus();
       });
 
-      // Filter buttons
+      // Filter
       $('.filter-btn').on('click', function() {
         $('.filter-btn').removeClass('active');
         $(this).addClass('active');
@@ -380,18 +451,15 @@
       updateClock();
       setInterval(updateClock, 1000);
 
-      // initial render
-      renderAll();
-      // focus detail on load
-      $('#detailInput').focus();
-
-      // allow Enter key on detail to log with note
       $('#detailInput').on('keydown', function(e) {
         if (e.key === 'Enter') {
           e.preventDefault();
           $('#logWithDetailBtn').click();
         }
       });
+
+      // focus
+      $('#detailInput').focus();
     });
 
   })(jQuery);
