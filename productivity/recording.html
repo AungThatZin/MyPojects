@@ -146,23 +146,24 @@
 </div>
 
 <script>
-  (function($) {
-    "use strict";
-
-    // ============================================================
-    //  🔥 FIREBASE CONFIGURATION — PASTE YOUR KEYS HERE
-    // ============================================================
-const firebaseConfig = {
-  apiKey: "AIzaSyBma59s9-RLk5KTp1COwEzYWr_sWLRMMF4",
+  // ============================================================
+  //  🔥 FIREBASE CONFIGURATION — PASTE YOUR KEYS HERE
+  // ============================================================
+  // ⚠️ IMPORTANT: Replace these placeholder values with your actual Firebase config
+  // You can find these in your Firebase Console > Project Settings > Your apps
+  const FIREBASE_CONFIG = {
+   apiKey: "AIzaSyBma59s9-RLk5KTp1COwEzYWr_sWLRMMF4",
   authDomain: "productivity-4d09b.firebaseapp.com",
   projectId: "productivity-4d09b",
   storageBucket: "productivity-4d09b.firebasestorage.app",
   messagingSenderId: "260853498434",
   appId: "1:260853498434:web:4dc53b5e1873b3317e23db",
-  measurementId: "G-R6M4Q8X9G5"
-};
 
-    // ============================================================
+  };
+  // ============================================================
+
+  (function($) {
+    "use strict";
 
     // ---------- STATE ----------
     const STORAGE_KEY = 'focus_distraction_logs';
@@ -175,7 +176,7 @@ const firebaseConfig = {
     };
 
     let currentFilter = 'all';
-    let logsCache = [];               // local copy
+    let logsCache = [];
     let firestoreUnsubscribe = null;
     let isFirebaseReady = false;
     let db = null;
@@ -294,15 +295,19 @@ const firebaseConfig = {
         category: category,
         note: (note || '').trim() || ''
       };
-      // optimistic local update
+      
+      // Optimistic local update
       logsCache.push(entry);
       saveLocalLogs(logsCache);
       renderAll();
 
+      // Sync to Firebase if available
       if (isFirebaseReady && db) {
         setSyncStatus('syncing');
         db.collection('distractions').doc(entry.id).set(entry)
-          .then(() => { setSyncStatus('online'); })
+          .then(() => { 
+            if (document.visibilityState === 'visible') setSyncStatus('online'); 
+          })
           .catch(() => { setSyncStatus('offline'); });
       } else {
         setSyncStatus('offline');
@@ -320,7 +325,7 @@ const firebaseConfig = {
       if (isFirebaseReady && db) {
         setSyncStatus('syncing');
         db.collection('distractions').doc(id).delete()
-          .then(() => { setSyncStatus('online'); })
+          .then(() => { if (document.visibilityState === 'visible') setSyncStatus('online'); })
           .catch(() => { setSyncStatus('offline'); });
       } else {
         setSyncStatus('offline');
@@ -343,7 +348,7 @@ const firebaseConfig = {
           batch.delete(ref);
         });
         batch.commit()
-          .then(() => { setSyncStatus('online'); })
+          .then(() => { if (document.visibilityState === 'visible') setSyncStatus('online'); })
           .catch(() => { setSyncStatus('offline'); });
       } else {
         setSyncStatus('offline');
@@ -352,24 +357,35 @@ const firebaseConfig = {
 
     // ---------- FIREBASE INIT & LISTENER ----------
     function initFirebase() {
-      // check if config is filled (basic check)
-      if (FIREBASE_CONFIG.apiKey === 'YOUR_API_KEY') {
+      // Check if Firebase is available globally
+      if (typeof firebase === 'undefined') {
+        console.warn('⚠️ Firebase SDK not loaded. Using local storage only.');
+        setSyncStatus('offline');
+        return;
+      }
+
+      // Check if config is filled (basic check)
+      if (!FIREBASE_CONFIG.apiKey || FIREBASE_CONFIG.apiKey === 'YOUR_API_KEY') {
         console.warn('⚠️ Firebase config not set. Using local storage only.');
         setSyncStatus('offline');
         return;
       }
+
       try {
+        // Initialize Firebase
         firebase.initializeApp(FIREBASE_CONFIG);
         db = firebase.firestore();
 
-        // enable offline persistence (optional)
+        // Enable offline persistence
         db.enablePersistence({ synchronizeTabs: true })
-          .catch((err) => { console.warn('Firestore persistence:', err); });
+          .catch((err) => { 
+            console.warn('Firestore persistence warning:', err); 
+          });
 
         isFirebaseReady = true;
         setSyncStatus('syncing');
 
-        // realtime listener
+        // Set up realtime listener
         firestoreUnsubscribe = db.collection('distractions')
           .orderBy('timestamp', 'desc')
           .onSnapshot((snapshot) => {
@@ -380,10 +396,7 @@ const firebaseConfig = {
                 remoteLogs.push(data);
               }
             });
-            // merge: use remote as source of truth, but keep local for offline edits?
-            // We'll replace cache with remote data (since it's the source of truth)
-            // But we want to avoid overwriting local changes that haven't synced?
-            // For simplicity, we use remote as master.
+            // Use remote as source of truth
             logsCache = remoteLogs;
             saveLocalLogs(logsCache);
             renderAll();
@@ -391,7 +404,7 @@ const firebaseConfig = {
           }, (error) => {
             console.warn('Firestore listener error:', error);
             setSyncStatus('offline');
-            // fallback to local
+            // Fallback to local
             logsCache = loadLocalLogs();
             renderAll();
           });
@@ -406,11 +419,11 @@ const firebaseConfig = {
 
     // ---------- EVENT BINDING ----------
     $(document).ready(function() {
-      // initial load (local)
+      // Initial load from local storage
       logsCache = loadLocalLogs();
       renderAll();
 
-      // Try Firebase
+      // Initialize Firebase (will fallback to local if config is missing)
       initFirebase();
 
       // 1-click quick buttons
@@ -423,14 +436,14 @@ const firebaseConfig = {
         }
       });
 
-      // log with detail
+      // Log with detail
       $('#logWithDetailBtn').on('click', function() {
         const note = $('#detailInput').val().trim();
         addLog('Other / Custom', note || 'manual log');
         $('#detailInput').focus();
       });
 
-      // Filter
+      // Filter buttons
       $('.filter-btn').on('click', function() {
         $('.filter-btn').removeClass('active');
         $(this).addClass('active');
@@ -451,6 +464,7 @@ const firebaseConfig = {
       updateClock();
       setInterval(updateClock, 1000);
 
+      // Enter key on detail input
       $('#detailInput').on('keydown', function(e) {
         if (e.key === 'Enter') {
           e.preventDefault();
@@ -458,8 +472,15 @@ const firebaseConfig = {
         }
       });
 
-      // focus
+      // Focus on detail input
       $('#detailInput').focus();
+
+      // Handle page visibility changes to update sync status
+      document.addEventListener('visibilitychange', function() {
+        if (document.visibilityState === 'visible' && isFirebaseReady) {
+          setSyncStatus('online');
+        }
+      });
     });
 
   })(jQuery);
