@@ -1,0 +1,400 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.5">
+  <title>🔒 Focus · personal distraction tracker</title>
+  <!-- Tailwind CSS via CDN (lightweight) -->
+  <script src="https://cdn.tailwindcss.com"></script>
+  <!-- jQuery (DOM manipulation & animations) -->
+  <script src="https://code.jquery.com/jquery-3.7.1.min.js" integrity="sha256-/JqT3SQfawRcv/BIHPThkBvs0OEvtFFmqPF/lYI/Cxo=" crossorigin="anonymous"></script>
+  <!-- Font Awesome 6 (icons) -->
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+  <style>
+    /* smooth transitions & dark base */
+    body {
+      background: #0b0f17;
+      font-family: system-ui, -apple-system, 'Segoe UI', Roboto, sans-serif;
+    }
+    .card-dark {
+      background: #141a26;
+      border: 1px solid #2a3344;
+      transition: box-shadow 0.15s ease, transform 0.1s ease;
+    }
+    .card-dark:hover {
+      box-shadow: 0 8px 20px rgba(0,0,0,0.5);
+    }
+    .badge-cat {
+      font-weight: 500;
+      letter-spacing: 0.01em;
+      padding: 0.2rem 0.8rem;
+      border-radius: 9999px;
+      font-size: 0.7rem;
+    }
+    /* category color mapping */
+    .cat-telegram { background: #2b6f9e; color: #e8f0fe; }
+    .cat-tiktok { background: #b33b5c; color: #fde7ed; }
+    .cat-adult { background: #8b2f4a; color: #f8e3e8; }
+    .cat-social { background: #4f6f8f; color: #e3edf5; }
+    .cat-other { background: #3d4a5c; color: #e4e9f0; }
+    /* severity / delete */
+    .btn-delete {
+      transition: all 0.15s ease;
+    }
+    .btn-delete:hover {
+      color: #f87171;
+      transform: scale(1.1);
+    }
+    .filter-btn {
+      background: #1f2a3a;
+      color: #a7b6cf;
+      border: 1px solid #2f3b4f;
+      transition: 0.1s ease;
+    }
+    .filter-btn.active {
+      background: #2f4b7a;
+      color: white;
+      border-color: #4a7ab5;
+    }
+    .filter-btn:hover {
+      background: #2a3a52;
+      color: #e2eaf5;
+    }
+    .fade-row {
+      transition: opacity 0.2s ease, transform 0.2s ease;
+    }
+    /* scrollable table container */
+    .table-wrap {
+      overflow-x: auto;
+    }
+    /* quick log button large & responsive */
+    .quick-btn {
+      padding: 0.6rem 0.8rem;
+      font-size: 0.85rem;
+      font-weight: 500;
+      border-radius: 1rem;
+      transition: all 0.1s ease;
+      text-align: center;
+      min-width: 80px;
+      flex: 1 0 auto;
+      border: 1px solid transparent;
+    }
+    .quick-btn:active {
+      transform: scale(0.94);
+    }
+    .quick-btn i {
+      margin-right: 6px;
+    }
+    @media (max-width: 500px) {
+      .quick-btn { font-size: 0.7rem; padding: 0.5rem 0.4rem; min-width: 60px; }
+    }
+  </style>
+</head>
+<body>
+
+<div class="max-w-5xl mx-auto px-4 sm:px-6 py-6 md:py-10 text-slate-200">
+
+  <!-- Header -->
+  <header class="flex flex-wrap items-center justify-between mb-6 gap-2">
+    <div>
+      <h1 class="text-2xl md:text-3xl font-semibold tracking-tight flex items-center gap-2 text-white">
+        <i class="fas fa-brain text-indigo-400"></i> Focus<span class="text-indigo-300">/</span>track
+      </h1>
+      <p class="text-slate-400 text-sm mt-0.5">zero‑friction · private · dark</p>
+    </div>
+    <div class="text-sm text-slate-400 bg-[#141a26] px-4 py-1.5 rounded-full border border-[#2a3344] flex items-center gap-2">
+      <i class="far fa-clock text-indigo-300"></i> <span id="liveClock" class="font-mono text-slate-300"></span>
+    </div>
+  </header>
+
+  <!-- QUICK LOG SECTION: 1-click buttons + optional detail -->
+  <section class="card-dark rounded-2xl p-4 md:p-5 mb-7">
+    <div class="flex flex-wrap items-center gap-1.5 mb-3">
+      <span class="text-xs font-medium text-slate-400 uppercase tracking-wider flex items-center gap-1.5">
+        <i class="fas fa-bolt text-amber-400"></i> 1‑click log
+      </span>
+      <span class="text-[10px] text-slate-500 ml-1">(tap button → instant)</span>
+    </div>
+    <!-- category quick buttons -->
+    <div class="flex flex-wrap gap-2 mb-3" id="quickBtnGroup">
+      <button class="quick-btn cat-telegram" data-cat="Telegram Notifications"><i class="fab fa-telegram"></i> Telegram</button>
+      <button class="quick-btn cat-tiktok" data-cat="TikTok / Short Videos"><i class="fab fa-tiktok"></i> TikTok</button>
+      <button class="quick-btn cat-adult" data-cat="Adult Content / Pornography"><i class="fas fa-ban"></i> Adult</button>
+      <button class="quick-btn cat-social" data-cat="Social Media / Browsing"><i class="fas fa-globe"></i> Social</button>
+      <button class="quick-btn cat-other" data-cat="Other / Custom"><i class="fas fa-ellipsis"></i> Other</button>
+    </div>
+    <!-- optional detail field + extra submit (for 'other' or notes) -->
+    <div class="flex flex-wrap items-center gap-2 mt-1">
+      <div class="flex-1 min-w-[140px]">
+        <input id="detailInput" type="text" placeholder="Optional note (e.g. 'scrolled 15m')" class="w-full bg-[#1a2433] border border-[#2f3b4f] rounded-xl px-3 py-1.5 text-sm text-slate-200 placeholder-slate-500 focus:ring-1 focus:ring-indigo-400 focus:outline-none">
+      </div>
+      <button id="logWithDetailBtn" class="bg-indigo-600 hover:bg-indigo-700 text-sm font-medium px-5 py-1.5 rounded-xl transition flex items-center gap-1.5 border border-indigo-400/30">
+        <i class="fas fa-plus"></i> Log with note
+      </button>
+    </div>
+    <p class="text-[10px] text-slate-500 mt-2 flex items-center gap-1"><i class="far fa-clock"></i> timestamp auto‑captured</p>
+  </section>
+
+  <!-- DASHBOARD: cards -->
+  <section class="grid grid-cols-1 sm:grid-cols-3 gap-4 mb-7">
+    <div class="card-dark rounded-2xl p-4 flex items-center gap-3">
+      <div class="w-10 h-10 rounded-full bg-indigo-900/40 flex items-center justify-center text-indigo-300 text-lg"><i class="fas fa-list"></i></div>
+      <div><p class="text-xs text-slate-400 font-medium">Today's interruptions</p><p id="totalToday" class="text-2xl font-bold text-white">0</p></div>
+    </div>
+    <div class="card-dark rounded-2xl p-4 flex items-center gap-3">
+      <div class="w-10 h-10 rounded-full bg-amber-900/30 flex items-center justify-center text-amber-300 text-lg"><i class="fas fa-crown"></i></div>
+      <div><p class="text-xs text-slate-400 font-medium">Top distractor</p><p id="topDistractor" class="text-xl font-bold text-white truncate">—</p></div>
+    </div>
+    <div class="card-dark rounded-2xl p-4 flex items-center gap-3">
+      <div class="w-10 h-10 rounded-full bg-emerald-900/30 flex items-center justify-center text-emerald-300 text-lg"><i class="fas fa-stopwatch"></i></div>
+      <div><p class="text-xs text-slate-400 font-medium">Focus streak (since last)</p><p id="focusStreak" class="text-xl font-bold text-white">—</p></div>
+    </div>
+  </section>
+
+  <!-- LOG HISTORY + FILTERS -->
+  <section class="card-dark rounded-2xl p-4 md:p-5">
+    <div class="flex flex-wrap items-center justify-between gap-2 mb-3">
+      <h2 class="text-sm font-medium text-slate-300 uppercase tracking-wider flex items-center gap-2">
+        <i class="fas fa-clock-rotate-left text-indigo-400"></i> History
+      </h2>
+      <div class="flex flex-wrap items-center gap-1.5">
+        <!-- filter pills -->
+        <button class="filter-btn active text-xs px-3 py-1 rounded-full" data-filter="all">All</button>
+        <button class="filter-btn text-xs px-3 py-1 rounded-full" data-filter="Telegram Notifications">Telegram</button>
+        <button class="filter-btn text-xs px-3 py-1 rounded-full" data-filter="TikTok / Short Videos">TikTok</button>
+        <button class="filter-btn text-xs px-3 py-1 rounded-full" data-filter="Adult Content / Pornography">Adult</button>
+        <button class="filter-btn text-xs px-3 py-1 rounded-full" data-filter="Social Media / Browsing">Social</button>
+        <button class="filter-btn text-xs px-3 py-1 rounded-full" data-filter="Other / Custom">Other</button>
+        <button id="clearAllBtn" class="text-xs bg-rose-900/40 hover:bg-rose-800/50 text-rose-200 px-3 py-1 rounded-full transition flex items-center gap-1 border border-rose-700/30 ml-1">
+          <i class="fas fa-trash-can"></i> Clear
+        </button>
+      </div>
+    </div>
+    <div class="table-wrap">
+      <table class="w-full text-sm">
+        <thead class="text-left text-xs text-slate-400 border-b border-[#2a3344]">
+          <tr><th class="pb-2 pr-2 font-medium">Time</th><th class="pb-2 pr-2 font-medium">Category</th><th class="pb-2 pr-2 font-medium">Note</th><th class="pb-2 text-right font-medium">Action</th></tr>
+        </thead>
+        <tbody id="logTableBody"></tbody>
+      </table>
+    </div>
+    <div id="emptyState" class="text-center text-slate-500 text-sm py-8">
+      <i class="fas fa-inbox text-3xl block mb-2 text-slate-600"></i> No distractions logged. Stay in flow.
+    </div>
+  </section>
+</div>
+
+<script>
+  (function($) {
+    "use strict";
+
+    // ---------- CONFIG ----------
+    const STORAGE_KEY = 'focus_distraction_logs';
+    const CATEGORY_MAP = {
+      'Telegram Notifications': 'cat-telegram',
+      'TikTok / Short Videos': 'cat-tiktok',
+      'Adult Content / Pornography': 'cat-adult',
+      'Social Media / Browsing': 'cat-social',
+      'Other / Custom': 'cat-other'
+    };
+
+    // ---------- MODEL ----------
+    function loadLogs() {
+      try {
+        const raw = localStorage.getItem(STORAGE_KEY);
+        return raw ? JSON.parse(raw) : [];
+      } catch (_) { return []; }
+    }
+    function saveLogs(logs) { localStorage.setItem(STORAGE_KEY, JSON.stringify(logs)); }
+
+    // ---------- HELPERS ----------
+    function formatTime(iso) {
+      const d = new Date(iso);
+      return d.toLocaleString(undefined, { month: 'short', day: 'numeric', hour: '2-digit', minute: '2-digit' });
+    }
+
+    function isToday(iso) {
+      const d = new Date(iso);
+      const now = new Date();
+      return d.getDate() === now.getDate() && d.getMonth() === now.getMonth() && d.getFullYear() === now.getFullYear();
+    }
+
+    // compute metrics
+    function computeMetrics(logs) {
+      const today = logs.filter(l => isToday(l.timestamp));
+      const total = today.length;
+      // top distractor (today)
+      let freq = {};
+      let maxCount = 0;
+      let top = '—';
+      today.forEach(l => {
+        freq[l.category] = (freq[l.category] || 0) + 1;
+        if (freq[l.category] > maxCount) { maxCount = freq[l.category]; top = l.category; }
+      });
+      if (today.length === 0) top = '—';
+      // focus streak: time since last log (any log) in minutes
+      let streak = '—';
+      if (logs.length > 0) {
+        const sorted = [...logs].sort((a,b) => new Date(b.timestamp) - new Date(a.timestamp));
+        const last = new Date(sorted[0].timestamp);
+        const diff = Math.floor((Date.now() - last.getTime()) / 60000);
+        if (diff < 1) streak = '< 1 min';
+        else if (diff < 60) streak = diff + ' min';
+        else streak = Math.floor(diff/60) + 'h ' + (diff%60) + 'm';
+      }
+      return { total, top, streak };
+    }
+
+    // ---------- RENDER ----------
+    let currentFilter = 'all';
+
+    function renderAll() {
+      const logs = loadLogs();
+      const sorted = [...logs].sort((a,b) => new Date(b.timestamp) - new Date(a.timestamp));
+      // metrics
+      const metrics = computeMetrics(logs);
+      $('#totalToday').text(metrics.total);
+      $('#topDistractor').text(metrics.top);
+      $('#focusStreak').text(metrics.streak);
+
+      // filter
+      let filtered = sorted;
+      if (currentFilter !== 'all') {
+        filtered = sorted.filter(l => l.category === currentFilter);
+      }
+
+      const tbody = $('#logTableBody');
+      tbody.empty();
+      if (filtered.length === 0) {
+        $('#emptyState').show();
+      } else {
+        $('#emptyState').hide();
+        filtered.forEach((log, idx) => {
+          const catClass = CATEGORY_MAP[log.category] || 'cat-other';
+          const timeStr = formatTime(log.timestamp);
+          const note = log.note || '';
+          const row = $(`
+            <tr class="border-b border-[#1f2a3a] hover:bg-[#1a2433]/60 transition fade-row" data-id="${log.id}">
+              <td class="py-2.5 pr-2 text-slate-400 text-xs whitespace-nowrap">${timeStr}</td>
+              <td class="py-2.5 pr-2"><span class="badge-cat ${catClass}">${log.category}</span></td>
+              <td class="py-2.5 pr-2 text-slate-300 max-w-[140px] truncate">${note || '—'}</td>
+              <td class="py-2.5 text-right">
+                <button class="deleteBtn text-slate-500 hover:text-rose-400 transition px-1.5 py-0.5" data-id="${log.id}"><i class="fas fa-trash-can"></i></button>
+              </td>
+            </tr>
+          `);
+          tbody.append(row);
+        });
+      }
+
+      // bind delete events
+      $('.deleteBtn').off('click').on('click', function(e) {
+        e.stopPropagation();
+        const id = $(this).data('id');
+        deleteLogById(id);
+      });
+    }
+
+    // ---------- CRUD ----------
+    function addLog(category, note) {
+      const logs = loadLogs();
+      const entry = {
+        id: Date.now() + '_' + Math.random().toString(36).substring(2, 7),
+        timestamp: new Date().toISOString(),
+        category: category,
+        note: (note || '').trim() || ''
+      };
+      logs.push(entry);
+      saveLogs(logs);
+      renderAll();
+      // optional: clear detail field after log
+      $('#detailInput').val('');
+    }
+
+    function deleteLogById(id) {
+      let logs = loadLogs();
+      const newLogs = logs.filter(l => l.id !== id);
+      if (newLogs.length === logs.length) return;
+      saveLogs(newLogs);
+      // fade animation then render
+      const row = $(`tr[data-id="${id}"]`);
+      if (row.length) {
+        row.css({ opacity: 0, transform: 'scale(0.97)' });
+        setTimeout(() => renderAll(), 160);
+      } else {
+        renderAll();
+      }
+    }
+
+    function clearAllLogs() {
+      if (loadLogs().length === 0) return;
+      if (confirm('🧹 Delete all distraction logs permanently?')) {
+        saveLogs([]);
+        renderAll();
+      }
+    }
+
+    // ---------- EVENT BINDING ----------
+    $(document).ready(function() {
+
+      // 1-click quick buttons
+      $('#quickBtnGroup').on('click', 'button', function() {
+        const cat = $(this).data('cat');
+        if (cat) {
+          // optional: grab detail if any, but we treat as separate
+          const note = $('#detailInput').val().trim();
+          addLog(cat, note);
+          // after log, clear detail and keep focus
+          $('#detailInput').val('');
+          $('#detailInput').focus();
+        }
+      });
+
+      // log with detail button (uses current category? we'll use 'Other / Custom' as default or auto-detect)
+      $('#logWithDetailBtn').on('click', function() {
+        const note = $('#detailInput').val().trim();
+        // if no note, we still log as 'Other'
+        addLog('Other / Custom', note || 'manual log');
+        $('#detailInput').val('');
+        $('#detailInput').focus();
+      });
+
+      // Filter buttons
+      $('.filter-btn').on('click', function() {
+        $('.filter-btn').removeClass('active');
+        $(this).addClass('active');
+        currentFilter = $(this).data('filter') || 'all';
+        renderAll();
+      });
+
+      // Clear all
+      $('#clearAllBtn').on('click', function() {
+        clearAllLogs();
+      });
+
+      // Live clock
+      function updateClock() {
+        const now = new Date();
+        $('#liveClock').text(now.toLocaleTimeString(undefined, { hour: '2-digit', minute: '2-digit', second: '2-digit' }));
+      }
+      updateClock();
+      setInterval(updateClock, 1000);
+
+      // initial render
+      renderAll();
+      // focus detail on load
+      $('#detailInput').focus();
+
+      // allow Enter key on detail to log with note
+      $('#detailInput').on('keydown', function(e) {
+        if (e.key === 'Enter') {
+          e.preventDefault();
+          $('#logWithDetailBtn').click();
+        }
+      });
+    });
+
+  })(jQuery);
+</script>
+</body>
+</html>
