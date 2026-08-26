@@ -1,1 +1,838 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.5" />
+  <title>🔒 Focus · distraction tracker (Cloudflare KV)</title>
+  <!-- Tailwind CSS via CDN -->
+  <script src="https://cdn.tailwindcss.com"></script>
+  <!-- jQuery (for smooth animations & DOM manipulation) -->
+  <script src="https://code.jquery.com/jquery-3.7.1.min.js" integrity="sha256-/JqT3SQfawRcv/BIHPThkBvs0OEvtFFmqPF/lYI/Cxo=" crossorigin="anonymous"></script>
+  <!-- Font Awesome 6 -->
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css" />
 
+  <style>
+    /* ===== Custom Styles ===== */
+    body {
+      background: #0b0f17;
+      font-family: system-ui, -apple-system, 'Segoe UI', Roboto, sans-serif;
+      -webkit-tap-highlight-color: transparent;
+    }
+
+    /* Card styling */
+    .card-dark {
+      background: #141a26;
+      border: 1px solid #2a3344;
+      transition: box-shadow 0.2s ease, transform 0.1s ease;
+    }
+    .card-dark:hover {
+      box-shadow: 0 8px 24px rgba(0,0,0,0.5);
+    }
+
+    /* Category badges */
+    .badge-cat {
+      font-weight: 500;
+      letter-spacing: 0.01em;
+      padding: 0.3rem 0.9rem;
+      border-radius: 9999px;
+      font-size: 0.7rem;
+      display: inline-block;
+      min-height: 28px;
+    }
+    .cat-telegram { background: #2b6f9e; color: #e8f0fe; }
+    .cat-tiktok { background: #b33b5c; color: #fde7ed; }
+    .cat-adult { background: #8b2f4a; color: #f8e3e8; }
+    .cat-social { background: #4f6f8f; color: #e3edf5; }
+    .cat-other { background: #3d4a5c; color: #e4e9f0; }
+
+    /* Filter buttons */
+    .filter-btn {
+      background: #1f2a3a;
+      color: #a7b6cf;
+      border: 1px solid #2f3b4f;
+      transition: 0.15s ease;
+      font-size: 0.7rem;
+      padding: 0.4rem 0.85rem;
+      border-radius: 9999px;
+      cursor: pointer;
+      min-height: 32px;
+      touch-action: manipulation;
+    }
+    .filter-btn.active {
+      background: #2f4b7a;
+      color: white;
+      border-color: #4a7ab5;
+    }
+    .filter-btn:hover {
+      background: #2a3a52;
+      color: #e2eaf5;
+    }
+
+    /* Quick log buttons */
+    .quick-btn {
+      padding: 0.8rem 1rem;
+      font-size: 0.85rem;
+      font-weight: 500;
+      border-radius: 1rem;
+      transition: all 0.1s ease;
+      text-align: center;
+      flex: 1 0 auto;
+      min-width: 70px;
+      min-height: 52px;
+      border: 1px solid transparent;
+      cursor: pointer;
+      touch-action: manipulation;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+    .quick-btn:active {
+      transform: scale(0.94);
+    }
+    .quick-btn i {
+      margin-right: 6px;
+      font-size: 1rem;
+    }
+    @media (max-width: 480px) {
+      .quick-btn {
+        font-size: 0.7rem;
+        padding: 0.6rem 0.5rem;
+        min-width: 55px;
+        min-height: 44px;
+      }
+      .quick-btn i {
+        font-size: 0.85rem;
+        margin-right: 4px;
+      }
+    }
+
+    /* Sync status dot */
+    .sync-dot {
+      display: inline-block;
+      width: 10px;
+      height: 10px;
+      border-radius: 50%;
+      margin-right: 6px;
+      flex-shrink: 0;
+    }
+    .sync-online { background: #4ade80; box-shadow: 0 0 12px #4ade8066; }
+    .sync-offline { background: #f87171; box-shadow: 0 0 12px #f8717166; }
+    .sync-syncing { background: #facc15; box-shadow: 0 0 12px #facc1566; animation: pulse 1s infinite; }
+    @keyframes pulse {
+      0%, 100% { opacity: 0.6; transform: scale(0.95); }
+      50% { opacity: 1; transform: scale(1.05); }
+    }
+
+    /* Secret badge */
+    .secret-badge {
+      background: #1e293b;
+      color: #94a3b8;
+      font-size: 0.6rem;
+      padding: 0.15rem 0.65rem;
+      border-radius: 9999px;
+      border: 1px solid #334155;
+      display: inline-flex;
+      align-items: center;
+      gap: 4px;
+    }
+
+    /* Log entry card (mobile) */
+    .log-card {
+      background: #1a2433;
+      border: 1px solid #2a3344;
+      border-radius: 0.75rem;
+      padding: 0.85rem 1rem;
+      transition: all 0.2s ease;
+      min-height: 60px;
+    }
+    .log-card:hover {
+      background: #1f2b3d;
+    }
+    .log-card .log-time {
+      font-size: 0.7rem;
+      color: #94a3b8;
+    }
+    .log-card .log-note {
+      font-size: 0.85rem;
+      color: #e2e8f0;
+      margin-top: 4px;
+      word-break: break-word;
+    }
+
+    /* Animation classes for jQuery */
+    .fade-in {
+      opacity: 0;
+      transform: translateY(10px);
+      transition: opacity 0.3s ease, transform 0.3s ease;
+    }
+    .fade-in.show {
+      opacity: 1;
+      transform: translateY(0);
+    }
+
+    /* Input focus (16px min for iOS) - CRITICAL for mobile */
+    input, select, textarea {
+      font-size: 16px !important;
+      min-height: 48px;
+    }
+    input:focus, select:focus, textarea:focus {
+      outline: 2px solid #4f7ab5;
+      outline-offset: 1px;
+    }
+
+    /* Button min heights for touch targets */
+    button, .btn-like {
+      min-height: 44px;
+      touch-action: manipulation;
+    }
+
+    /* Table responsive */
+    .table-wrap {
+      overflow-x: auto;
+      -webkit-overflow-scrolling: touch;
+    }
+
+    /* Mobile stacked cards (hidden on md+) */
+    .mobile-log-list {
+      display: flex;
+      flex-direction: column;
+      gap: 0.6rem;
+    }
+    @media (min-width: 768px) {
+      .mobile-log-list {
+        display: none;
+      }
+    }
+
+    /* Desktop table (hidden on mobile) */
+    .desktop-log-table {
+      display: none;
+    }
+    @media (min-width: 768px) {
+      .desktop-log-table {
+        display: table;
+      }
+    }
+
+    /* Scrollable container */
+    .scroll-container {
+      max-height: 60vh;
+      overflow-y: auto;
+      scroll-behavior: smooth;
+      -webkit-overflow-scrolling: touch;
+    }
+    .scroll-container::-webkit-scrollbar {
+      width: 4px;
+    }
+    .scroll-container::-webkit-scrollbar-track {
+      background: #1a2433;
+    }
+    .scroll-container::-webkit-scrollbar-thumb {
+      background: #2f4b7a;
+      border-radius: 9999px;
+    }
+
+    /* Dashboard card text size */
+    .stat-number {
+      font-size: 1.5rem;
+      line-height: 1.2;
+    }
+    @media (min-width: 768px) {
+      .stat-number {
+        font-size: 1.875rem;
+      }
+    }
+  </style>
+</head>
+<body>
+
+<div class="max-w-5xl mx-auto px-4 sm:px-6 py-4 md:py-8 text-slate-200">
+
+  <!-- ===== HEADER ===== -->
+  <header class="flex flex-wrap items-center justify-between mb-5 gap-2">
+    <div>
+      <h1 class="text-xl md:text-2xl font-semibold tracking-tight flex items-center gap-2 text-white">
+        <i class="fas fa-brain text-indigo-400 text-2xl"></i> Focus<span class="text-indigo-300">/</span>track
+      </h1>
+      <p class="text-slate-400 text-xs md:text-sm mt-0.5 flex flex-wrap items-center gap-2">
+        <span>zero‑friction · private</span>
+        <span class="secret-badge"><i class="fas fa-cloud"></i> Cloudflare KV</span>
+      </p>
+    </div>
+    <div class="flex items-center gap-2 md:gap-3">
+      <div id="syncStatus" class="text-[10px] md:text-xs text-slate-400 bg-[#141a26] px-2.5 md:px-3 py-1.5 rounded-full border border-[#2a3344] flex items-center gap-1.5 min-h-[32px]">
+        <span class="sync-dot sync-offline" id="syncDot"></span>
+        <span id="syncLabel" class="whitespace-nowrap">offline</span>
+      </div>
+      <div class="text-[10px] md:text-xs text-slate-400 bg-[#141a26] px-2.5 md:px-3 py-1.5 rounded-full border border-[#2a3344] flex items-center gap-1.5 min-h-[32px]">
+        <i class="far fa-clock text-indigo-300"></i> <span id="liveClock" class="font-mono text-slate-300"></span>
+      </div>
+    </div>
+  </header>
+
+  <!-- ===== QUICK LOG SECTION ===== -->
+  <section class="card-dark rounded-2xl p-4 md:p-5 mb-5">
+    <div class="flex flex-wrap items-center gap-1.5 mb-3">
+      <span class="text-xs font-medium text-slate-400 uppercase tracking-wider flex items-center gap-1.5">
+        <i class="fas fa-bolt text-amber-400"></i> 1‑click log
+      </span>
+      <span class="text-[10px] text-slate-500 ml-1">(tap button → instant)</span>
+    </div>
+
+    <!-- Quick buttons -->
+    <div class="flex flex-wrap gap-2 mb-3" id="quickBtnGroup">
+      <button class="quick-btn cat-telegram" data-cat="Telegram Notifications"><i class="fab fa-telegram"></i> Telegram</button>
+      <button class="quick-btn cat-tiktok" data-cat="TikTok / Short Videos"><i class="fab fa-tiktok"></i> TikTok</button>
+      <button class="quick-btn cat-adult" data-cat="Adult Content / Pornography"><i class="fas fa-ban"></i> Adult</button>
+      <button class="quick-btn cat-social" data-cat="Social Media / Browsing"><i class="fas fa-globe"></i> Social</button>
+      <button class="quick-btn cat-other" data-cat="Other / Custom"><i class="fas fa-ellipsis"></i> Other</button>
+    </div>
+
+    <!-- Detail input + note button -->
+    <div class="flex flex-wrap items-center gap-2 mt-1">
+      <div class="flex-1 min-w-[140px]">
+        <input id="detailInput" type="text" placeholder="Optional note (e.g. 'scrolled 15m')" class="w-full bg-[#1a2433] border border-[#2f3b4f] rounded-xl px-4 py-3 text-base text-slate-200 placeholder-slate-500 focus:ring-1 focus:ring-indigo-400 focus:outline-none" autocomplete="off">
+      </div>
+      <button id="logWithDetailBtn" class="bg-indigo-600 hover:bg-indigo-700 text-sm font-medium px-5 py-3 rounded-xl transition flex items-center gap-1.5 border border-indigo-400/30 touch-manipulation min-h-[48px]">
+        <i class="fas fa-plus"></i> <span class="hidden xs:inline">Log with note</span><span class="xs:hidden">Log</span>
+      </button>
+    </div>
+    <p class="text-[10px] text-slate-500 mt-2 flex items-center gap-1"><i class="far fa-clock"></i> timestamp auto‑captured</p>
+  </section>
+
+  <!-- ===== DASHBOARD ===== -->
+  <section class="grid grid-cols-1 sm:grid-cols-3 gap-3 md:gap-4 mb-5">
+    <div class="card-dark rounded-2xl p-3 md:p-4 flex items-center gap-3 min-h-[72px]">
+      <div class="w-10 h-10 rounded-full bg-indigo-900/40 flex items-center justify-center text-indigo-300 text-lg flex-shrink-0"><i class="fas fa-list"></i></div>
+      <div class="min-w-0">
+        <p class="text-[10px] md:text-xs text-slate-400 font-medium">Today's interruptions</p>
+        <p id="totalToday" class="stat-number font-bold text-white">0</p>
+      </div>
+    </div>
+    <div class="card-dark rounded-2xl p-3 md:p-4 flex items-center gap-3 min-h-[72px]">
+      <div class="w-10 h-10 rounded-full bg-amber-900/30 flex items-center justify-center text-amber-300 text-lg flex-shrink-0"><i class="fas fa-crown"></i></div>
+      <div class="min-w-0">
+        <p class="text-[10px] md:text-xs text-slate-400 font-medium">Top distractor</p>
+        <p id="topDistractor" class="text-lg md:text-xl font-bold text-white truncate">—</p>
+      </div>
+    </div>
+    <div class="card-dark rounded-2xl p-3 md:p-4 flex items-center gap-3 min-h-[72px]">
+      <div class="w-10 h-10 rounded-full bg-emerald-900/30 flex items-center justify-center text-emerald-300 text-lg flex-shrink-0"><i class="fas fa-stopwatch"></i></div>
+      <div class="min-w-0">
+        <p class="text-[10px] md:text-xs text-slate-400 font-medium">Focus streak (since last)</p>
+        <p id="focusStreak" class="text-lg md:text-xl font-bold text-white truncate">—</p>
+      </div>
+    </div>
+  </section>
+
+  <!-- ===== LOG HISTORY ===== -->
+  <section class="card-dark rounded-2xl p-4 md:p-5">
+    <div class="flex flex-wrap items-center justify-between gap-2 mb-3">
+      <h2 class="text-sm font-medium text-slate-300 uppercase tracking-wider flex items-center gap-2">
+        <i class="fas fa-clock-rotate-left text-indigo-400"></i> History
+      </h2>
+      <div class="flex flex-wrap items-center gap-1.5">
+        <button class="filter-btn active" data-filter="all">All</button>
+        <button class="filter-btn" data-filter="Telegram Notifications">Telegram</button>
+        <button class="filter-btn" data-filter="TikTok / Short Videos">TikTok</button>
+        <button class="filter-btn" data-filter="Adult Content / Pornography">Adult</button>
+        <button class="filter-btn" data-filter="Social Media / Browsing">Social</button>
+        <button class="filter-btn" data-filter="Other / Custom">Other</button>
+        <button id="clearAllBtn" class="text-xs bg-rose-900/40 hover:bg-rose-800/50 text-rose-200 px-3 py-1.5 rounded-full transition flex items-center gap-1 border border-rose-700/30 min-h-[32px]">
+          <i class="fas fa-trash-can"></i> <span class="hidden xs:inline">Clear</span>
+        </button>
+      </div>
+    </div>
+
+    <!-- Scrollable container -->
+    <div class="scroll-container" id="logContainer">
+
+      <!-- ===== DESKTOP TABLE (md+) ===== -->
+      <div class="desktop-log-table table-wrap">
+        <table class="w-full text-sm">
+          <thead class="text-left text-xs text-slate-400 border-b border-[#2a3344]">
+            <tr>
+              <th class="pb-2 pr-2 font-medium">Time</th>
+              <th class="pb-2 pr-2 font-medium">Category</th>
+              <th class="pb-2 pr-2 font-medium">Note</th>
+              <th class="pb-2 text-right font-medium">Action</th>
+            </tr>
+          </thead>
+          <tbody id="logTableBody"></tbody>
+        </table>
+      </div>
+
+      <!-- ===== MOBILE STACKED CARDS ===== -->
+      <div id="mobileLogList" class="mobile-log-list"></div>
+
+      <!-- Empty state -->
+      <div id="emptyState" class="text-center text-slate-500 text-sm py-8">
+        <i class="fas fa-inbox text-3xl block mb-2 text-slate-600"></i>
+        No distractions logged. Stay in flow.
+      </div>
+    </div>
+  </section>
+</div>
+
+<script>
+  // ================================================================
+  //  ☁️  CLOUDFLARE WORKER CONFIGURATION
+  // ================================================================
+  // Your Cloudflare Worker endpoint
+  const WORKER_URL = "https://distraction-api.aungthantzin2007.workers.dev";
+  // ================================================================
+
+  (function($) {
+    "use strict";
+
+    // ---------- CONSTANTS ----------
+    const STORAGE_KEY = 'focus_distraction_logs_cf';
+    const CATEGORY_MAP = {
+      'Telegram Notifications': 'cat-telegram',
+      'TikTok / Short Videos': 'cat-tiktok',
+      'Adult Content / Pornography': 'cat-adult',
+      'Social Media / Browsing': 'cat-social',
+      'Other / Custom': 'cat-other'
+    };
+    const POLL_INTERVAL = 5000; // 5 seconds
+
+    // ---------- STATE ----------
+    let currentFilter = 'all';
+    let logsCache = [];
+    let isSyncEnabled = false;
+    let pollTimer = null;
+    let isInitialLoad = true;
+    let syncTimeout = null;
+
+    // ---------- DOM REFS ----------
+    const $syncDot = $('#syncDot');
+    const $syncLabel = $('#syncLabel');
+    const $totalToday = $('#totalToday');
+    const $topDistractor = $('#topDistractor');
+    const $focusStreak = $('#focusStreak');
+    const $logTableBody = $('#logTableBody');
+    const $mobileLogList = $('#mobileLogList');
+    const $emptyState = $('#emptyState');
+    const $detailInput = $('#detailInput');
+
+    // ---------- SYNC STATUS ----------
+    function setSyncStatus(state, message) {
+      $syncDot.removeClass('sync-online sync-offline sync-syncing');
+      if (state === 'online') {
+        $syncDot.addClass('sync-online');
+        $syncLabel.text(message || 'synced');
+      } else if (state === 'syncing') {
+        $syncDot.addClass('sync-syncing');
+        $syncLabel.text(message || 'syncing...');
+      } else {
+        $syncDot.addClass('sync-offline');
+        $syncLabel.text(message || 'offline');
+      }
+    }
+
+    // ---------- LOCAL STORAGE ----------
+    function loadLocalLogs() {
+      try {
+        const raw = localStorage.getItem(STORAGE_KEY);
+        return raw ? JSON.parse(raw) : [];
+      } catch (_) { return []; }
+    }
+    function saveLocalLogs(logs) {
+      localStorage.setItem(STORAGE_KEY, JSON.stringify(logs));
+    }
+
+    // ---------- HELPERS ----------
+    function formatTime(iso) {
+      const d = new Date(iso);
+      return d.toLocaleString(undefined, { month: 'short', day: 'numeric', hour: '2-digit', minute: '2-digit' });
+    }
+    function isToday(iso) {
+      const d = new Date(iso);
+      const now = new Date();
+      return d.getDate() === now.getDate() && d.getMonth() === now.getMonth() && d.getFullYear() === now.getFullYear();
+    }
+    function generateId() {
+      return Date.now() + '_' + Math.random().toString(36).substring(2, 7);
+    }
+
+    function computeMetrics(logs) {
+      const today = logs.filter(l => isToday(l.timestamp));
+      const total = today.length;
+      let freq = {}, maxCount = 0, top = '—';
+      today.forEach(l => {
+        freq[l.category] = (freq[l.category] || 0) + 1;
+        if (freq[l.category] > maxCount) { maxCount = freq[l.category]; top = l.category; }
+      });
+      if (today.length === 0) top = '—';
+      let streak = '—';
+      if (logs.length > 0) {
+        const sorted = [...logs].sort((a,b) => new Date(b.timestamp) - new Date(a.timestamp));
+        const last = new Date(sorted[0].timestamp);
+        const diff = Math.floor((Date.now() - last.getTime()) / 60000);
+        if (diff < 1) streak = '< 1 min';
+        else if (diff < 60) streak = diff + ' min';
+        else streak = Math.floor(diff/60) + 'h ' + (diff%60) + 'm';
+      }
+      return { total, top, streak };
+    }
+
+    // ---------- RENDER ----------
+    function renderAll(animate = true) {
+      const logs = logsCache;
+      const sorted = [...logs].sort((a,b) => new Date(b.timestamp) - new Date(a.timestamp));
+      const metrics = computeMetrics(logs);
+
+      $totalToday.text(metrics.total);
+      $topDistractor.text(metrics.top);
+      $focusStreak.text(metrics.streak);
+
+      let filtered = sorted;
+      if (currentFilter !== 'all') {
+        filtered = sorted.filter(l => l.category === currentFilter);
+      }
+
+      // --- Desktop table ---
+      $logTableBody.empty();
+      // --- Mobile cards ---
+      $mobileLogList.empty();
+
+      if (filtered.length === 0) {
+        $emptyState.show();
+        return;
+      }
+      $emptyState.hide();
+
+      // Render desktop rows
+      filtered.forEach((log) => {
+        const catClass = CATEGORY_MAP[log.category] || 'cat-other';
+        const timeStr = formatTime(log.timestamp);
+        const note = log.note || '';
+        const row = $(`
+          <tr class="border-b border-[#1f2a3a] hover:bg-[#1a2433]/60 transition" data-id="${log.id}">
+            <td class="py-2.5 pr-2 text-slate-400 text-xs whitespace-nowrap">${timeStr}</td>
+            <td class="py-2.5 pr-2"><span class="badge-cat ${catClass}">${log.category}</span></td>
+            <td class="py-2.5 pr-2 text-slate-300 max-w-[140px] truncate">${note || '—'}</td>
+            <td class="py-2.5 text-right">
+              <button class="deleteBtn text-slate-500 hover:text-rose-400 transition px-3 py-1.5 min-h-[36px]" data-id="${log.id}">
+                <i class="fas fa-trash-can"></i>
+              </button>
+            </td>
+          </tr>
+        `);
+        $logTableBody.append(row);
+      });
+
+      // Render mobile cards
+      filtered.forEach((log, index) => {
+        const catClass = CATEGORY_MAP[log.category] || 'cat-other';
+        const timeStr = formatTime(log.timestamp);
+        const note = log.note || '';
+        const card = $(`
+          <div class="log-card fade-in" data-id="${log.id}" style="animation-delay: ${index * 30}ms">
+            <div class="flex items-start justify-between gap-2">
+              <div class="flex-1 min-w-0">
+                <div class="flex items-center gap-2 flex-wrap">
+                  <span class="badge-cat ${catClass}">${log.category}</span>
+                  <span class="log-time">${timeStr}</span>
+                </div>
+                <p class="log-note">${note || '—'}</p>
+              </div>
+              <button class="deleteBtnMobile text-slate-500 hover:text-rose-400 transition px-3 py-1.5 flex-shrink-0 min-h-[36px]" data-id="${log.id}">
+                <i class="fas fa-trash-can text-sm"></i>
+              </button>
+            </div>
+          </div>
+        `);
+        $mobileLogList.append(card);
+
+        // Trigger animation after append
+        if (animate) {
+          setTimeout(() => {
+            card.addClass('show');
+          }, 20 + index * 30);
+        } else {
+          card.addClass('show');
+        }
+      });
+
+      // Bind delete events (desktop)
+      $('.deleteBtn').off('click').on('click', function(e) {
+        e.stopPropagation();
+        const id = $(this).data('id');
+        deleteLogById(id);
+      });
+
+      // Bind delete events (mobile)
+      $('.deleteBtnMobile').off('click').on('click', function(e) {
+        e.stopPropagation();
+        const id = $(this).data('id');
+        deleteLogById(id);
+      });
+    }
+
+    // ---------- CRUD ----------
+    function addLog(category, note) {
+      const entry = {
+        id: generateId(),
+        timestamp: new Date().toISOString(),
+        category: category,
+        note: (note || '').trim() || ''
+      };
+
+      logsCache.push(entry);
+      saveLocalLogs(logsCache);
+      renderAll(true);
+      setSyncStatus('syncing');
+
+      // Sync to cloud
+      syncToCloud(logsCache);
+
+      $detailInput.val('');
+      $detailInput.focus();
+    }
+
+    function deleteLogById(id) {
+      const logToDelete = logsCache.find(l => l.id === id);
+      if (!logToDelete) return;
+
+      // Remove with animation
+      const $row = $(`tr[data-id="${id}"]`);
+      const $card = $(`.log-card[data-id="${id}"]`);
+
+      if ($row.length) {
+        $row.css({ opacity: 0, transform: 'scale(0.97)' });
+        setTimeout(() => {
+          logsCache = logsCache.filter(l => l.id !== id);
+          saveLocalLogs(logsCache);
+          renderAll(true);
+          syncToCloud(logsCache);
+        }, 200);
+      } else if ($card.length) {
+        $card.css({ opacity: 0, transform: 'scale(0.95)' });
+        setTimeout(() => {
+          logsCache = logsCache.filter(l => l.id !== id);
+          saveLocalLogs(logsCache);
+          renderAll(true);
+          syncToCloud(logsCache);
+        }, 200);
+      } else {
+        logsCache = logsCache.filter(l => l.id !== id);
+        saveLocalLogs(logsCache);
+        renderAll(true);
+        syncToCloud(logsCache);
+      }
+    }
+
+    function clearAllLogs() {
+      if (logsCache.length === 0) return;
+      if (!confirm('🧹 Delete all distraction logs permanently?')) return;
+      logsCache = [];
+      saveLocalLogs(logsCache);
+      renderAll(true);
+      syncToCloud(logsCache);
+    }
+
+    // ---------- CLOUDFLARE SYNC ----------
+    function syncToCloud(logs) {
+      if (!isSyncEnabled) return;
+
+      // Clear any pending timeout to avoid race conditions
+      if (syncTimeout) {
+        clearTimeout(syncTimeout);
+        syncTimeout = null;
+      }
+
+      const payload = {
+        logs: logs,
+        timestamp: Date.now()
+      };
+
+      fetch(WORKER_URL, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(payload)
+      })
+      .then(response => {
+        if (!response.ok) throw new Error('HTTP ' + response.status);
+        return response.json();
+      })
+      .then(() => {
+        setSyncStatus('online');
+      })
+      .catch(err => {
+        console.warn('Sync error:', err);
+        setSyncStatus('offline', 'sync failed');
+      });
+    }
+
+    function fetchFromCloud() {
+      if (!isSyncEnabled) return Promise.resolve(null);
+
+      const url = `${WORKER_URL}?t=${Date.now()}`;
+
+      return fetch(url, {
+        method: 'GET',
+        headers: { 'Content-Type': 'application/json' }
+      })
+      .then(response => {
+        if (!response.ok) throw new Error('HTTP ' + response.status);
+        return response.json();
+      })
+      .then(data => {
+        if (data && data.logs && Array.isArray(data.logs)) {
+          return data.logs;
+        }
+        return null;
+      })
+      .catch(err => {
+        console.warn('Fetch error:', err);
+        setSyncStatus('offline', 'fetch failed');
+        return null;
+      });
+    }
+
+    // ---------- POLLING ----------
+    function pollForUpdates() {
+      if (!isSyncEnabled) return;
+
+      fetchFromCloud()
+        .then(remoteLogs => {
+          if (remoteLogs && Array.isArray(remoteLogs)) {
+            // Check if changed
+            const localIds = new Set(logsCache.map(l => l.id));
+            const remoteIds = new Set(remoteLogs.map(l => l.id));
+            let hasChanges = false;
+            if (localIds.size !== remoteIds.size) {
+              hasChanges = true;
+            } else {
+              for (let id of localIds) {
+                if (!remoteIds.has(id)) { hasChanges = true; break; }
+              }
+            }
+            if (hasChanges) {
+              logsCache = remoteLogs;
+              saveLocalLogs(logsCache);
+              renderAll(true);
+              setSyncStatus('online');
+            } else if (isInitialLoad) {
+              // First load, ensure we show remote data
+              if (remoteLogs.length > 0) {
+                logsCache = remoteLogs;
+                saveLocalLogs(logsCache);
+                renderAll(false);
+              }
+              isInitialLoad = false;
+            }
+          }
+        })
+        .catch(() => {});
+    }
+
+    // ---------- INIT SYNC ----------
+    function initSync() {
+      // Check config
+      if (!WORKER_URL || WORKER_URL === 'https://distraction-api.aungthantzin2007.workers.dev') {
+        console.warn('⚠️ Worker URL not configured. Using local storage only.');
+        isSyncEnabled = false;
+        setSyncStatus('offline', 'no endpoint');
+        return;
+      }
+
+      isSyncEnabled = true;
+      setSyncStatus('syncing', 'connecting...');
+
+      // Initial fetch
+      fetchFromCloud()
+        .then(remoteLogs => {
+          if (remoteLogs && Array.isArray(remoteLogs) && remoteLogs.length > 0) {
+            logsCache = remoteLogs;
+            saveLocalLogs(logsCache);
+            renderAll(false);
+            setSyncStatus('online');
+          } else {
+            // No remote data, push local if exists
+            if (logsCache.length > 0) {
+              syncToCloud(logsCache);
+            }
+            setSyncStatus('online');
+          }
+          isInitialLoad = false;
+        })
+        .catch(() => {
+          setSyncStatus('offline');
+          isInitialLoad = false;
+        });
+
+      // Start polling
+      if (pollTimer) clearInterval(pollTimer);
+      pollTimer = setInterval(pollForUpdates, POLL_INTERVAL);
+    }
+
+    // ---------- EVENT BINDING ----------
+    $(document).ready(function() {
+      // Load local data
+      logsCache = loadLocalLogs();
+      renderAll(false);
+
+      // Init sync
+      initSync();
+
+      // Quick buttons
+      $('#quickBtnGroup').on('click', 'button', function() {
+        const cat = $(this).data('cat');
+        if (cat) {
+          const note = $detailInput.val().trim();
+          addLog(cat, note);
+        }
+      });
+
+      // Log with detail
+      $('#logWithDetailBtn').on('click', function() {
+        const note = $detailInput.val().trim();
+        addLog('Other / Custom', note || 'manual log');
+      });
+
+      // Enter key
+      $detailInput.on('keydown', function(e) {
+        if (e.key === 'Enter') {
+          e.preventDefault();
+          $('#logWithDetailBtn').click();
+        }
+      });
+
+      // Filter buttons
+      $('.filter-btn').on('click', function() {
+        $('.filter-btn').removeClass('active');
+        $(this).addClass('active');
+        currentFilter = $(this).data('filter') || 'all';
+        renderAll(true);
+      });
+
+      // Clear all
+      $('#clearAllBtn').on('click', function() {
+        clearAllLogs();
+      });
+
+      // Live clock
+      function updateClock() {
+        const now = new Date();
+        $('#liveClock').text(now.toLocaleTimeString(undefined, { hour: '2-digit', minute: '2-digit', second: '2-digit' }));
+      }
+      updateClock();
+      setInterval(updateClock, 1000);
+
+      // Focus input
+      $detailInput.focus();
+
+      // Visibility change - refresh on tab focus
+      document.addEventListener('visibilitychange', function() {
+        if (document.visibilityState === 'visible' && isSyncEnabled) {
+          pollForUpdates();
+        }
+      });
+    });
+
+  })(jQuery);
+</script>
+</body>
+</html>
