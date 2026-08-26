@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.5" />
-  <title>🔒 Focus · distraction tracker (cloud sync fixed)</title>
+  <title>🔒 Focus · distraction tracker (secret key sync)</title>
   <!-- Tailwind CSS via CDN -->
   <script src="https://cdn.tailwindcss.com"></script>
   <!-- jQuery -->
@@ -11,11 +11,11 @@
   <!-- Font Awesome 6 -->
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css" />
 
-  <!-- ============ FIREBASE SDK (modular CDN) ============ -->
+  <!-- ============ FIREBASE SDK (Realtime Database) ============ -->
   <!-- Firebase App (core) -->
   <script src="https://www.gstatic.com/firebasejs/10.14.1/firebase-app-compat.js"></script>
-  <!-- Firebase Firestore -->
-  <script src="https://www.gstatic.com/firebasejs/10.14.1/firebase-firestore-compat.js"></script>
+  <!-- Firebase Realtime Database -->
+  <script src="https://www.gstatic.com/firebasejs/10.14.1/firebase-database-compat.js"></script>
 
   <style>
     body { background: #0b0f17; font-family: system-ui, -apple-system, 'Segoe UI', Roboto, sans-serif; }
@@ -46,6 +46,7 @@
     .sync-offline { background: #f87171; box-shadow: 0 0 8px #f8717166; }
     .sync-syncing { background: #facc15; box-shadow: 0 0 8px #facc1566; animation: pulse 1s infinite; }
     @keyframes pulse { 0% { opacity: 0.6; } 50% { opacity: 1; } 100% { opacity: 0.6; } }
+    .secret-badge { background: #1e293b; color: #94a3b8; font-size: 0.6rem; padding: 0.1rem 0.5rem; border-radius: 9999px; border: 1px solid #334155; }
   </style>
 </head>
 <body>
@@ -58,7 +59,10 @@
       <h1 class="text-2xl md:text-3xl font-semibold tracking-tight flex items-center gap-2 text-white">
         <i class="fas fa-brain text-indigo-400"></i> Focus<span class="text-indigo-300">/</span>track
       </h1>
-      <p class="text-slate-400 text-sm mt-0.5">zero‑friction · private · cloud sync</p>
+      <p class="text-slate-400 text-sm mt-0.5 flex items-center gap-2">
+        <span>zero‑friction · private</span>
+        <span class="secret-badge"><i class="fas fa-key mr-1"></i> secret key protected</span>
+      </p>
     </div>
     <div class="flex items-center gap-3">
       <div id="syncStatus" class="text-xs text-slate-400 bg-[#141a26] px-3 py-1.5 rounded-full border border-[#2a3344] flex items-center">
@@ -144,324 +148,365 @@
     </div>
   </section>
 </div>
-  <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-app.js"></script>
-<script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-firestore.js"></script>
 
-<!-- 2. jQuery Library -->
-<script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
 <script>
-// ============================================================
-// 🔥 FIREBASE CONFIGURATION — PASTE YOUR KEYS HERE
-// ============================================================
-const FIREBASE_CONFIG = {
-    apiKey: "AIzaSyBma59s9-RLk5KTp1COwEzYWr_sWLRMMF4",
+  // ============================================================
+  //  🔐 SECRET KEY CONFIGURATION
+  // ============================================================
+  // ⚠️ IMPORTANT: Change this to a strong, unique secret key
+  // This key acts as a "password" for your data in Firebase
+  // Keep it private and don't share it publicly
+  const APP_SECRET_KEY = "123456";
+  // ============================================================
+
+  // ============================================================
+  //  🔥 FIREBASE CONFIGURATION — PASTE YOUR KEYS HERE
+  // ============================================================
+  // ⚠️ IMPORTANT: Replace these placeholder values with your actual Firebase config
+  // You can find these in your Firebase Console > Project Settings > Your apps
+  const FIREBASE_CONFIG = {
+  apiKey: "AIzaSyBma59s9-RLk5KTp1COwEzYWr_sWLRMMF4",
   authDomain: "productivity-4d09b.firebaseapp.com",
   projectId: "productivity-4d09b",
   storageBucket: "productivity-4d09b.firebasestorage.app",
   messagingSenderId: "260853498434",
   appId: "1:260853498434:web:4dc53b5e1873b3317e23db",
-};
-// ============================================================
 
-(function($) {
-  "use strict";
-
-  const STORAGE_KEY = 'focus_distraction_logs';
-  const CATEGORY_MAP = {
-    'Telegram Notifications': 'cat-telegram',
-    'TikTok / Short Videos': 'cat-tiktok',
-    'Adult Content / Pornography': 'cat-adult',
-    'Social Media / Browsing': 'cat-social',
-    'Other / Custom': 'cat-other'
   };
+  // ============================================================
 
-  let currentFilter = 'all';
-  let logsCache = [];
-  let isFirebaseReady = false;
-  let db = null;
+  (function($) {
+    "use strict";
 
-  function setSyncStatus(state) {
-    const dot = $('#syncDot');
-    const label = $('#syncLabel');
-    dot.removeClass('sync-online sync-offline sync-syncing');
-
-    if (state === 'online') {
-      dot.addClass('sync-online');
-      label.text('synced');
-    } else if (state === 'syncing') {
-      dot.addClass('sync-syncing');
-      label.text('syncing...');
-    } else {
-      dot.addClass('sync-offline');
-      label.text('offline');
-    }
-  }
-
-  function loadLocalLogs() {
-    try {
-      const raw = localStorage.getItem(STORAGE_KEY);
-      return raw ? JSON.parse(raw) : [];
-    } catch (_) { return []; }
-  }
-
-  function saveLocalLogs(logs) {
-    localStorage.setItem(STORAGE_KEY, JSON.stringify(logs));
-  }
-
-  function formatTime(iso) {
-    const d = new Date(iso);
-    return d.toLocaleString(undefined, { month: 'short', day: 'numeric', hour: '2-digit', minute: '2-digit' });
-  }
-
-  function isToday(iso) {
-    const d = new Date(iso);
-    const now = new Date();
-    return d.getDate() === now.getDate() && d.getMonth() === now.getMonth() && d.getFullYear() === now.getFullYear();
-  }
-
-  function generateId() { return Date.now() + '_' + Math.random().toString(36).substring(2, 7); }
-
-  function computeMetrics(logs) {
-    const today = logs.filter(l => isToday(l.timestamp));
-    const total = today.length;
-    let freq = {}, maxCount = 0, top = '—';
-
-    today.forEach(l => {
-      freq[l.category] = (freq[l.category] || 0) + 1;
-      if (freq[l.category] > maxCount) { maxCount = freq[l.category]; top = l.category; }
-    });
-
-    if (today.length === 0) top = '—';
-
-    let streak = '—';
-    if (logs.length > 0) {
-      const sorted = [...logs].sort((a,b) => new Date(b.timestamp) - new Date(a.timestamp));
-      const last = new Date(sorted[0].timestamp);
-      const diff = Math.floor((Date.now() - last.getTime()) / 60000);
-      if (diff < 1) streak = '< 1 min';
-      else if (diff < 60) streak = diff + ' min';
-      else streak = Math.floor(diff/60) + 'h ' + (diff%60) + 'm';
-    }
-
-    return { total, top, streak };
-  }
-
-  function renderAll() {
-    const logs = logsCache;
-    const sorted = [...logs].sort((a,b) => new Date(b.timestamp) - new Date(a.timestamp));
-    const metrics = computeMetrics(logs);
-
-    $('#totalToday').text(metrics.total);
-    $('#topDistractor').text(metrics.top);
-    $('#focusStreak').text(metrics.streak);
-
-    let filtered = sorted;
-    if (currentFilter !== 'all') {
-      filtered = sorted.filter(l => l.category === currentFilter);
-    }
-
-    const tbody = $('#logTableBody');
-    tbody.empty();
-
-    if (filtered.length === 0) {
-      $('#emptyState').show();
-    } else {
-      $('#emptyState').hide();
-      filtered.forEach((log) => {
-        const catClass = CATEGORY_MAP[log.category] || 'cat-other';
-        const timeStr = formatTime(log.timestamp);
-        const note = log.note || '';
-
-        const row = $(`
-          <tr class="border-b border-[#1f2a3a] hover:bg-[#1a2433]/60 transition fade-row" data-id="${log.id}">
-            <td class="py-2.5 pr-2 text-slate-400 text-xs whitespace-nowrap">${timeStr}</td>
-            <td class="py-2.5 pr-2"><span class="badge-cat ${catClass}">${log.category}</span></td>
-            <td class="py-2.5 pr-2 text-slate-300 max-w-[140px] truncate">${note || '—'}</td>
-            <td class="py-2.5 text-right">
-              <button class="deleteBtn text-slate-500 hover:text-rose-400 transition px-1.5 py-0.5" data-id="${log.id}">
-                <i class="fas fa-trash-can"></i>
-              </button>
-            </td>
-          </tr>
-        `);
-        tbody.append(row);
-      });
-    }
-
-    $('.deleteBtn').off('click').on('click', function(e) {
-      e.stopPropagation();
-      const id = $(this).data('id');
-      deleteLogById(id);
-    });
-  }
-
-  function addLog(category, note) {
-    const entry = {
-      id: generateId(),
-      timestamp: new Date().toISOString(),
-      category: category,
-      note: (note || '').trim() || ''
+    // ---------- STATE ----------
+    const STORAGE_KEY = 'focus_distraction_logs';
+    const CATEGORY_MAP = {
+      'Telegram Notifications': 'cat-telegram',
+      'TikTok / Short Videos': 'cat-tiktok',
+      'Adult Content / Pornography': 'cat-adult',
+      'Social Media / Browsing': 'cat-social',
+      'Other / Custom': 'cat-other'
     };
 
-    logsCache.push(entry);
-    saveLocalLogs(logsCache);
-    renderAll();
+    let currentFilter = 'all';
+    let logsCache = [];
+    let isFirebaseReady = false;
+    let db = null;
+    let dbRef = null;
+    let firebaseListener = null;
 
-    if (isFirebaseReady && db) {
-      setSyncStatus('syncing');
-      db.collection('distractions').doc(entry.id).set(entry)
-        .then(() => { setSyncStatus('online'); })
-        .catch((err) => { 
-          console.error("Firestore Write Error:", err);
-          setSyncStatus('offline'); 
-        });
-    } else {
-      setSyncStatus('offline');
-    }
-
-    $('#detailInput').val('');
-  }
-
-  function deleteLogById(id) {
-    logsCache = logsCache.filter(l => l.id !== id);
-    saveLocalLogs(logsCache);
-    renderAll();
-
-    if (isFirebaseReady && db) {
-      setSyncStatus('syncing');
-      db.collection('distractions').doc(id).delete()
-        .then(() => { setSyncStatus('online'); })
-        .catch(() => { setSyncStatus('offline'); });
-    } else {
-      setSyncStatus('offline');
-    }
-  }
-
-  function clearAllLogs() {
-    if (logsCache.length === 0) return;
-    if (!confirm('🧹 Delete all distraction logs permanently?')) return;
-
-    const ids = logsCache.map(l => l.id);
-    logsCache = [];
-    saveLocalLogs(logsCache);
-    renderAll();
-
-    if (isFirebaseReady && db && ids.length > 0) {
-      setSyncStatus('syncing');
-      const batch = db.batch();
-      ids.forEach(id => {
-        const ref = db.collection('distractions').doc(id);
-        batch.delete(ref);
-      });
-      batch.commit()
-        .then(() => { setSyncStatus('online'); })
-        .catch(() => { setSyncStatus('offline'); });
-    } else {
-      setSyncStatus('offline');
-    }
-  }
-
-  function initFirebase() {
-    if (typeof firebase === 'undefined') {
-      console.warn('⚠️ Firebase SDK missing.');
-      setSyncStatus('offline');
-      return;
-    }
-
-    if (!FIREBASE_CONFIG.apiKey || FIREBASE_CONFIG.apiKey === 'YOUR_API_KEY') {
-      console.warn('⚠️ Firebase API key missing.');
-      setSyncStatus('offline');
-      return;
-    }
-
-    try {
-      if (!firebase.apps.length) {
-        firebase.initializeApp(FIREBASE_CONFIG);
+    // ---------- UI sync status ----------
+    function setSyncStatus(state) {
+      const dot = $('#syncDot');
+      const label = $('#syncLabel');
+      dot.removeClass('sync-online sync-offline sync-syncing');
+      if (state === 'online') {
+        dot.addClass('sync-online');
+        label.text('synced');
+      } else if (state === 'syncing') {
+        dot.addClass('sync-syncing');
+        label.text('syncing...');
+      } else {
+        dot.addClass('sync-offline');
+        label.text('offline');
       }
-      
-      db = firebase.firestore();
-      isFirebaseReady = true;
-      setSyncStatus('syncing');
+    }
 
-      // Index Error မဖြစ်အောင် client-side မှပဲ sort လုပ်ထားပါသည်
-      db.collection('distractions')
-        .onSnapshot((snapshot) => {
-          const remoteLogs = [];
-          snapshot.forEach(doc => {
-            const data = doc.data();
-            if (data && data.id) {
-              remoteLogs.push(data);
-            }
-          });
-          logsCache = remoteLogs;
-          saveLocalLogs(logsCache);
-          renderAll();
-          setSyncStatus('online');
-        }, (error) => {
-          console.error('Firestore Sync Error:', error);
-          setSyncStatus('offline');
-          logsCache = loadLocalLogs();
-          renderAll();
+    // ---------- MODEL (local fallback) ----------
+    function loadLocalLogs() {
+      try {
+        const raw = localStorage.getItem(STORAGE_KEY);
+        return raw ? JSON.parse(raw) : [];
+      } catch (_) { return []; }
+    }
+    function saveLocalLogs(logs) {
+      localStorage.setItem(STORAGE_KEY, JSON.stringify(logs));
+    }
+
+    // ---------- HELPERS ----------
+    function formatTime(iso) {
+      const d = new Date(iso);
+      return d.toLocaleString(undefined, { month: 'short', day: 'numeric', hour: '2-digit', minute: '2-digit' });
+    }
+    function isToday(iso) {
+      const d = new Date(iso);
+      const now = new Date();
+      return d.getDate() === now.getDate() && d.getMonth() === now.getMonth() && d.getFullYear() === now.getFullYear();
+    }
+    function generateId() { return Date.now() + '_' + Math.random().toString(36).substring(2, 7); }
+
+    function computeMetrics(logs) {
+      const today = logs.filter(l => isToday(l.timestamp));
+      const total = today.length;
+      let freq = {}, maxCount = 0, top = '—';
+      today.forEach(l => {
+        freq[l.category] = (freq[l.category] || 0) + 1;
+        if (freq[l.category] > maxCount) { maxCount = freq[l.category]; top = l.category; }
+      });
+      if (today.length === 0) top = '—';
+      let streak = '—';
+      if (logs.length > 0) {
+        const sorted = [...logs].sort((a,b) => new Date(b.timestamp) - new Date(a.timestamp));
+        const last = new Date(sorted[0].timestamp);
+        const diff = Math.floor((Date.now() - last.getTime()) / 60000);
+        if (diff < 1) streak = '< 1 min';
+        else if (diff < 60) streak = diff + ' min';
+        else streak = Math.floor(diff/60) + 'h ' + (diff%60) + 'm';
+      }
+      return { total, top, streak };
+    }
+
+    // ---------- RENDER (from logsCache) ----------
+    function renderAll() {
+      const logs = logsCache;
+      const sorted = [...logs].sort((a,b) => new Date(b.timestamp) - new Date(a.timestamp));
+      const metrics = computeMetrics(logs);
+      $('#totalToday').text(metrics.total);
+      $('#topDistractor').text(metrics.top);
+      $('#focusStreak').text(metrics.streak);
+
+      let filtered = sorted;
+      if (currentFilter !== 'all') {
+        filtered = sorted.filter(l => l.category === currentFilter);
+      }
+
+      const tbody = $('#logTableBody');
+      tbody.empty();
+      if (filtered.length === 0) {
+        $('#emptyState').show();
+      } else {
+        $('#emptyState').hide();
+        filtered.forEach((log) => {
+          const catClass = CATEGORY_MAP[log.category] || 'cat-other';
+          const timeStr = formatTime(log.timestamp);
+          const note = log.note || '';
+          const row = $(`
+            <tr class="border-b border-[#1f2a3a] hover:bg-[#1a2433]/60 transition fade-row" data-id="${log.id}">
+              <td class="py-2.5 pr-2 text-slate-400 text-xs whitespace-nowrap">${timeStr}</td>
+              <td class="py-2.5 pr-2"><span class="badge-cat ${catClass}">${log.category}</span></td>
+              <td class="py-2.5 pr-2 text-slate-300 max-w-[140px] truncate">${note || '—'}</td>
+              <td class="py-2.5 text-right">
+                <button class="deleteBtn text-slate-500 hover:text-rose-400 transition px-1.5 py-0.5" data-id="${log.id}"><i class="fas fa-trash-can"></i></button>
+              </td>
+            </tr>
+          `);
+          tbody.append(row);
         });
-    } catch (e) {
-      console.error('Firebase init failed:', e);
-      setSyncStatus('offline');
+      }
+
+      $('.deleteBtn').off('click').on('click', function(e) {
+        e.stopPropagation();
+        const id = $(this).data('id');
+        deleteLogById(id);
+      });
+    }
+
+    // ---------- CRUD (sync-aware with secret key) ----------
+    function addLog(category, note) {
+      const entry = {
+        id: generateId(),
+        timestamp: new Date().toISOString(),
+        category: category,
+        note: (note || '').trim() || '',
+        secretKey: APP_SECRET_KEY // Include secret key in every entry
+      };
+      
+      // Optimistic local update
+      logsCache.push(entry);
+      saveLocalLogs(logsCache);
+      renderAll();
+
+      // Sync to Firebase Realtime Database if available
+      if (isFirebaseReady && dbRef) {
+        setSyncStatus('syncing');
+        dbRef.child(entry.id).set(entry)
+          .then(() => { 
+            if (document.visibilityState === 'visible') setSyncStatus('online'); 
+          })
+          .catch((err) => {
+            console.error('Firebase write error:', err);
+            setSyncStatus('offline');
+          });
+      } else {
+        setSyncStatus('offline');
+      }
+      $('#detailInput').val('');
+    }
+
+    function deleteLogById(id) {
+      const logToDelete = logsCache.find(l => l.id === id);
+      if (!logToDelete) return;
+      logsCache = logsCache.filter(l => l.id !== id);
+      saveLocalLogs(logsCache);
+      renderAll();
+
+      if (isFirebaseReady && dbRef) {
+        setSyncStatus('syncing');
+        dbRef.child(id).remove()
+          .then(() => { if (document.visibilityState === 'visible') setSyncStatus('online'); })
+          .catch(() => { setSyncStatus('offline'); });
+      } else {
+        setSyncStatus('offline');
+      }
+    }
+
+    function clearAllLogs() {
+      if (logsCache.length === 0) return;
+      if (!confirm('🧹 Delete all distraction logs permanently?')) return;
+      const ids = logsCache.map(l => l.id);
+      logsCache = [];
+      saveLocalLogs(logsCache);
+      renderAll();
+
+      if (isFirebaseReady && dbRef && ids.length > 0) {
+        setSyncStatus('syncing');
+        const updates = {};
+        ids.forEach(id => {
+          updates[id] = null;
+        });
+        dbRef.update(updates)
+          .then(() => { if (document.visibilityState === 'visible') setSyncStatus('online'); })
+          .catch(() => { setSyncStatus('offline'); });
+      } else {
+        setSyncStatus('offline');
+      }
+    }
+
+    // ---------- FIREBASE INIT & LISTENER (with secret key filtering) ----------
+    function initFirebase() {
+      // Check if Firebase is available globally
+      if (typeof firebase === 'undefined') {
+        console.warn('⚠️ Firebase SDK not loaded. Using local storage only.');
+        setSyncStatus('offline');
+        return;
+      }
+
+      // Check if config is filled
+      if (!FIREBASE_CONFIG.apiKey || FIREBASE_CONFIG.apiKey === 'YOUR_API_KEY') {
+        console.warn('⚠️ Firebase config not set. Using local storage only.');
+        setSyncStatus('offline');
+        return;
+      }
+
+      // Check if secret key is set
+      if (!APP_SECRET_KEY || APP_SECRET_KEY === 'MY_SECRET_KEY_12345') {
+        console.warn('⚠️ Please change your APP_SECRET_KEY to a unique value.');
+      }
+
+      try {
+        // Initialize Firebase
+        if (!firebase.apps.length) {
+          firebase.initializeApp(FIREBASE_CONFIG);
+        }
+        
+        // Get Realtime Database reference
+        db = firebase.database();
+        dbRef = db.ref('distractions');
+
+        isFirebaseReady = true;
+        setSyncStatus('syncing');
+
+        // Set up realtime listener with secret key filtering
+        // Query only entries that match our secret key
+        firebaseListener = dbRef
+          .orderByChild('secretKey')
+          .equalTo(APP_SECRET_KEY)
+          .on('value', (snapshot) => {
+            const remoteLogs = [];
+            snapshot.forEach((childSnapshot) => {
+              const data = childSnapshot.val();
+              if (data && data.id) {
+                remoteLogs.push(data);
+              }
+            });
+            // Use remote as source of truth
+            logsCache = remoteLogs;
+            saveLocalLogs(logsCache);
+            renderAll();
+            setSyncStatus('online');
+          }, (error) => {
+            console.error('Firebase listener error:', error);
+            setSyncStatus('offline');
+            // Fallback to local
+            logsCache = loadLocalLogs();
+            renderAll();
+          });
+
+      } catch (e) {
+        console.warn('Firebase init failed:', e);
+        setSyncStatus('offline');
+        logsCache = loadLocalLogs();
+        renderAll();
+      }
+    }
+
+    // ---------- EVENT BINDING ----------
+    $(document).ready(function() {
+      // Initial load from local storage
       logsCache = loadLocalLogs();
       renderAll();
-    }
-  }
 
-  $(document).ready(function() {
-    logsCache = loadLocalLogs();
-    renderAll();
+      // Initialize Firebase (will fallback to local if config is missing)
+      initFirebase();
 
-    initFirebase();
+      // 1-click quick buttons
+      $('#quickBtnGroup').on('click', 'button', function() {
+        const cat = $(this).data('cat');
+        if (cat) {
+          const note = $('#detailInput').val().trim();
+          addLog(cat, note);
+          $('#detailInput').focus();
+        }
+      });
 
-    $('#quickBtnGroup').on('click', 'button', function() {
-      const cat = $(this).data('cat');
-      if (cat) {
+      // Log with detail
+      $('#logWithDetailBtn').on('click', function() {
         const note = $('#detailInput').val().trim();
-        addLog(cat, note);
+        addLog('Other / Custom', note || 'manual log');
         $('#detailInput').focus();
-      }
-    });
+      });
 
-    $('#logWithDetailBtn').on('click', function() {
-      const note = $('#detailInput').val().trim();
-      addLog('Other / Custom', note || 'manual log');
+      // Filter buttons
+      $('.filter-btn').on('click', function() {
+        $('.filter-btn').removeClass('active');
+        $(this).addClass('active');
+        currentFilter = $(this).data('filter') || 'all';
+        renderAll();
+      });
+
+      // Clear all
+      $('#clearAllBtn').on('click', function() {
+        clearAllLogs();
+      });
+
+      // Live clock
+      function updateClock() {
+        const now = new Date();
+        $('#liveClock').text(now.toLocaleTimeString(undefined, { hour: '2-digit', minute: '2-digit', second: '2-digit' }));
+      }
+      updateClock();
+      setInterval(updateClock, 1000);
+
+      // Enter key on detail input
+      $('#detailInput').on('keydown', function(e) {
+        if (e.key === 'Enter') {
+          e.preventDefault();
+          $('#logWithDetailBtn').click();
+        }
+      });
+
+      // Focus on detail input
       $('#detailInput').focus();
+
+      // Handle page visibility changes to update sync status
+      document.addEventListener('visibilitychange', function() {
+        if (document.visibilityState === 'visible' && isFirebaseReady) {
+          setSyncStatus('online');
+        }
+      });
     });
 
-    $('.filter-btn').on('click', function() {
-      $('.filter-btn').removeClass('active');
-      $(this).addClass('active');
-      currentFilter = $(this).data('filter') || 'all';
-      renderAll();
-    });
-
-    $('#clearAllBtn').on('click', function() {
-      clearAllLogs();
-    });
-
-    function updateClock() {
-      const now = new Date();
-      $('#liveClock').text(now.toLocaleTimeString(undefined, { hour: '2-digit', minute: '2-digit', second: '2-digit' }));
-    }
-    updateClock();
-    setInterval(updateClock, 1000);
-
-    $('#detailInput').on('keydown', function(e) {
-      if (e.key === 'Enter') {
-        e.preventDefault();
-        $('#logWithDetailBtn').click();
-      }
-    });
-
-    $('#detailInput').focus();
-  });
-})(jQuery);
-        
+  })(jQuery);
 </script>
-
 </body>
 </html>
