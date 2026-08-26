@@ -3,10 +3,10 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.5" />
-  <title>🔒 Focus · distraction tracker (Cloudflare KV)</title>
+  <title>Focus · Distraction Tracker</title>
   <!-- Tailwind CSS via CDN -->
   <script src="https://cdn.tailwindcss.com"></script>
-  <!-- jQuery (for smooth animations & DOM manipulation) -->
+  <!-- jQuery -->
   <script src="https://code.jquery.com/jquery-3.7.1.min.js" integrity="sha256-/JqT3SQfawRcv/BIHPThkBvs0OEvtFFmqPF/lYI/Cxo=" crossorigin="anonymous"></script>
   <!-- Font Awesome 6 -->
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css" />
@@ -14,42 +14,42 @@
   <style>
     /* ===== Custom Styles ===== */
     body {
-      background: #0b0f17;
+      background: #f1f5f9;
       font-family: system-ui, -apple-system, 'Segoe UI', Roboto, sans-serif;
       -webkit-tap-highlight-color: transparent;
     }
 
-    /* Card styling */
-    .card-dark {
-      background: #141a26;
-      border: 1px solid #2a3344;
+    /* Card styling - light theme */
+    .card-light {
+      background: #ffffff;
+      border: 1px solid #e2e8f0;
       transition: box-shadow 0.2s ease, transform 0.1s ease;
     }
-    .card-dark:hover {
-      box-shadow: 0 8px 24px rgba(0,0,0,0.5);
+    .card-light:hover {
+      box-shadow: 0 4px 16px rgba(0,0,0,0.06);
     }
 
-    /* Category badges */
+    /* Category badges - light theme */
     .badge-cat {
       font-weight: 500;
       letter-spacing: 0.01em;
-      padding: 0.3rem 0.9rem;
+      padding: 0.25rem 0.85rem;
       border-radius: 9999px;
       font-size: 0.7rem;
       display: inline-block;
       min-height: 28px;
     }
-    .cat-telegram { background: #2b6f9e; color: #e8f0fe; }
-    .cat-tiktok { background: #b33b5c; color: #fde7ed; }
-    .cat-adult { background: #8b2f4a; color: #f8e3e8; }
-    .cat-social { background: #4f6f8f; color: #e3edf5; }
-    .cat-other { background: #3d4a5c; color: #e4e9f0; }
+    .cat-telegram { background: #dbeafe; color: #1e40af; }
+    .cat-tiktok { background: #fce7f3; color: #9d174d; }
+    .cat-adult { background: #fee2e2; color: #991b1b; }
+    .cat-social { background: #e0e7ff; color: #4338ca; }
+    .cat-other { background: #e2e8f0; color: #334155; }
 
-    /* Filter buttons */
+    /* Filter buttons - light theme */
     .filter-btn {
-      background: #1f2a3a;
-      color: #a7b6cf;
-      border: 1px solid #2f3b4f;
+      background: #f1f5f9;
+      color: #475569;
+      border: 1px solid #e2e8f0;
       transition: 0.15s ease;
       font-size: 0.7rem;
       padding: 0.4rem 0.85rem;
@@ -59,16 +59,18 @@
       touch-action: manipulation;
     }
     .filter-btn.active {
-      background: #2f4b7a;
+      background: #4f46e5;
       color: white;
-      border-color: #4a7ab5;
+      border-color: #4f46e5;
     }
     .filter-btn:hover {
-      background: #2a3a52;
-      color: #e2eaf5;
+      background: #e2e8f0;
+    }
+    .filter-btn.active:hover {
+      background: #4338ca;
     }
 
-    /* Quick log buttons */
+    /* Quick log buttons - light theme */
     .quick-btn {
       padding: 0.8rem 1rem;
       font-size: 0.85rem;
@@ -85,6 +87,13 @@
       display: flex;
       align-items: center;
       justify-content: center;
+      background: #f8fafc;
+      color: #1e293b;
+      border-color: #e2e8f0;
+    }
+    .quick-btn:hover {
+      background: #f1f5f9;
+      transform: translateY(-1px);
     }
     .quick-btn:active {
       transform: scale(0.94);
@@ -93,6 +102,12 @@
       margin-right: 6px;
       font-size: 1rem;
     }
+    .quick-btn.cat-telegram:hover { background: #dbeafe; border-color: #93c5fd; }
+    .quick-btn.cat-tiktok:hover { background: #fce7f3; border-color: #f9a8d4; }
+    .quick-btn.cat-adult:hover { background: #fee2e2; border-color: #fca5a5; }
+    .quick-btn.cat-social:hover { background: #e0e7ff; border-color: #a5b4fc; }
+    .quick-btn.cat-other:hover { background: #e2e8f0; border-color: #cbd5e1; }
+
     @media (max-width: 480px) {
       .quick-btn {
         font-size: 0.7rem;
@@ -115,46 +130,33 @@
       margin-right: 6px;
       flex-shrink: 0;
     }
-    .sync-online { background: #4ade80; box-shadow: 0 0 12px #4ade8066; }
-    .sync-offline { background: #f87171; box-shadow: 0 0 12px #f8717166; }
-    .sync-syncing { background: #facc15; box-shadow: 0 0 12px #facc1566; animation: pulse 1s infinite; }
+    .sync-online { background: #22c55e; box-shadow: 0 0 12px #22c55e66; }
+    .sync-offline { background: #ef4444; box-shadow: 0 0 12px #ef444466; }
+    .sync-syncing { background: #f59e0b; box-shadow: 0 0 12px #f59e0b66; animation: pulse 1s infinite; }
     @keyframes pulse {
       0%, 100% { opacity: 0.6; transform: scale(0.95); }
       50% { opacity: 1; transform: scale(1.05); }
     }
 
-    /* Secret badge */
-    .secret-badge {
-      background: #1e293b;
-      color: #94a3b8;
-      font-size: 0.6rem;
-      padding: 0.15rem 0.65rem;
-      border-radius: 9999px;
-      border: 1px solid #334155;
-      display: inline-flex;
-      align-items: center;
-      gap: 4px;
-    }
-
-    /* Log entry card (mobile) */
+    /* Log entry card (mobile) - light theme */
     .log-card {
-      background: #1a2433;
-      border: 1px solid #2a3344;
+      background: #f8fafc;
+      border: 1px solid #e2e8f0;
       border-radius: 0.75rem;
       padding: 0.85rem 1rem;
       transition: all 0.2s ease;
       min-height: 60px;
     }
     .log-card:hover {
-      background: #1f2b3d;
+      background: #f1f5f9;
     }
     .log-card .log-time {
       font-size: 0.7rem;
-      color: #94a3b8;
+      color: #64748b;
     }
     .log-card .log-note {
       font-size: 0.85rem;
-      color: #e2e8f0;
+      color: #1e293b;
       margin-top: 4px;
       word-break: break-word;
     }
@@ -170,13 +172,13 @@
       transform: translateY(0);
     }
 
-    /* Input focus (16px min for iOS) - CRITICAL for mobile */
+    /* Input focus (16px min for iOS) */
     input, select, textarea {
       font-size: 16px !important;
       min-height: 48px;
     }
     input:focus, select:focus, textarea:focus {
-      outline: 2px solid #4f7ab5;
+      outline: 2px solid #4f46e5;
       outline-offset: 1px;
     }
 
@@ -216,7 +218,7 @@
 
     /* Scrollable container */
     .scroll-container {
-      max-height: 60vh;
+      max-height: 55vh;
       overflow-y: auto;
       scroll-behavior: smooth;
       -webkit-overflow-scrolling: touch;
@@ -225,10 +227,10 @@
       width: 4px;
     }
     .scroll-container::-webkit-scrollbar-track {
-      background: #1a2433;
+      background: #f1f5f9;
     }
     .scroll-container::-webkit-scrollbar-thumb {
-      background: #2f4b7a;
+      background: #94a3b8;
       border-radius: 9999px;
     }
 
@@ -242,41 +244,54 @@
         font-size: 1.875rem;
       }
     }
+
+    /* Table row hover */
+    .table-row-hover:hover {
+      background: #f8fafc;
+    }
+
+    /* Delete button hover */
+    .delete-btn:hover {
+      color: #ef4444;
+    }
   </style>
 </head>
 <body>
 
-<div class="max-w-5xl mx-auto px-4 sm:px-6 py-4 md:py-8 text-slate-200">
+<!-- ===== MAIN CONTAINER ===== -->
+<div class="max-w-5xl mx-auto px-4 py-4 md:py-8 text-slate-800">
 
   <!-- ===== HEADER ===== -->
   <header class="flex flex-wrap items-center justify-between mb-5 gap-2">
     <div>
-      <h1 class="text-xl md:text-2xl font-semibold tracking-tight flex items-center gap-2 text-white">
-        <i class="fas fa-brain text-indigo-400 text-2xl"></i> Focus<span class="text-indigo-300">/</span>track
+      <h1 class="text-xl md:text-2xl font-semibold tracking-tight flex items-center gap-2 text-slate-900">
+        <i class="fas fa-brain text-indigo-600 text-2xl"></i> Focus<span class="text-indigo-500">/</span>track
       </h1>
-      <p class="text-slate-400 text-xs md:text-sm mt-0.5 flex flex-wrap items-center gap-2">
+      <p class="text-slate-500 text-xs md:text-sm mt-0.5 flex flex-wrap items-center gap-2">
         <span>zero‑friction · private</span>
-        <span class="secret-badge"><i class="fas fa-cloud"></i> Cloudflare KV</span>
+        <span class="bg-slate-100 text-slate-600 text-[0.6rem] px-2 py-0.5 rounded-full border border-slate-200 inline-flex items-center gap-1">
+          <i class="fas fa-cloud text-indigo-500"></i> Cloudflare KV
+        </span>
       </p>
     </div>
     <div class="flex items-center gap-2 md:gap-3">
-      <div id="syncStatus" class="text-[10px] md:text-xs text-slate-400 bg-[#141a26] px-2.5 md:px-3 py-1.5 rounded-full border border-[#2a3344] flex items-center gap-1.5 min-h-[32px]">
+      <div id="syncStatus" class="text-[10px] md:text-xs text-slate-600 bg-white px-2.5 md:px-3 py-1.5 rounded-full border border-slate-200 flex items-center gap-1.5 min-h-[32px] shadow-sm">
         <span class="sync-dot sync-offline" id="syncDot"></span>
         <span id="syncLabel" class="whitespace-nowrap">offline</span>
       </div>
-      <div class="text-[10px] md:text-xs text-slate-400 bg-[#141a26] px-2.5 md:px-3 py-1.5 rounded-full border border-[#2a3344] flex items-center gap-1.5 min-h-[32px]">
-        <i class="far fa-clock text-indigo-300"></i> <span id="liveClock" class="font-mono text-slate-300"></span>
+      <div class="text-[10px] md:text-xs text-slate-600 bg-white px-2.5 md:px-3 py-1.5 rounded-full border border-slate-200 flex items-center gap-1.5 min-h-[32px] shadow-sm">
+        <i class="far fa-clock text-indigo-500"></i> <span id="liveClock" class="font-mono text-slate-700"></span>
       </div>
     </div>
   </header>
 
   <!-- ===== QUICK LOG SECTION ===== -->
-  <section class="card-dark rounded-2xl p-4 md:p-5 mb-5">
+  <section class="card-light rounded-2xl p-4 md:p-5 mb-5 shadow-sm">
     <div class="flex flex-wrap items-center gap-1.5 mb-3">
-      <span class="text-xs font-medium text-slate-400 uppercase tracking-wider flex items-center gap-1.5">
-        <i class="fas fa-bolt text-amber-400"></i> 1‑click log
+      <span class="text-xs font-medium text-slate-500 uppercase tracking-wider flex items-center gap-1.5">
+        <i class="fas fa-bolt text-amber-500"></i> 1‑click log
       </span>
-      <span class="text-[10px] text-slate-500 ml-1">(tap button → instant)</span>
+      <span class="text-[10px] text-slate-400 ml-1">(tap button → instant)</span>
     </div>
 
     <!-- Quick buttons -->
@@ -291,45 +306,45 @@
     <!-- Detail input + note button -->
     <div class="flex flex-wrap items-center gap-2 mt-1">
       <div class="flex-1 min-w-[140px]">
-        <input id="detailInput" type="text" placeholder="Optional note (e.g. 'scrolled 15m')" class="w-full bg-[#1a2433] border border-[#2f3b4f] rounded-xl px-4 py-3 text-base text-slate-200 placeholder-slate-500 focus:ring-1 focus:ring-indigo-400 focus:outline-none" autocomplete="off">
+        <input id="detailInput" type="text" placeholder="Optional note (e.g. 'scrolled 15m')" class="w-full bg-slate-50 border border-slate-200 rounded-xl px-4 py-3 text-base text-slate-800 placeholder-slate-400 focus:ring-2 focus:ring-indigo-500 focus:border-transparent focus:outline-none" autocomplete="off">
       </div>
-      <button id="logWithDetailBtn" class="bg-indigo-600 hover:bg-indigo-700 text-sm font-medium px-5 py-3 rounded-xl transition flex items-center gap-1.5 border border-indigo-400/30 touch-manipulation min-h-[48px]">
-        <i class="fas fa-plus"></i> <span class="hidden xs:inline">Log with note</span><span class="xs:hidden">Log</span>
+      <button id="logWithDetailBtn" class="bg-indigo-600 hover:bg-indigo-700 text-white text-sm font-medium px-5 py-3 rounded-xl transition flex items-center gap-1.5 touch-manipulation min-h-[48px] shadow-sm">
+        <i class="fas fa-plus"></i> <span class="hidden sm:inline">Log with note</span><span class="sm:hidden">Log</span>
       </button>
     </div>
-    <p class="text-[10px] text-slate-500 mt-2 flex items-center gap-1"><i class="far fa-clock"></i> timestamp auto‑captured</p>
+    <p class="text-[10px] text-slate-400 mt-2 flex items-center gap-1"><i class="far fa-clock"></i> timestamp auto‑captured</p>
   </section>
 
   <!-- ===== DASHBOARD ===== -->
   <section class="grid grid-cols-1 sm:grid-cols-3 gap-3 md:gap-4 mb-5">
-    <div class="card-dark rounded-2xl p-3 md:p-4 flex items-center gap-3 min-h-[72px]">
-      <div class="w-10 h-10 rounded-full bg-indigo-900/40 flex items-center justify-center text-indigo-300 text-lg flex-shrink-0"><i class="fas fa-list"></i></div>
+    <div class="card-light rounded-2xl p-3 md:p-4 flex items-center gap-3 min-h-[72px] shadow-sm">
+      <div class="w-10 h-10 rounded-full bg-indigo-100 flex items-center justify-center text-indigo-600 text-lg flex-shrink-0"><i class="fas fa-list"></i></div>
       <div class="min-w-0">
-        <p class="text-[10px] md:text-xs text-slate-400 font-medium">Today's interruptions</p>
-        <p id="totalToday" class="stat-number font-bold text-white">0</p>
+        <p class="text-[10px] md:text-xs text-slate-500 font-medium">Today's interruptions</p>
+        <p id="totalToday" class="stat-number font-bold text-slate-900">0</p>
       </div>
     </div>
-    <div class="card-dark rounded-2xl p-3 md:p-4 flex items-center gap-3 min-h-[72px]">
-      <div class="w-10 h-10 rounded-full bg-amber-900/30 flex items-center justify-center text-amber-300 text-lg flex-shrink-0"><i class="fas fa-crown"></i></div>
+    <div class="card-light rounded-2xl p-3 md:p-4 flex items-center gap-3 min-h-[72px] shadow-sm">
+      <div class="w-10 h-10 rounded-full bg-amber-100 flex items-center justify-center text-amber-600 text-lg flex-shrink-0"><i class="fas fa-crown"></i></div>
       <div class="min-w-0">
-        <p class="text-[10px] md:text-xs text-slate-400 font-medium">Top distractor</p>
-        <p id="topDistractor" class="text-lg md:text-xl font-bold text-white truncate">—</p>
+        <p class="text-[10px] md:text-xs text-slate-500 font-medium">Top distractor</p>
+        <p id="topDistractor" class="text-lg md:text-xl font-bold text-slate-900 truncate">—</p>
       </div>
     </div>
-    <div class="card-dark rounded-2xl p-3 md:p-4 flex items-center gap-3 min-h-[72px]">
-      <div class="w-10 h-10 rounded-full bg-emerald-900/30 flex items-center justify-center text-emerald-300 text-lg flex-shrink-0"><i class="fas fa-stopwatch"></i></div>
+    <div class="card-light rounded-2xl p-3 md:p-4 flex items-center gap-3 min-h-[72px] shadow-sm">
+      <div class="w-10 h-10 rounded-full bg-emerald-100 flex items-center justify-center text-emerald-600 text-lg flex-shrink-0"><i class="fas fa-stopwatch"></i></div>
       <div class="min-w-0">
-        <p class="text-[10px] md:text-xs text-slate-400 font-medium">Focus streak (since last)</p>
-        <p id="focusStreak" class="text-lg md:text-xl font-bold text-white truncate">—</p>
+        <p class="text-[10px] md:text-xs text-slate-500 font-medium">Focus streak (since last)</p>
+        <p id="focusStreak" class="text-lg md:text-xl font-bold text-slate-900 truncate">—</p>
       </div>
     </div>
   </section>
 
   <!-- ===== LOG HISTORY ===== -->
-  <section class="card-dark rounded-2xl p-4 md:p-5">
+  <section class="card-light rounded-2xl p-4 md:p-5 shadow-sm">
     <div class="flex flex-wrap items-center justify-between gap-2 mb-3">
-      <h2 class="text-sm font-medium text-slate-300 uppercase tracking-wider flex items-center gap-2">
-        <i class="fas fa-clock-rotate-left text-indigo-400"></i> History
+      <h2 class="text-sm font-medium text-slate-600 uppercase tracking-wider flex items-center gap-2">
+        <i class="fas fa-clock-rotate-left text-indigo-500"></i> History
       </h2>
       <div class="flex flex-wrap items-center gap-1.5">
         <button class="filter-btn active" data-filter="all">All</button>
@@ -338,7 +353,7 @@
         <button class="filter-btn" data-filter="Adult Content / Pornography">Adult</button>
         <button class="filter-btn" data-filter="Social Media / Browsing">Social</button>
         <button class="filter-btn" data-filter="Other / Custom">Other</button>
-        <button id="clearAllBtn" class="text-xs bg-rose-900/40 hover:bg-rose-800/50 text-rose-200 px-3 py-1.5 rounded-full transition flex items-center gap-1 border border-rose-700/30 min-h-[32px]">
+        <button id="clearAllBtn" class="text-xs bg-rose-50 hover:bg-rose-100 text-rose-600 px-3 py-1.5 rounded-full transition flex items-center gap-1 border border-rose-200 min-h-[32px]">
           <i class="fas fa-trash-can"></i> <span class="hidden xs:inline">Clear</span>
         </button>
       </div>
@@ -350,7 +365,7 @@
       <!-- ===== DESKTOP TABLE (md+) ===== -->
       <div class="desktop-log-table table-wrap">
         <table class="w-full text-sm">
-          <thead class="text-left text-xs text-slate-400 border-b border-[#2a3344]">
+          <thead class="text-left text-xs text-slate-500 border-b border-slate-200">
             <tr>
               <th class="pb-2 pr-2 font-medium">Time</th>
               <th class="pb-2 pr-2 font-medium">Category</th>
@@ -366,8 +381,8 @@
       <div id="mobileLogList" class="mobile-log-list"></div>
 
       <!-- Empty state -->
-      <div id="emptyState" class="text-center text-slate-500 text-sm py-8">
-        <i class="fas fa-inbox text-3xl block mb-2 text-slate-600"></i>
+      <div id="emptyState" class="text-center text-slate-400 text-sm py-8">
+        <i class="fas fa-inbox text-3xl block mb-2 text-slate-300"></i>
         No distractions logged. Stay in flow.
       </div>
     </div>
@@ -378,7 +393,6 @@
   // ================================================================
   //  ☁️  CLOUDFLARE WORKER CONFIGURATION
   // ================================================================
-  // Your Cloudflare Worker endpoint
   const WORKER_URL = "https://distraction-api.aungthantzin2007.workers.dev";
   // ================================================================
 
@@ -394,15 +408,15 @@
       'Social Media / Browsing': 'cat-social',
       'Other / Custom': 'cat-other'
     };
-    const POLL_INTERVAL = 5000; // 5 seconds
+    const POLL_INTERVAL = 4000; // 4 seconds
 
     // ---------- STATE ----------
     let currentFilter = 'all';
     let logsCache = [];
-    let isSyncEnabled = false;
+    let isSyncEnabled = true;
     let pollTimer = null;
-    let isInitialLoad = true;
-    let syncTimeout = null;
+    let isFirstLoad = true;
+    let syncInProgress = false;
 
     // ---------- DOM REFS ----------
     const $syncDot = $('#syncDot');
@@ -491,9 +505,7 @@
         filtered = sorted.filter(l => l.category === currentFilter);
       }
 
-      // --- Desktop table ---
       $logTableBody.empty();
-      // --- Mobile cards ---
       $mobileLogList.empty();
 
       if (filtered.length === 0) {
@@ -502,18 +514,18 @@
       }
       $emptyState.hide();
 
-      // Render desktop rows
+      // Desktop rows
       filtered.forEach((log) => {
         const catClass = CATEGORY_MAP[log.category] || 'cat-other';
         const timeStr = formatTime(log.timestamp);
         const note = log.note || '';
         const row = $(`
-          <tr class="border-b border-[#1f2a3a] hover:bg-[#1a2433]/60 transition" data-id="${log.id}">
-            <td class="py-2.5 pr-2 text-slate-400 text-xs whitespace-nowrap">${timeStr}</td>
+          <tr class="border-b border-slate-100 table-row-hover transition" data-id="${log.id}">
+            <td class="py-2.5 pr-2 text-slate-500 text-xs whitespace-nowrap">${timeStr}</td>
             <td class="py-2.5 pr-2"><span class="badge-cat ${catClass}">${log.category}</span></td>
-            <td class="py-2.5 pr-2 text-slate-300 max-w-[140px] truncate">${note || '—'}</td>
+            <td class="py-2.5 pr-2 text-slate-700 max-w-[140px] truncate">${note || '—'}</td>
             <td class="py-2.5 text-right">
-              <button class="deleteBtn text-slate-500 hover:text-rose-400 transition px-3 py-1.5 min-h-[36px]" data-id="${log.id}">
+              <button class="deleteBtn text-slate-400 hover:text-rose-500 transition px-3 py-1.5 min-h-[36px]" data-id="${log.id}">
                 <i class="fas fa-trash-can"></i>
               </button>
             </td>
@@ -522,13 +534,13 @@
         $logTableBody.append(row);
       });
 
-      // Render mobile cards
+      // Mobile cards
       filtered.forEach((log, index) => {
         const catClass = CATEGORY_MAP[log.category] || 'cat-other';
         const timeStr = formatTime(log.timestamp);
         const note = log.note || '';
         const card = $(`
-          <div class="log-card fade-in" data-id="${log.id}" style="animation-delay: ${index * 30}ms">
+          <div class="log-card fade-in" data-id="${log.id}" style="animation-delay: ${index * 25}ms">
             <div class="flex items-start justify-between gap-2">
               <div class="flex-1 min-w-0">
                 <div class="flex items-center gap-2 flex-wrap">
@@ -537,7 +549,7 @@
                 </div>
                 <p class="log-note">${note || '—'}</p>
               </div>
-              <button class="deleteBtnMobile text-slate-500 hover:text-rose-400 transition px-3 py-1.5 flex-shrink-0 min-h-[36px]" data-id="${log.id}">
+              <button class="deleteBtnMobile text-slate-400 hover:text-rose-500 transition px-3 py-1.5 flex-shrink-0 min-h-[36px]" data-id="${log.id}">
                 <i class="fas fa-trash-can text-sm"></i>
               </button>
             </div>
@@ -545,25 +557,15 @@
         `);
         $mobileLogList.append(card);
 
-        // Trigger animation after append
         if (animate) {
-          setTimeout(() => {
-            card.addClass('show');
-          }, 20 + index * 30);
+          setTimeout(() => { card.addClass('show'); }, 20 + index * 25);
         } else {
           card.addClass('show');
         }
       });
 
-      // Bind delete events (desktop)
-      $('.deleteBtn').off('click').on('click', function(e) {
-        e.stopPropagation();
-        const id = $(this).data('id');
-        deleteLogById(id);
-      });
-
-      // Bind delete events (mobile)
-      $('.deleteBtnMobile').off('click').on('click', function(e) {
+      // Bind delete events
+      $('.deleteBtn, .deleteBtnMobile').off('click').on('click', function(e) {
         e.stopPropagation();
         const id = $(this).data('id');
         deleteLogById(id);
@@ -584,48 +586,35 @@
       renderAll(true);
       setSyncStatus('syncing');
 
-      // Sync to cloud
       syncToCloud(logsCache);
-
-      $detailInput.val('');
-      $detailInput.focus();
+      $detailInput.val('').focus();
     }
 
     function deleteLogById(id) {
-      const logToDelete = logsCache.find(l => l.id === id);
-      if (!logToDelete) return;
-
-      // Remove with animation
       const $row = $(`tr[data-id="${id}"]`);
       const $card = $(`.log-card[data-id="${id}"]`);
 
-      if ($row.length) {
-        $row.css({ opacity: 0, transform: 'scale(0.97)' });
-        setTimeout(() => {
-          logsCache = logsCache.filter(l => l.id !== id);
-          saveLocalLogs(logsCache);
-          renderAll(true);
-          syncToCloud(logsCache);
-        }, 200);
-      } else if ($card.length) {
-        $card.css({ opacity: 0, transform: 'scale(0.95)' });
-        setTimeout(() => {
-          logsCache = logsCache.filter(l => l.id !== id);
-          saveLocalLogs(logsCache);
-          renderAll(true);
-          syncToCloud(logsCache);
-        }, 200);
-      } else {
+      const doDelete = () => {
         logsCache = logsCache.filter(l => l.id !== id);
         saveLocalLogs(logsCache);
         renderAll(true);
         syncToCloud(logsCache);
+      };
+
+      if ($row.length) {
+        $row.css({ opacity: 0, transform: 'scale(0.97)' });
+        setTimeout(doDelete, 200);
+      } else if ($card.length) {
+        $card.css({ opacity: 0, transform: 'scale(0.95)' });
+        setTimeout(doDelete, 200);
+      } else {
+        doDelete();
       }
     }
 
     function clearAllLogs() {
       if (logsCache.length === 0) return;
-      if (!confirm('🧹 Delete all distraction logs permanently?')) return;
+      if (!confirm('Delete all distraction logs permanently?')) return;
       logsCache = [];
       saveLocalLogs(logsCache);
       renderAll(true);
@@ -634,18 +623,10 @@
 
     // ---------- CLOUDFLARE SYNC ----------
     function syncToCloud(logs) {
-      if (!isSyncEnabled) return;
+      if (!isSyncEnabled || syncInProgress) return;
 
-      // Clear any pending timeout to avoid race conditions
-      if (syncTimeout) {
-        clearTimeout(syncTimeout);
-        syncTimeout = null;
-      }
-
-      const payload = {
-        logs: logs,
-        timestamp: Date.now()
-      };
+      syncInProgress = true;
+      const payload = { logs: logs, timestamp: Date.now() };
 
       fetch(WORKER_URL, {
         method: 'POST',
@@ -658,19 +639,19 @@
       })
       .then(() => {
         setSyncStatus('online');
+        syncInProgress = false;
       })
       .catch(err => {
         console.warn('Sync error:', err);
         setSyncStatus('offline', 'sync failed');
+        syncInProgress = false;
       });
     }
 
     function fetchFromCloud() {
       if (!isSyncEnabled) return Promise.resolve(null);
 
-      const url = `${WORKER_URL}?t=${Date.now()}`;
-
-      return fetch(url, {
+      return fetch(WORKER_URL, {
         method: 'GET',
         headers: { 'Content-Type': 'application/json' }
       })
@@ -693,15 +674,15 @@
 
     // ---------- POLLING ----------
     function pollForUpdates() {
-      if (!isSyncEnabled) return;
+      if (!isSyncEnabled || syncInProgress) return;
 
       fetchFromCloud()
         .then(remoteLogs => {
           if (remoteLogs && Array.isArray(remoteLogs)) {
-            // Check if changed
             const localIds = new Set(logsCache.map(l => l.id));
             const remoteIds = new Set(remoteLogs.map(l => l.id));
             let hasChanges = false;
+
             if (localIds.size !== remoteIds.size) {
               hasChanges = true;
             } else {
@@ -709,28 +690,30 @@
                 if (!remoteIds.has(id)) { hasChanges = true; break; }
               }
             }
+
             if (hasChanges) {
               logsCache = remoteLogs;
               saveLocalLogs(logsCache);
               renderAll(true);
               setSyncStatus('online');
-            } else if (isInitialLoad) {
-              // First load, ensure we show remote data
-              if (remoteLogs.length > 0) {
-                logsCache = remoteLogs;
-                saveLocalLogs(logsCache);
-                renderAll(false);
-              }
-              isInitialLoad = false;
+            } else if (isFirstLoad && remoteLogs.length > 0) {
+              logsCache = remoteLogs;
+              saveLocalLogs(logsCache);
+              renderAll(false);
+              setSyncStatus('online');
+              isFirstLoad = false;
             }
           }
         })
         .catch(() => {});
     }
 
-    // ---------- INIT SYNC ----------
-    function initSync() {
-      // Check config
+    // ---------- INIT ----------
+    function initApp() {
+      logsCache = loadLocalLogs();
+      renderAll(false);
+
+      // Check if worker URL is configured
       if (!WORKER_URL || WORKER_URL === 'https://distraction-api.aungthantzin2007.workers.dev') {
         console.warn('⚠️ Worker URL not configured. Using local storage only.');
         isSyncEnabled = false;
@@ -749,18 +732,17 @@
             saveLocalLogs(logsCache);
             renderAll(false);
             setSyncStatus('online');
+          } else if (logsCache.length > 0) {
+            syncToCloud(logsCache);
+            setSyncStatus('online');
           } else {
-            // No remote data, push local if exists
-            if (logsCache.length > 0) {
-              syncToCloud(logsCache);
-            }
             setSyncStatus('online');
           }
-          isInitialLoad = false;
+          isFirstLoad = false;
         })
         .catch(() => {
           setSyncStatus('offline');
-          isInitialLoad = false;
+          isFirstLoad = false;
         });
 
       // Start polling
@@ -770,12 +752,7 @@
 
     // ---------- EVENT BINDING ----------
     $(document).ready(function() {
-      // Load local data
-      logsCache = loadLocalLogs();
-      renderAll(false);
-
-      // Init sync
-      initSync();
+      initApp();
 
       // Quick buttons
       $('#quickBtnGroup').on('click', 'button', function() {
@@ -821,10 +798,9 @@
       updateClock();
       setInterval(updateClock, 1000);
 
-      // Focus input
       $detailInput.focus();
 
-      // Visibility change - refresh on tab focus
+      // Refresh on tab focus
       document.addEventListener('visibilitychange', function() {
         if (document.visibilityState === 'visible' && isSyncEnabled) {
           pollForUpdates();
