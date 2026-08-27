@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.5" />
-  <title>Focus · Distraction Tracker.</title>
+  <title>Focus · Distraction Trackerr</title>
   <!-- Tailwind CSS via CDN -->
   <script src="https://cdn.tailwindcss.com"></script>
   <!-- jQuery -->
@@ -19,7 +19,6 @@
       -webkit-tap-highlight-color: transparent;
     }
 
-    /* Card styling - light theme */
     .card-light {
       background: #ffffff;
       border: 1px solid #e2e8f0;
@@ -29,7 +28,6 @@
       box-shadow: 0 4px 16px rgba(0,0,0,0.06);
     }
 
-    /* Category badges - light theme */
     .badge-cat {
       font-weight: 500;
       letter-spacing: 0.01em;
@@ -45,7 +43,6 @@
     .cat-social { background: #e0e7ff; color: #4338ca; }
     .cat-other { background: #e2e8f0; color: #334155; }
 
-    /* Filter buttons - light theme */
     .filter-btn {
       background: #f1f5f9;
       color: #475569;
@@ -70,7 +67,6 @@
       background: #4338ca;
     }
 
-    /* Quick log buttons - light theme */
     .quick-btn {
       padding: 0.8rem 1rem;
       font-size: 0.85rem;
@@ -121,7 +117,6 @@
       }
     }
 
-    /* Sync status dot */
     .sync-dot {
       display: inline-block;
       width: 10px;
@@ -138,7 +133,6 @@
       50% { opacity: 1; transform: scale(1.05); }
     }
 
-    /* Log entry card (mobile) - light theme */
     .log-card {
       background: #f8fafc;
       border: 1px solid #e2e8f0;
@@ -161,7 +155,6 @@
       word-break: break-word;
     }
 
-    /* Animation classes for jQuery */
     .fade-in {
       opacity: 0;
       transform: translateY(10px);
@@ -172,7 +165,6 @@
       transform: translateY(0);
     }
 
-    /* Input focus (16px min for iOS) */
     input, select, textarea {
       font-size: 16px !important;
       min-height: 48px;
@@ -182,19 +174,16 @@
       outline-offset: 1px;
     }
 
-    /* Button min heights for touch targets */
     button, .btn-like {
       min-height: 44px;
       touch-action: manipulation;
     }
 
-    /* Table responsive */
     .table-wrap {
       overflow-x: auto;
       -webkit-overflow-scrolling: touch;
     }
 
-    /* Mobile stacked cards (hidden on md+) */
     .mobile-log-list {
       display: flex;
       flex-direction: column;
@@ -206,7 +195,6 @@
       }
     }
 
-    /* Desktop table (hidden on mobile) */
     .desktop-log-table {
       display: none;
     }
@@ -216,7 +204,6 @@
       }
     }
 
-    /* Scrollable container */
     .scroll-container {
       max-height: 55vh;
       overflow-y: auto;
@@ -234,7 +221,6 @@
       border-radius: 9999px;
     }
 
-    /* Dashboard card text size */
     .stat-number {
       font-size: 1.5rem;
       line-height: 1.2;
@@ -245,12 +231,10 @@
       }
     }
 
-    /* Table row hover */
     .table-row-hover:hover {
       background: #f8fafc;
     }
 
-    /* Delete button hover */
     .delete-btn:hover {
       color: #ef4444;
     }
@@ -294,7 +278,6 @@
       <span class="text-[10px] text-slate-400 ml-1">(tap button → instant)</span>
     </div>
 
-    <!-- Quick buttons -->
     <div class="flex flex-wrap gap-2 mb-3" id="quickBtnGroup">
       <button class="quick-btn cat-telegram" data-cat="Telegram Notifications"><i class="fab fa-telegram"></i> Telegram</button>
       <button class="quick-btn cat-tiktok" data-cat="TikTok / Short Videos"><i class="fab fa-tiktok"></i> TikTok</button>
@@ -303,7 +286,6 @@
       <button class="quick-btn cat-other" data-cat="Other / Custom"><i class="fas fa-ellipsis"></i> Other</button>
     </div>
 
-    <!-- Detail input + note button -->
     <div class="flex flex-wrap items-center gap-2 mt-1">
       <div class="flex-1 min-w-[140px]">
         <input id="detailInput" type="text" placeholder="Optional note (e.g. 'scrolled 15m')" class="w-full bg-slate-50 border border-slate-200 rounded-xl px-4 py-3 text-base text-slate-800 placeholder-slate-400 focus:ring-2 focus:ring-indigo-500 focus:border-transparent focus:outline-none" autocomplete="off">
@@ -359,10 +341,7 @@
       </div>
     </div>
 
-    <!-- Scrollable container -->
     <div class="scroll-container" id="logContainer">
-
-      <!-- ===== DESKTOP TABLE (md+) ===== -->
       <div class="desktop-log-table table-wrap">
         <table class="w-full text-sm">
           <thead class="text-left text-xs text-slate-500 border-b border-slate-200">
@@ -377,10 +356,8 @@
         </table>
       </div>
 
-      <!-- ===== MOBILE STACKED CARDS ===== -->
       <div id="mobileLogList" class="mobile-log-list"></div>
 
-      <!-- Empty state -->
       <div id="emptyState" class="text-center text-slate-400 text-sm py-8">
         <i class="fas fa-inbox text-3xl block mb-2 text-slate-300"></i>
         No distractions logged. Stay in flow.
@@ -408,7 +385,7 @@
       'Social Media / Browsing': 'cat-social',
       'Other / Custom': 'cat-other'
     };
-    const POLL_INTERVAL = 4000; // 4 seconds
+    const POLL_INTERVAL = 4000;
 
     // ---------- STATE ----------
     let currentFilter = 'all';
@@ -417,6 +394,7 @@
     let pollTimer = null;
     let isFirstLoad = true;
     let syncInProgress = false;
+    let lastSyncTimestamp = 0;
 
     // ---------- DOM REFS ----------
     const $syncDot = $('#syncDot');
@@ -514,7 +492,6 @@
       }
       $emptyState.hide();
 
-      // Desktop rows
       filtered.forEach((log) => {
         const catClass = CATEGORY_MAP[log.category] || 'cat-other';
         const timeStr = formatTime(log.timestamp);
@@ -534,7 +511,6 @@
         $logTableBody.append(row);
       });
 
-      // Mobile cards
       filtered.forEach((log, index) => {
         const catClass = CATEGORY_MAP[log.category] || 'cat-other';
         const timeStr = formatTime(log.timestamp);
@@ -564,7 +540,6 @@
         }
       });
 
-      // Bind delete events
       $('.deleteBtn, .deleteBtnMobile').off('click').on('click', function(e) {
         e.stopPropagation();
         const id = $(this).data('id');
@@ -637,9 +612,11 @@
         if (!response.ok) throw new Error('HTTP ' + response.status);
         return response.json();
       })
-      .then(() => {
+      .then(data => {
+        console.log('POST success:', data);
         setSyncStatus('online');
         syncInProgress = false;
+        lastSyncTimestamp = Date.now();
       })
       .catch(err => {
         console.warn('Sync error:', err);
@@ -660,10 +637,16 @@
         return response.json();
       })
       .then(data => {
+        // Handle different response formats
+        let logs = null;
         if (data && data.logs && Array.isArray(data.logs)) {
-          return data.logs;
+          logs = data.logs;
+        } else if (data && Array.isArray(data)) {
+          logs = data;
+        } else if (data && data.data && Array.isArray(data.data)) {
+          logs = data.data;
         }
-        return null;
+        return logs;
       })
       .catch(err => {
         console.warn('Fetch error:', err);
@@ -702,6 +685,12 @@
               renderAll(false);
               setSyncStatus('online');
               isFirstLoad = false;
+            } else if (isFirstLoad) {
+              isFirstLoad = false;
+              // If no remote data but we have local, push it
+              if (logsCache.length > 0) {
+                syncToCloud(logsCache);
+              }
             }
           }
         })
@@ -713,7 +702,6 @@
       logsCache = loadLocalLogs();
       renderAll(false);
 
-      // Check if worker URL is configured
       if (!WORKER_URL || WORKER_URL === 'https://distraction-api.aungthantzin2007.workers.dev') {
         console.warn('⚠️ Worker URL not configured. Using local storage only.');
         isSyncEnabled = false;
@@ -724,7 +712,6 @@
       isSyncEnabled = true;
       setSyncStatus('syncing', 'connecting...');
 
-      // Initial fetch
       fetchFromCloud()
         .then(remoteLogs => {
           if (remoteLogs && Array.isArray(remoteLogs) && remoteLogs.length > 0) {
@@ -745,7 +732,6 @@
           isFirstLoad = false;
         });
 
-      // Start polling
       if (pollTimer) clearInterval(pollTimer);
       pollTimer = setInterval(pollForUpdates, POLL_INTERVAL);
     }
@@ -754,7 +740,6 @@
     $(document).ready(function() {
       initApp();
 
-      // Quick buttons
       $('#quickBtnGroup').on('click', 'button', function() {
         const cat = $(this).data('cat');
         if (cat) {
@@ -763,13 +748,11 @@
         }
       });
 
-      // Log with detail
       $('#logWithDetailBtn').on('click', function() {
         const note = $detailInput.val().trim();
         addLog('Other / Custom', note || 'manual log');
       });
 
-      // Enter key
       $detailInput.on('keydown', function(e) {
         if (e.key === 'Enter') {
           e.preventDefault();
@@ -777,7 +760,6 @@
         }
       });
 
-      // Filter buttons
       $('.filter-btn').on('click', function() {
         $('.filter-btn').removeClass('active');
         $(this).addClass('active');
@@ -785,12 +767,10 @@
         renderAll(true);
       });
 
-      // Clear all
       $('#clearAllBtn').on('click', function() {
         clearAllLogs();
       });
 
-      // Live clock
       function updateClock() {
         const now = new Date();
         $('#liveClock').text(now.toLocaleTimeString(undefined, { hour: '2-digit', minute: '2-digit', second: '2-digit' }));
@@ -800,7 +780,6 @@
 
       $detailInput.focus();
 
-      // Refresh on tab focus
       document.addEventListener('visibilitychange', function() {
         if (document.visibilityState === 'visible' && isSyncEnabled) {
           pollForUpdates();
