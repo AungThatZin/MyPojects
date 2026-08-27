@@ -252,7 +252,7 @@
       <p class="text-slate-500 text-xs md:text-sm mt-0.5 flex flex-wrap items-center gap-2">
         <span>zero‑friction · private</span>
         <span class="bg-slate-100 text-slate-600 text-[0.6rem] px-2 py-0.5 rounded-full border border-slate-200 inline-flex items-center gap-1">
-          <i class="fas fa-cloud text-indigo-500"></i> Cloudflare KV
+          <i class="fas fa-cloud text-indigo-500"></i> Cloudflare KV sucess
         </span>
       </p>
     </div>
@@ -391,6 +391,7 @@
     let isSyncEnabled = true;
     let pollTimer = null;
     let syncInProgress = false;
+    let isInitialized = false;
 
     // ---------- DOM REFS ----------
     const $syncDot = $('#syncDot');
@@ -543,6 +544,92 @@
       });
     }
 
+    // ---------- CLOUDFLARE SYNC (WITH VALIDATION) ----------
+    async function syncToCloudflare() {
+      // CRITICAL: Prevent pushing empty array on startup before GET completes
+      if (!isInitialized) {
+        console.log('⏳ Skipping sync - app not initialized yet');
+        return;
+      }
+
+      // Validate data before sending
+      if (!Array.isArray(logsCache)) {
+        console.warn('⚠️ logsCache is not an array, skipping sync');
+        return;
+      }
+
+      // If logsCache is empty, only sync if it's an explicit user action (clear all)
+      // This prevents accidental overwrites
+      if (logsCache.length === 0) {
+        console.log('📭 logsCache is empty, skipping sync to prevent data loss');
+        return;
+      }
+
+      if (syncInProgress) {
+        console.log('⏳ Sync already in progress, skipping');
+        return;
+      }
+
+      syncInProgress = true;
+      setSyncStatus('syncing');
+
+      try {
+        const response = await fetch(WORKER_URL, {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify(logsCache)
+        });
+
+        if (!response.ok) {
+          throw new Error('HTTP ' + response.status);
+        }
+
+        const result = await response.json();
+        console.log('✅ Sync success:', result);
+        setSyncStatus('online');
+        saveLocalLogs(logsCache);
+      } catch (err) {
+        console.error('❌ Sync error:', err);
+        setSyncStatus('offline', 'sync failed');
+      } finally {
+        syncInProgress = false;
+      }
+    }
+
+    // ---------- CLOUDFLARE FETCH ----------
+    async function fetchFromCloud() {
+      if (!isSyncEnabled) return null;
+
+      try {
+        const response = await fetch(WORKER_URL, {
+          method: 'GET',
+          headers: { 'Content-Type': 'application/json' }
+        });
+
+        if (!response.ok) {
+          throw new Error('HTTP ' + response.status);
+        }
+
+        const data = await response.json();
+
+        // Handle different response formats
+        let logs = null;
+        if (data && data.logs && Array.isArray(data.logs)) {
+          logs = data.logs;
+        } else if (data && Array.isArray(data)) {
+          logs = data;
+        } else if (data && data.data && Array.isArray(data.data)) {
+          logs = data.data;
+        }
+
+        return logs;
+      } catch (err) {
+        console.warn('⚠️ Fetch error:', err);
+        setSyncStatus('offline', 'fetch failed');
+        return null;
+      }
+    }
+
     // ---------- CRUD WITH SYNC ----------
     async function addLog(category, note) {
       const entry = {
@@ -556,31 +643,9 @@
       logsCache.unshift(entry);
       saveLocalLogs(logsCache);
       renderAll(true);
-      setSyncStatus('syncing');
 
-      // 2. Sync full updated array to Cloudflare Worker
-      try {
-        const response = await fetch(WORKER_URL, {
-          method: 'POST',
-          headers: { 'Content-Type': 'application/json' },
-          body: JSON.stringify(logsCache)
-        });
-        
-        if (!response.ok) {
-          throw new Error('HTTP ' + response.status);
-        }
-        
-        const result = await response.json();
-        console.log('Sync success:', result);
-        setSyncStatus('online');
-        
-        // Update local storage with confirmed data
-        saveLocalLogs(logsCache);
-      } catch (err) {
-        console.error('Failed to sync:', err);
-        setSyncStatus('offline', 'sync failed');
-        // Keep local data - will retry on next change
-      }
+      // 2. Sync to Cloudflare (will validate data)
+      await syncToCloudflare();
 
       $detailInput.val('').focus();
     }
@@ -594,28 +659,9 @@
         logsCache = logsCache.filter(l => l.id !== id);
         saveLocalLogs(logsCache);
         renderAll(true);
-        setSyncStatus('syncing');
 
-        // Sync to cloud
-        try {
-          const response = await fetch(WORKER_URL, {
-            method: 'POST',
-            headers: { 'Content-Type': 'application/json' },
-            body: JSON.stringify(logsCache)
-          });
-          
-          if (!response.ok) {
-            throw new Error('HTTP ' + response.status);
-          }
-          
-          const result = await response.json();
-          console.log('Delete sync success:', result);
-          setSyncStatus('online');
-          saveLocalLogs(logsCache);
-        } catch (err) {
-          console.error('Delete sync failed:', err);
-          setSyncStatus('offline', 'sync failed');
-        }
+        // Sync to Cloudflare (will validate data)
+        await syncToCloudflare();
       };
 
       if ($row.length) {
@@ -632,94 +678,77 @@
     async function clearAllLogs() {
       if (logsCache.length === 0) return;
       if (!confirm('Delete all distraction logs permanently?')) return;
-      
+
       logsCache = [];
       saveLocalLogs(logsCache);
       renderAll(true);
-      setSyncStatus('syncing');
 
-      try {
-        const response = await fetch(WORKER_URL, {
-          method: 'POST',
-          headers: { 'Content-Type': 'application/json' },
-          body: JSON.stringify(logsCache)
-        });
-        
-        if (!response.ok) {
-          throw new Error('HTTP ' + response.status);
-        }
-        
-        const result = await response.json();
-        console.log('Clear all sync success:', result);
-        setSyncStatus('online');
-        saveLocalLogs(logsCache);
-      } catch (err) {
-        console.error('Clear all sync failed:', err);
-        setSyncStatus('offline', 'sync failed');
-      }
-    }
+      // Only sync empty array if user explicitly cleared all logs
+      // This is the ONLY case where we allow syncing an empty array
+      if (isInitialized) {
+        syncInProgress = true;
+        setSyncStatus('syncing');
 
-    // ---------- CLOUDFLARE FETCH ----------
-    async function fetchFromCloud() {
-      if (!isSyncEnabled) return null;
+        try {
+          const response = await fetch(WORKER_URL, {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify(logsCache)
+          });
 
-      try {
-        const response = await fetch(WORKER_URL, {
-          method: 'GET',
-          headers: { 'Content-Type': 'application/json' }
-        });
-        
-        if (!response.ok) {
-          throw new Error('HTTP ' + response.status);
+          if (!response.ok) {
+            throw new Error('HTTP ' + response.status);
+          }
+
+          const result = await response.json();
+          console.log('✅ Clear all sync success:', result);
+          setSyncStatus('online');
+          saveLocalLogs(logsCache);
+        } catch (err) {
+          console.error('❌ Clear all sync failed:', err);
+          setSyncStatus('offline', 'sync failed');
+        } finally {
+          syncInProgress = false;
         }
-        
-        const data = await response.json();
-        
-        // Handle different response formats
-        if (data && data.logs && Array.isArray(data.logs)) {
-          return data.logs;
-        } else if (data && Array.isArray(data)) {
-          return data;
-        } else if (data && data.data && Array.isArray(data.data)) {
-          return data.data;
-        }
-        return null;
-      } catch (err) {
-        console.warn('Fetch error:', err);
-        setSyncStatus('offline', 'fetch failed');
-        return null;
       }
     }
 
     // ---------- POLLING ----------
     async function pollForUpdates() {
-      if (!isSyncEnabled || syncInProgress) return;
+      if (!isSyncEnabled || syncInProgress || !isInitialized) return;
 
       const remoteLogs = await fetchFromCloud();
       if (remoteLogs && Array.isArray(remoteLogs)) {
-        const localIds = new Set(logsCache.map(l => l.id));
-        const remoteIds = new Set(remoteLogs.map(l => l.id));
-        let hasChanges = false;
+        // Only update if remote has data and it's different
+        if (remoteLogs.length > 0) {
+          const localIds = new Set(logsCache.map(l => l.id));
+          const remoteIds = new Set(remoteLogs.map(l => l.id));
+          let hasChanges = false;
 
-        if (localIds.size !== remoteIds.size) {
-          hasChanges = true;
-        } else {
-          for (let id of localIds) {
-            if (!remoteIds.has(id)) { hasChanges = true; break; }
+          if (localIds.size !== remoteIds.size) {
+            hasChanges = true;
+          } else {
+            for (let id of localIds) {
+              if (!remoteIds.has(id)) { hasChanges = true; break; }
+            }
           }
-        }
 
-        if (hasChanges) {
-          logsCache = remoteLogs;
-          saveLocalLogs(logsCache);
-          renderAll(true);
-          setSyncStatus('online');
+          if (hasChanges) {
+            console.log('🔄 Remote data changed, updating...');
+            logsCache = remoteLogs;
+            saveLocalLogs(logsCache);
+            renderAll(true);
+            setSyncStatus('online');
+          }
         }
       }
     }
 
     // ---------- INIT ----------
     async function initApp() {
+      console.log('🚀 Initializing app...');
+
+      // Load local data first for immediate display
       logsCache = loadLocalLogs();
       renderAll(false);
 
@@ -727,42 +756,42 @@
         console.warn('⚠️ Worker URL not configured. Using local storage only.');
         isSyncEnabled = false;
         setSyncStatus('offline', 'no endpoint');
+        isInitialized = true;
         return;
       }
 
       isSyncEnabled = true;
       setSyncStatus('syncing', 'connecting...');
 
-      // Fetch from cloud
+      // STEP 1: GET from cloud FIRST - DO NOT POST yet
       const remoteLogs = await fetchFromCloud();
+
       if (remoteLogs && Array.isArray(remoteLogs) && remoteLogs.length > 0) {
+        // Remote has data - use it
+        console.log('📥 Loaded data from cloud:', remoteLogs.length, 'logs');
         logsCache = remoteLogs;
         saveLocalLogs(logsCache);
         renderAll(false);
         setSyncStatus('online');
       } else if (logsCache.length > 0) {
-        // Push local data to cloud
-        try {
-          const response = await fetch(WORKER_URL, {
-            method: 'POST',
-            headers: { 'Content-Type': 'application/json' },
-            body: JSON.stringify(logsCache)
-          });
-          if (response.ok) {
-            console.log('Initial sync pushed local data');
-            setSyncStatus('online');
-          }
-        } catch (err) {
-          console.warn('Initial push failed:', err);
-          setSyncStatus('offline');
-        }
+        // No remote data, but we have local data - push it
+        console.log('📤 No remote data, pushing local data...');
+        isInitialized = true;
+        await syncToCloudflare();
       } else {
+        // No data anywhere
+        console.log('📭 No data found, starting fresh');
         setSyncStatus('online');
       }
 
-      // Start polling
+      // Mark as initialized - now sync is allowed
+      isInitialized = true;
+
+      // Start polling for updates
       if (pollTimer) clearInterval(pollTimer);
       pollTimer = setInterval(pollForUpdates, POLL_INTERVAL);
+
+      console.log('✅ App initialized successfully');
     }
 
     // ---------- EVENT BINDING ----------
@@ -810,7 +839,7 @@
       $detailInput.focus();
 
       document.addEventListener('visibilitychange', function() {
-        if (document.visibilityState === 'visible' && isSyncEnabled) {
+        if (document.visibilityState === 'visible' && isSyncEnabled && isInitialized) {
           pollForUpdates();
         }
       });
