@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.5" />
-  <title>Focus · Distraction Tracker (fixed 2)</title>
+  <title>Focus · Distraction Tracker</title>
   <!-- Tailwind CSS via CDN -->
   <script src="https://cdn.tailwindcss.com"></script>
   <!-- jQuery -->
@@ -237,131 +237,285 @@
     .delete-btn:hover {
       color: #ef4444;
     }
+
+    /* Modal overlay */
+    .modal-overlay {
+      position: fixed;
+      inset: 0;
+      background: rgba(0, 0, 0, 0.6);
+      backdrop-filter: blur(4px);
+      z-index: 999;
+      display: none;
+      align-items: center;
+      justify-content: center;
+      padding: 1rem;
+      animation: fadeIn 0.3s ease;
+    }
+    .modal-overlay.active {
+      display: flex;
+    }
+
+    .modal-box {
+      max-width: 500px;
+      width: 100%;
+      background: #ffffff;
+      border-radius: 1.5rem;
+      padding: 2rem;
+      box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.25);
+      animation: slideUp 0.35s ease;
+      position: relative;
+    }
+
+    @keyframes fadeIn {
+      from { opacity: 0; }
+      to { opacity: 1; }
+    }
+
+    @keyframes slideUp {
+      from { opacity: 0; transform: translateY(30px) scale(0.95); }
+      to { opacity: 1; transform: translateY(0) scale(1); }
+    }
+
+    .modal-icon {
+      font-size: 2.5rem;
+      margin-bottom: 0.5rem;
+    }
+    .modal-header {
+      font-size: 1.25rem;
+      font-weight: 700;
+      color: #1e293b;
+      margin-bottom: 0.75rem;
+      line-height: 1.3;
+    }
+    .modal-message {
+      color: #475569;
+      font-size: 1rem;
+      line-height: 1.6;
+      margin-bottom: 1.5rem;
+    }
+    .modal-btn {
+      background: #4f46e5;
+      color: white;
+      font-weight: 600;
+      padding: 0.75rem 2rem;
+      border-radius: 9999px;
+      border: none;
+      cursor: pointer;
+      transition: background 0.2s;
+      font-size: 1rem;
+      min-height: 48px;
+    }
+    .modal-btn:hover {
+      background: #4338ca;
+    }
+
+    /* Desktop 2-column layout */
+    .desktop-grid {
+      display: grid;
+      gap: 1.5rem;
+    }
+    @media (min-width: 1024px) {
+      .desktop-grid {
+        grid-template-columns: 1fr 1.2fr;
+      }
+    }
+
+    /* Desktop typography */
+    @media (min-width: 1024px) {
+      .desktop-title {
+        font-size: 1.875rem !important;
+        line-height: 2.25rem !important;
+      }
+      .desktop-stat {
+        font-size: 2.25rem !important;
+        line-height: 2.5rem !important;
+      }
+      .desktop-btn {
+        font-size: 1rem !important;
+        padding: 0.75rem 1.25rem !important;
+        min-height: 56px !important;
+      }
+      .desktop-table {
+        font-size: 0.95rem !important;
+      }
+      .desktop-table th,
+      .desktop-table td {
+        padding: 0.75rem 0.5rem !important;
+      }
+      .desktop-badge {
+        font-size: 0.8rem !important;
+        padding: 0.35rem 1rem !important;
+        min-height: 32px !important;
+      }
+      .desktop-heading {
+        font-size: 1.1rem !important;
+      }
+      .desktop-filter {
+        font-size: 0.8rem !important;
+        padding: 0.5rem 1rem !important;
+        min-height: 38px !important;
+      }
+      .desktop-input {
+        font-size: 1rem !important;
+        min-height: 56px !important;
+        padding: 0.75rem 1.25rem !important;
+      }
+      .desktop-quick-btn {
+        font-size: 0.95rem !important;
+        padding: 0.9rem 1.25rem !important;
+        min-height: 56px !important;
+      }
+    }
   </style>
 </head>
 <body>
 
-<div class="max-w-5xl mx-auto px-4 py-4 md:py-8 text-slate-800">
+<div class="max-w-7xl mx-auto px-4 sm:px-6 py-4 md:py-8 text-slate-800">
 
   <!-- HEADER -->
   <header class="flex flex-wrap items-center justify-between mb-5 gap-2">
     <div>
-      <h1 class="text-xl md:text-2xl font-semibold tracking-tight flex items-center gap-2 text-slate-900">
-        <i class="fas fa-brain text-indigo-600 text-2xl"></i> Focus<span class="text-indigo-500">/</span>track
+      <h1 class="text-xl lg:text-3xl font-semibold tracking-tight flex items-center gap-2 text-slate-900 desktop-title">
+        <i class="fas fa-brain text-indigo-600 text-2xl lg:text-3xl"></i> Focus<span class="text-indigo-500">/</span>track
       </h1>
-      <p class="text-slate-500 text-xs md:text-sm mt-0.5 flex flex-wrap items-center gap-2">
+      <p class="text-slate-500 text-xs lg:text-sm mt-0.5 flex flex-wrap items-center gap-2">
         <span>zero‑friction · private</span>
-        <span class="bg-slate-100 text-slate-600 text-[0.6rem] px-2 py-0.5 rounded-full border border-slate-200 inline-flex items-center gap-1">
+        <span class="bg-slate-100 text-slate-600 text-[0.6rem] lg:text-xs px-2 py-0.5 rounded-full border border-slate-200 inline-flex items-center gap-1">
           <i class="fas fa-cloud text-indigo-500"></i> Cloudflare KV
         </span>
       </p>
     </div>
     <div class="flex items-center gap-2 md:gap-3">
-      <div id="syncStatus" class="text-[10px] md:text-xs text-slate-600 bg-white px-2.5 md:px-3 py-1.5 rounded-full border border-slate-200 flex items-center gap-1.5 min-h-[32px] shadow-sm">
+      <div id="syncStatus" class="text-[10px] lg:text-xs text-slate-600 bg-white px-2.5 lg:px-3 py-1.5 rounded-full border border-slate-200 flex items-center gap-1.5 min-h-[32px] shadow-sm">
         <span class="sync-dot sync-offline" id="syncDot"></span>
         <span id="syncLabel" class="whitespace-nowrap">offline</span>
       </div>
-      <div class="text-[10px] md:text-xs text-slate-600 bg-white px-2.5 md:px-3 py-1.5 rounded-full border border-slate-200 flex items-center gap-1.5 min-h-[32px] shadow-sm">
+      <div class="text-[10px] lg:text-xs text-slate-600 bg-white px-2.5 lg:px-3 py-1.5 rounded-full border border-slate-200 flex items-center gap-1.5 min-h-[32px] shadow-sm">
         <i class="far fa-clock text-indigo-500"></i> <span id="liveClock" class="font-mono text-slate-700"></span>
       </div>
     </div>
   </header>
 
-  <!-- QUICK LOG SECTION -->
-  <section class="card-light rounded-2xl p-4 md:p-5 mb-5 shadow-sm">
-    <div class="flex flex-wrap items-center gap-1.5 mb-3">
-      <span class="text-xs font-medium text-slate-500 uppercase tracking-wider flex items-center gap-1.5">
-        <i class="fas fa-bolt text-amber-500"></i> 1‑click log
-      </span>
-      <span class="text-[10px] text-slate-400 ml-1">(tap button → instant)</span>
+  <!-- DESKTOP 2-COLUMN GRID -->
+  <div class="desktop-grid">
+
+    <!-- LEFT COLUMN: Quick Log + Metrics -->
+    <div class="space-y-4 lg:space-y-5">
+
+      <!-- QUICK LOG SECTION -->
+      <section class="card-light rounded-2xl p-4 lg:p-6 shadow-sm">
+        <div class="flex flex-wrap items-center gap-1.5 mb-3">
+          <span class="text-xs lg:text-sm font-medium text-slate-500 uppercase tracking-wider flex items-center gap-1.5 desktop-heading">
+            <i class="fas fa-bolt text-amber-500"></i> 1‑click log
+          </span>
+          <span class="text-[10px] lg:text-xs text-slate-400 ml-1">(tap button → instant)</span>
+        </div>
+
+        <div class="flex flex-wrap gap-2 mb-3" id="quickBtnGroup">
+          <button class="quick-btn cat-telegram desktop-quick-btn" data-cat="Telegram Notifications"><i class="fab fa-telegram"></i> Telegram</button>
+          <button class="quick-btn cat-tiktok desktop-quick-btn" data-cat="TikTok / Short Videos"><i class="fab fa-tiktok"></i> TikTok</button>
+          <button class="quick-btn cat-adult desktop-quick-btn" data-cat="Adult Content / Pornography"><i class="fas fa-ban"></i> Adult</button>
+          <button class="quick-btn cat-social desktop-quick-btn" data-cat="Social Media / Browsing"><i class="fas fa-globe"></i> Social</button>
+          <button class="quick-btn cat-other desktop-quick-btn" data-cat="Other / Custom"><i class="fas fa-ellipsis"></i> Other</button>
+        </div>
+
+        <div class="flex flex-wrap items-center gap-2 mt-1">
+          <div class="flex-1 min-w-[140px]">
+            <input id="detailInput" type="text" placeholder="Optional note (e.g. 'scrolled 15m')" class="w-full bg-slate-50 border border-slate-200 rounded-xl px-4 py-3 lg:py-4 text-base lg:text-lg text-slate-800 placeholder-slate-400 focus:ring-2 focus:ring-indigo-500 focus:border-transparent focus:outline-none desktop-input" autocomplete="off">
+          </div>
+          <button id="logWithDetailBtn" class="bg-indigo-600 hover:bg-indigo-700 text-white text-sm lg:text-base font-medium px-5 lg:px-6 py-3 lg:py-4 rounded-xl transition flex items-center gap-1.5 touch-manipulation min-h-[48px] lg:min-h-[56px] shadow-sm desktop-btn">
+            <i class="fas fa-plus"></i> <span class="hidden sm:inline">Log with note</span><span class="sm:hidden">Log</span>
+          </button>
+        </div>
+        <p class="text-[10px] lg:text-xs text-slate-400 mt-2 flex items-center gap-1"><i class="far fa-clock"></i> timestamp auto‑captured</p>
+      </section>
+
+      <!-- DASHBOARD METRICS -->
+      <section class="grid grid-cols-1 sm:grid-cols-3 gap-3 lg:gap-4">
+        <div class="card-light rounded-2xl p-3 lg:p-4 flex items-center gap-3 min-h-[72px] lg:min-h-[88px] shadow-sm">
+          <div class="w-10 h-10 lg:w-14 lg:h-14 rounded-full bg-indigo-100 flex items-center justify-center text-indigo-600 text-lg lg:text-2xl flex-shrink-0"><i class="fas fa-list"></i></div>
+          <div class="min-w-0">
+            <p class="text-[10px] lg:text-xs text-slate-500 font-medium">Today's interruptions</p>
+            <p id="totalToday" class="stat-number font-bold text-slate-900 desktop-stat">0</p>
+          </div>
+        </div>
+        <div class="card-light rounded-2xl p-3 lg:p-4 flex items-center gap-3 min-h-[72px] lg:min-h-[88px] shadow-sm">
+          <div class="w-10 h-10 lg:w-14 lg:h-14 rounded-full bg-amber-100 flex items-center justify-center text-amber-600 text-lg lg:text-2xl flex-shrink-0"><i class="fas fa-crown"></i></div>
+          <div class="min-w-0">
+            <p class="text-[10px] lg:text-xs text-slate-500 font-medium">Top distractor</p>
+            <p id="topDistractor" class="text-base lg:text-xl font-bold text-slate-900 truncate">—</p>
+          </div>
+        </div>
+        <div class="card-light rounded-2xl p-3 lg:p-4 flex items-center gap-3 min-h-[72px] lg:min-h-[88px] shadow-sm">
+          <div class="w-10 h-10 lg:w-14 lg:h-14 rounded-full bg-emerald-100 flex items-center justify-center text-emerald-600 text-lg lg:text-2xl flex-shrink-0"><i class="fas fa-stopwatch"></i></div>
+          <div class="min-w-0">
+            <p class="text-[10px] lg:text-xs text-slate-500 font-medium">Focus streak</p>
+            <p id="focusStreak" class="text-base lg:text-xl font-bold text-slate-900 truncate">—</p>
+          </div>
+        </div>
+      </section>
     </div>
 
-    <div class="flex flex-wrap gap-2 mb-3" id="quickBtnGroup">
-      <button class="quick-btn cat-telegram" data-cat="Telegram Notifications"><i class="fab fa-telegram"></i> Telegram</button>
-      <button class="quick-btn cat-tiktok" data-cat="TikTok / Short Videos"><i class="fab fa-tiktok"></i> TikTok</button>
-      <button class="quick-btn cat-adult" data-cat="Adult Content / Pornography"><i class="fas fa-ban"></i> Adult</button>
-      <button class="quick-btn cat-social" data-cat="Social Media / Browsing"><i class="fas fa-globe"></i> Social</button>
-      <button class="quick-btn cat-other" data-cat="Other / Custom"><i class="fas fa-ellipsis"></i> Other</button>
-    </div>
-
-    <div class="flex flex-wrap items-center gap-2 mt-1">
-      <div class="flex-1 min-w-[140px]">
-        <input id="detailInput" type="text" placeholder="Optional note (e.g. 'scrolled 15m')" class="w-full bg-slate-50 border border-slate-200 rounded-xl px-4 py-3 text-base text-slate-800 placeholder-slate-400 focus:ring-2 focus:ring-indigo-500 focus:border-transparent focus:outline-none" autocomplete="off">
+    <!-- RIGHT COLUMN: History Table -->
+    <section class="card-light rounded-2xl p-4 lg:p-6 shadow-sm">
+      <div class="flex flex-wrap items-center justify-between gap-2 mb-3">
+        <h2 class="text-sm lg:text-base font-medium text-slate-600 uppercase tracking-wider flex items-center gap-2 desktop-heading">
+          <i class="fas fa-clock-rotate-left text-indigo-500"></i> History
+        </h2>
+        <div class="flex flex-wrap items-center gap-1.5">
+          <button class="filter-btn active desktop-filter" data-filter="all">All</button>
+          <button class="filter-btn desktop-filter" data-filter="Telegram Notifications">Telegram</button>
+          <button class="filter-btn desktop-filter" data-filter="TikTok / Short Videos">TikTok</button>
+          <button class="filter-btn desktop-filter" data-filter="Adult Content / Pornography">Adult</button>
+          <button class="filter-btn desktop-filter" data-filter="Social Media / Browsing">Social</button>
+          <button class="filter-btn desktop-filter" data-filter="Other / Custom">Other</button>
+          <button id="clearAllBtn" class="text-xs lg:text-sm bg-rose-50 hover:bg-rose-100 text-rose-600 px-3 lg:px-4 py-1.5 lg:py-2 rounded-full transition flex items-center gap-1 border border-rose-200 min-h-[32px] lg:min-h-[38px]">
+            <i class="fas fa-trash-can"></i> <span class="hidden xs:inline">Clear</span>
+          </button>
+        </div>
       </div>
-      <button id="logWithDetailBtn" class="bg-indigo-600 hover:bg-indigo-700 text-white text-sm font-medium px-5 py-3 rounded-xl transition flex items-center gap-1.5 touch-manipulation min-h-[48px] shadow-sm">
-        <i class="fas fa-plus"></i> <span class="hidden sm:inline">Log with note</span><span class="sm:hidden">Log</span>
+
+      <div class="scroll-container" id="logContainer">
+        <!-- Desktop Table -->
+        <div class="desktop-log-table table-wrap">
+          <table class="w-full text-sm lg:text-base desktop-table">
+            <thead class="text-left text-xs lg:text-sm text-slate-500 border-b border-slate-200">
+              <tr>
+                <th class="pb-2 pr-2 font-medium">Time</th>
+                <th class="pb-2 pr-2 font-medium">Category</th>
+                <th class="pb-2 pr-2 font-medium">Note</th>
+                <th class="pb-2 text-right font-medium">Action</th>
+              </tr>
+            </thead>
+            <tbody id="logTableBody"></tbody>
+          </table>
+        </div>
+
+        <!-- Mobile Cards -->
+        <div id="mobileLogList" class="mobile-log-list"></div>
+
+        <!-- Empty state -->
+        <div id="emptyState" class="text-center text-slate-400 text-sm lg:text-base py-8">
+          <i class="fas fa-inbox text-3xl lg:text-4xl block mb-2 text-slate-300"></i>
+          No distractions logged. Stay in flow.
+        </div>
+      </div>
+    </section>
+  </div>
+</div>
+
+<!-- ===== MODAL OVERLAY ===== -->
+<div class="modal-overlay" id="actionModal">
+  <div class="modal-box">
+    <div class="text-center">
+      <div class="modal-icon" id="modalIcon">⚡</div>
+      <h3 class="modal-header" id="modalHeader">Stay Focused!</h3>
+      <p class="modal-message" id="modalMessage">Take a moment to refocus.</p>
+      <button class="modal-btn" id="modalCloseBtn">
+        <i class="fas fa-check-circle mr-2"></i> Done - Back to Work
       </button>
     </div>
-    <p class="text-[10px] text-slate-400 mt-2 flex items-center gap-1"><i class="far fa-clock"></i> timestamp auto‑captured</p>
-  </section>
-
-  <!-- DASHBOARD -->
-  <section class="grid grid-cols-1 sm:grid-cols-3 gap-3 md:gap-4 mb-5">
-    <div class="card-light rounded-2xl p-3 md:p-4 flex items-center gap-3 min-h-[72px] shadow-sm">
-      <div class="w-10 h-10 rounded-full bg-indigo-100 flex items-center justify-center text-indigo-600 text-lg flex-shrink-0"><i class="fas fa-list"></i></div>
-      <div class="min-w-0">
-        <p class="text-[10px] md:text-xs text-slate-500 font-medium">Today's interruptions</p>
-        <p id="totalToday" class="stat-number font-bold text-slate-900">0</p>
-      </div>
-    </div>
-    <div class="card-light rounded-2xl p-3 md:p-4 flex items-center gap-3 min-h-[72px] shadow-sm">
-      <div class="w-10 h-10 rounded-full bg-amber-100 flex items-center justify-center text-amber-600 text-lg flex-shrink-0"><i class="fas fa-crown"></i></div>
-      <div class="min-w-0">
-        <p class="text-[10px] md:text-xs text-slate-500 font-medium">Top distractor</p>
-        <p id="topDistractor" class="text-lg md:text-xl font-bold text-slate-900 truncate">—</p>
-      </div>
-    </div>
-    <div class="card-light rounded-2xl p-3 md:p-4 flex items-center gap-3 min-h-[72px] shadow-sm">
-      <div class="w-10 h-10 rounded-full bg-emerald-100 flex items-center justify-center text-emerald-600 text-lg flex-shrink-0"><i class="fas fa-stopwatch"></i></div>
-      <div class="min-w-0">
-        <p class="text-[10px] md:text-xs text-slate-500 font-medium">Focus streak (since last)</p>
-        <p id="focusStreak" class="text-lg md:text-xl font-bold text-slate-900 truncate">—</p>
-      </div>
-    </div>
-  </section>
-
-  <!-- LOG HISTORY -->
-  <section class="card-light rounded-2xl p-4 md:p-5 shadow-sm">
-    <div class="flex flex-wrap items-center justify-between gap-2 mb-3">
-      <h2 class="text-sm font-medium text-slate-600 uppercase tracking-wider flex items-center gap-2">
-        <i class="fas fa-clock-rotate-left text-indigo-500"></i> History
-      </h2>
-      <div class="flex flex-wrap items-center gap-1.5">
-        <button class="filter-btn active" data-filter="all">Alll</button>
-        <button class="filter-btn" data-filter="Telegram Notifications">Telegram</button>
-        <button class="filter-btn" data-filter="TikTok / Short Videos">TikTok</button>
-        <button class="filter-btn" data-filter="Adult Content / Pornography">Adult</button>
-        <button class="filter-btn" data-filter="Social Media / Browsing">Social</button>
-        <button class="filter-btn" data-filter="Other / Custom">Other</button>
-        <button id="clearAllBtn" class="text-xs bg-rose-50 hover:bg-rose-100 text-rose-600 px-3 py-1.5 rounded-full transition flex items-center gap-1 border border-rose-200 min-h-[32px]">
-          <i class="fas fa-trash-can"></i> <span class="hidden xs:inline">Clear</span>
-        </button>
-      </div>
-    </div>
-
-    <div class="scroll-container" id="logContainer">
-      <div class="desktop-log-table table-wrap">
-        <table class="w-full text-sm">
-          <thead class="text-left text-xs text-slate-500 border-b border-slate-200">
-            <tr>
-              <th class="pb-2 pr-2 font-medium">Time</th>
-              <th class="pb-2 pr-2 font-medium">Category</th>
-              <th class="pb-2 pr-2 font-medium">Note</th>
-              <th class="pb-2 text-right font-medium">Action</th>
-            </tr>
-          </thead>
-          <tbody id="logTableBody"></tbody>
-        </table>
-      </div>
-
-      <div id="mobileLogList" class="mobile-log-list"></div>
-
-      <div id="emptyState" class="text-center text-slate-400 text-sm py-8">
-        <i class="fas fa-inbox text-3xl block mb-2 text-slate-300"></i>
-        No distractions logged. Stay in flow.
-      </div>
-    </div>
-  </section>
+  </div>
 </div>
 
 <script>
@@ -385,6 +539,49 @@
     };
     const POLL_INTERVAL = 3500;
 
+    // ---------- ACTION MODAL CONFIG ----------
+    const ACTION_MESSAGES = {
+      'Adult Content / Pornography': {
+        icon: '⚠️',
+        header: 'Reset Your Dopamine Right Now!',
+        actions: [
+          'ထပြေးပါ သို့မဟုတ် နေရာမှာတင် ခုန်ပြေးပါ!',
+          'ဒိုက်ထိုး (Push-ups) အခါ ၂၀ ချက်ချင်းလုပ်ပါ!',
+          'အလေး (Dumbbell) အခါ ၂၀ မလိုက်ပါ!',
+          'အသက်ပြင်းပြင်းရှုပြီး ၅ မိနစ် လမ်းထလျှောက်ပါ!',
+          'Workout ခဏ ထလုပ်ပြီး အာရုံပြောင်းလိုက်ပါ!'
+        ]
+      },
+      'Telegram Notifications': {
+        icon: '🔔',
+        header: 'Cut the Distraction Source!',
+        actions: [
+          'Telegram / App ရဲ့ Notification တွေကို ၁ နာရီခန့် Mute / Off ထားလိုက်ပါ။ အရေးကြီးတာဘာမှ မရှိပါဘူး!'
+        ]
+      },
+      'Social Media / Browsing': {
+        icon: '🔔',
+        header: 'Cut the Distraction Source!',
+        actions: [
+          'Telegram / App ရဲ့ Notification တွေကို ၁ နာရီခန့် Mute / Off ထားလိုက်ပါ။ အရေးကြီးတာဘာမှ မရှိပါဘူး!'
+        ]
+      },
+      'TikTok / Short Videos': {
+        icon: '⏱️',
+        header: 'Stop the Brainrot Scroll!',
+        actions: [
+          'Screen ကို ချက်ချင်း ပိတ်လိုက်ပါ။ ရေတစ်ခွက် သောက်ပြီး ၃ မိနစ် အနားယူပါ!'
+        ]
+      },
+      'Other / Custom': {
+        icon: '🎯',
+        header: 'Refocus Your Mind!',
+        actions: [
+          'လုပ်လက်စ အလုပ်ဆီ ချက်ချင်း ပြန်သွားပါ။ 10-Minute Focus Block စတင်လိုက်ပါ!'
+        ]
+      }
+    };
+
     // ---------- STATE ----------
     let currentFilter = 'all';
     let logsCache = [];
@@ -403,6 +600,53 @@
     const $mobileLogList = $('#mobileLogList');
     const $emptyState = $('#emptyState');
     const $detailInput = $('#detailInput');
+    const $modalOverlay = $('#actionModal');
+    const $modalIcon = $('#modalIcon');
+    const $modalHeader = $('#modalHeader');
+    const $modalMessage = $('#modalMessage');
+    const $modalCloseBtn = $('#modalCloseBtn');
+
+    // ---------- MODAL FUNCTIONS ----------
+    function showActionModal(category) {
+      const config = ACTION_MESSAGES[category];
+      if (!config) return;
+
+      // Randomly pick an action for categories with multiple options
+      let actionMessage = config.actions[0];
+      if (config.actions.length > 1) {
+        const randomIndex = Math.floor(Math.random() * config.actions.length);
+        actionMessage = config.actions[randomIndex];
+      }
+
+      $modalIcon.text(config.icon);
+      $modalHeader.text(config.header);
+      $modalMessage.text(actionMessage);
+      $modalOverlay.addClass('active');
+      $('body').css('overflow', 'hidden');
+    }
+
+    function closeModal() {
+      $modalOverlay.removeClass('active');
+      $('body').css('overflow', '');
+      $detailInput.focus();
+    }
+
+    // Close modal on overlay click
+    $modalOverlay.on('click', function(e) {
+      if ($(e.target).is($modalOverlay)) {
+        closeModal();
+      }
+    });
+
+    // Close modal on button click
+    $modalCloseBtn.on('click', closeModal);
+
+    // Close modal on Escape key
+    $(document).on('keydown', function(e) {
+      if (e.key === 'Escape' && $modalOverlay.hasClass('active')) {
+        closeModal();
+      }
+    });
 
     // ---------- SYNC STATUS ----------
     function setSyncStatus(state, message) {
@@ -503,10 +747,10 @@
         const note = log.note || '';
         const row = $(`
           <tr class="border-b border-slate-100 table-row-hover transition" data-id="${log.id}">
-            <td class="py-2.5 pr-2 text-slate-500 text-xs whitespace-nowrap">${timeStr}</td>
-            <td class="py-2.5 pr-2"><span class="badge-cat ${catClass}">${log.category}</span></td>
-            <td class="py-2.5 pr-2 text-slate-700 max-w-[140px] truncate">${note || '—'}</td>
-            <td class="py-2.5 text-right">
+            <td class="py-2.5 lg:py-3 pr-2 text-slate-500 text-xs lg:text-sm whitespace-nowrap">${timeStr}</td>
+            <td class="py-2.5 lg:py-3 pr-2"><span class="badge-cat ${catClass} desktop-badge">${log.category}</span></td>
+            <td class="py-2.5 lg:py-3 pr-2 text-slate-700 max-w-[140px] lg:max-w-[200px] truncate">${note || '—'}</td>
+            <td class="py-2.5 lg:py-3 text-right">
               <button class="deleteBtn text-slate-400 hover:text-rose-500 transition px-3 py-1.5 min-h-[36px]" data-id="${log.id}">
                 <i class="fas fa-trash-can"></i>
               </button>
@@ -554,9 +798,18 @@
 
     // ---------- CORE SYNC ENGINE ----------
     async function postToCloudflare() {
-      if (isPosting) return false;
-      if (!isInitialized) return false;
-      if (!Array.isArray(logsCache)) return false;
+      if (isPosting) {
+        console.log('⏳ POST already in progress, skipping');
+        return false;
+      }
+      if (!isInitialized) {
+        console.log('⏳ App not initialized, skipping POST');
+        return false;
+      }
+      if (!Array.isArray(logsCache)) {
+        console.warn('⚠️ logsCache is not an array, skipping POST');
+        return false;
+      }
 
       isPosting = true;
       setSyncStatus('syncing');
@@ -568,7 +821,9 @@
           body: JSON.stringify(logsCache)
         });
 
-        if (!response.ok) throw new Error('HTTP ' + response.status);
+        if (!response.ok) {
+          throw new Error('HTTP ' + response.status + ' ' + response.statusText);
+        }
 
         const result = await response.json();
         console.log('✅ POST success:', result);
@@ -591,12 +846,19 @@
           headers: { 'Content-Type': 'application/json' }
         });
 
-        if (!response.ok) throw new Error('HTTP ' + response.status);
+        if (!response.ok) {
+          throw new Error('HTTP ' + response.status + ' ' + response.statusText);
+        }
 
         const data = await response.json();
-        if (data && data.logs && Array.isArray(data.logs)) return data.logs;
-        else if (data && Array.isArray(data)) return data;
-        else if (data && data.data && Array.isArray(data.data)) return data.data;
+
+        if (data && data.logs && Array.isArray(data.logs)) {
+          return data.logs;
+        } else if (data && Array.isArray(data)) {
+          return data;
+        } else if (data && data.data && Array.isArray(data.data)) {
+          return data.data;
+        }
         return null;
       } catch (err) {
         console.warn('⚠️ GET error:', err);
@@ -606,11 +868,24 @@
     }
 
     async function pollForUpdates() {
-      if (isPolling || isPosting || !isInitialized) return;
+      if (isPolling) {
+        console.log('⏳ Poll already in progress, skipping');
+        return;
+      }
+      if (isPosting) {
+        console.log('⏳ POST in progress, skipping poll');
+        return;
+      }
+      if (!isInitialized) {
+        console.log('⏳ App not initialized, skipping poll');
+        return;
+      }
 
       isPolling = true;
+
       try {
         const remoteLogs = await getFromCloudflare();
+
         if (remoteLogs && Array.isArray(remoteLogs)) {
           const localHash = getLogsHash(logsCache);
           const remoteHash = getLogsHash(remoteLogs);
@@ -647,8 +922,18 @@
       saveLocalLogs(logsCache);
       renderAll(true);
 
-      postToCloudflare();
-      $detailInput.val('').focus();
+      // Show action modal based on category
+      if (category && ACTION_MESSAGES[category]) {
+        showActionModal(category);
+      }
+
+      postToCloudflare().then(success => {
+        if (success) {
+          console.log('✅ Add log synced to cloud');
+        }
+      });
+
+      $detailInput.val('');
     }
 
     async function deleteLogById(id) {
@@ -659,7 +944,12 @@
         logsCache = logsCache.filter(l => l.id !== id);
         saveLocalLogs(logsCache);
         renderAll(true);
-        postToCloudflare();
+
+        postToCloudflare().then(success => {
+          if (success) {
+            console.log('✅ Delete log synced to cloud');
+          }
+        });
       };
 
       if ($row.length) {
@@ -690,8 +980,12 @@
             body: JSON.stringify(logsCache)
           });
 
-          if (!response.ok) throw new Error('HTTP ' + response.status);
+          if (!response.ok) {
+            throw new Error('HTTP ' + response.status);
+          }
 
+          const result = await response.json();
+          console.log('✅ Clear all sync success:', result);
           setSyncStatus('online');
           saveLocalLogs(logsCache);
         } catch (err) {
@@ -708,9 +1002,8 @@
       logsCache = loadLocalLogs();
       renderAll(false);
 
-      // FIX: URL Validation Logic Corrected
-      if (!WORKER_URL) {
-        console.warn('⚠️ Worker URL not configured.');
+      if (!WORKER_URL || WORKER_URL === 'https://distraction-api.aungthantzin2007.workers.dev') {
+        console.warn('⚠️ Worker URL not configured. Using local storage only.');
         setSyncStatus('offline', 'no endpoint');
         isInitialized = true;
         return;
