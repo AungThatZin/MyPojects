@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.5" />
-  <title>Focus · Distraction Tracker (fixed 1)</title>
+  <title>Focus · Distraction Tracker (fixed 2)</title>
   <!-- Tailwind CSS via CDN -->
   <script src="https://cdn.tailwindcss.com"></script>
   <!-- jQuery -->
@@ -383,15 +383,15 @@
       'Social Media / Browsing': 'cat-social',
       'Other / Custom': 'cat-other'
     };
-    const POLL_INTERVAL = 4000;
+    const POLL_INTERVAL = 3500; // 3.5 seconds - balanced for responsiveness
 
     // ---------- STATE ----------
     let currentFilter = 'all';
     let logsCache = [];
-    let isSyncEnabled = true;
-    let pollTimer = null;
-    let syncInProgress = false;
+    let isPosting = false;        // Prevents concurrent POST requests
+    let isPolling = false;        // Prevents overlapping poll cycles
     let isInitialized = false;
+    let pollTimer = null;
 
     // ---------- DOM REFS ----------
     const $syncDot = $('#syncDot');
@@ -442,6 +442,15 @@
     }
     function generateId() {
       return Date.now() + '_' + Math.random().toString(36).substring(2, 7);
+    }
+    function getLogsHash(logs) {
+      // Create a stable hash for comparison
+      return JSON.stringify(logs.map(l => ({
+        id: l.id,
+        timestamp: l.timestamp,
+        category: l.category,
+        note: l.note
+      })).sort((a, b) => a.id.localeCompare(b.id)));
     }
 
     function computeMetrics(logs) {
@@ -544,33 +553,33 @@
       });
     }
 
-    // ---------- CLOUDFLARE SYNC (WITH VALIDATION) ----------
-    async function syncToCloudflare() {
-      // CRITICAL: Prevent pushing empty array on startup before GET completes
+    // ---------- CORE SYNC ENGINE ----------
+
+    /**
+     * POST the current logsCache to Cloudflare Worker
+     * Uses isPosting flag to prevent concurrent POST requests
+     * Only runs when isInitialized is true to prevent startup race
+     */
+    async function postToCloudflare() {
+      // Prevent concurrent POST requests
+      if (isPosting) {
+        console.log('⏳ POST already in progress, skipping');
+        return false;
+      }
+
+      // Don't POST during initialization race
       if (!isInitialized) {
-        console.log('⏳ Skipping sync - app not initialized yet');
-        return;
+        console.log('⏳ App not initialized, skipping POST');
+        return false;
       }
 
-      // Validate data before sending
+      // Validate data
       if (!Array.isArray(logsCache)) {
-        console.warn('⚠️ logsCache is not an array, skipping sync');
-        return;
+        console.warn('⚠️ logsCache is not an array, skipping POST');
+        return false;
       }
 
-      // If logsCache is empty, only sync if it's an explicit user action (clear all)
-      // This prevents accidental overwrites
-      if (logsCache.length === 0) {
-        console.log('📭 logsCache is empty, skipping sync to prevent data loss');
-        return;
-      }
-
-      if (syncInProgress) {
-        console.log('⏳ Sync already in progress, skipping');
-        return;
-      }
-
-      syncInProgress = true;
+      isPosting = true;
       setSyncStatus('syncing');
 
       try {
@@ -581,25 +590,28 @@
         });
 
         if (!response.ok) {
-          throw new Error('HTTP ' + response.status);
+          throw new Error('HTTP ' + response.status + ' ' + response.statusText);
         }
 
         const result = await response.json();
-        console.log('✅ Sync success:', result);
+        console.log('✅ POST success:', result);
         setSyncStatus('online');
         saveLocalLogs(logsCache);
+        isPosting = false;
+        return true;
       } catch (err) {
-        console.error('❌ Sync error:', err);
+        console.error('❌ POST error:', err);
         setSyncStatus('offline', 'sync failed');
-      } finally {
-        syncInProgress = false;
+        isPosting = false;
+        return false;
       }
     }
 
-    // ---------- CLOUDFLARE FETCH ----------
-    async function fetchFromCloud() {
-      if (!isSyncEnabled) return null;
-
+    /**
+     * GET data from Cloudflare Worker with robust error handling
+     * Returns parsed logs array or null on failure
+     */
+    async function getFromCloudflare() {
       try {
         const response = await fetch(WORKER_URL, {
           method: 'GET',
@@ -607,30 +619,89 @@
         });
 
         if (!response.ok) {
-          throw new Error('HTTP ' + response.status);
+          throw new Error('HTTP ' + response.status + ' ' + response.statusText);
         }
 
         const data = await response.json();
 
-        // Handle different response formats
-        let logs = null;
+        // Handle various response formats
         if (data && data.logs && Array.isArray(data.logs)) {
-          logs = data.logs;
+          return data.logs;
         } else if (data && Array.isArray(data)) {
-          logs = data;
+          return data;
         } else if (data && data.data && Array.isArray(data.data)) {
-          logs = data.data;
+          return data.data;
         }
-
-        return logs;
+        return null;
       } catch (err) {
-        console.warn('⚠️ Fetch error:', err);
+        console.warn('⚠️ GET error:', err);
         setSyncStatus('offline', 'fetch failed');
         return null;
       }
     }
 
-    // ---------- CRUD WITH SYNC ----------
+    /**
+     * Poll for updates with delta detection
+     * Uses isPolling flag to prevent overlapping poll cycles
+     * Only polls when isInitialized is true and no POST is in progress
+     */
+    async function pollForUpdates() {
+      // Skip if already polling or if POST is in progress
+      if (isPolling) {
+        console.log('⏳ Poll already in progress, skipping');
+        return;
+      }
+
+      if (isPosting) {
+        console.log('⏳ POST in progress, skipping poll');
+        return;
+      }
+
+      if (!isInitialized) {
+        console.log('⏳ App not initialized, skipping poll');
+        return;
+      }
+
+      isPolling = true;
+
+      try {
+        const remoteLogs = await getFromCloudflare();
+
+        if (remoteLogs && Array.isArray(remoteLogs)) {
+          // Delta detection using hash comparison
+          const localHash = getLogsHash(logsCache);
+          const remoteHash = getLogsHash(remoteLogs);
+
+          if (localHash !== remoteHash) {
+            console.log('🔄 Remote data differs, updating local cache');
+            logsCache = remoteLogs;
+            saveLocalLogs(logsCache);
+            renderAll(true);
+            setSyncStatus('online');
+          } else {
+            // Still online, just no changes
+            if (document.visibilityState === 'visible') {
+              setSyncStatus('online');
+            }
+          }
+        }
+      } catch (err) {
+        console.warn('⚠️ Poll error:', err);
+        // Don't change status - keep whatever it was
+      } finally {
+        isPolling = false;
+      }
+    }
+
+    // ---------- CRUD OPERATIONS ----------
+
+    /**
+     * Add a new log entry with optimistic UI update
+     * 1. Insert into logsCache (unshift for newest first)
+     * 2. Render UI immediately
+     * 3. Save to localStorage
+     * 4. POST to Cloudflare (async)
+     */
     async function addLog(category, note) {
       const entry = {
         id: generateId(),
@@ -639,31 +710,47 @@
         note: (note || '').trim() || ''
       };
 
-      // 1. Add to local cache (newest first)
+      // Optimistic update: add to cache, render, save
       logsCache.unshift(entry);
       saveLocalLogs(logsCache);
       renderAll(true);
 
-      // 2. Sync to Cloudflare (will validate data)
-      await syncToCloudflare();
+      // Async POST - doesn't block UI
+      postToCloudflare().then(success => {
+        if (success) {
+          console.log('✅ Add log synced to cloud');
+        }
+      });
 
       $detailInput.val('').focus();
     }
 
+    /**
+     * Delete a log entry with optimistic UI update
+     * 1. Remove from logsCache
+     * 2. Render UI immediately
+     * 3. Save to localStorage
+     * 4. POST to Cloudflare (async)
+     */
     async function deleteLogById(id) {
       const $row = $(`tr[data-id="${id}"]`);
       const $card = $(`.log-card[data-id="${id}"]`);
 
-      const doDelete = async () => {
-        // Remove from cache
+      const doDelete = () => {
+        // Optimistic update
         logsCache = logsCache.filter(l => l.id !== id);
         saveLocalLogs(logsCache);
         renderAll(true);
 
-        // Sync to Cloudflare (will validate data)
-        await syncToCloudflare();
+        // Async POST
+        postToCloudflare().then(success => {
+          if (success) {
+            console.log('✅ Delete log synced to cloud');
+          }
+        });
       };
 
+      // Animate removal if element exists
       if ($row.length) {
         $row.css({ opacity: 0, transform: 'scale(0.97)' });
         setTimeout(doDelete, 200);
@@ -671,24 +758,26 @@
         $card.css({ opacity: 0, transform: 'scale(0.95)' });
         setTimeout(doDelete, 200);
       } else {
-        await doDelete();
+        doDelete();
       }
     }
 
+    /**
+     * Clear all logs (user-initiated)
+     * Special case: explicitly allows syncing empty array
+     */
     async function clearAllLogs() {
       if (logsCache.length === 0) return;
       if (!confirm('Delete all distraction logs permanently?')) return;
 
+      // Optimistic update
       logsCache = [];
       saveLocalLogs(logsCache);
       renderAll(true);
 
-      // Only sync empty array if user explicitly cleared all logs
-      // This is the ONLY case where we allow syncing an empty array
+      // Special case: allow empty array sync since user explicitly requested clear
       if (isInitialized) {
-        syncInProgress = true;
         setSyncStatus('syncing');
-
         try {
           const response = await fetch(WORKER_URL, {
             method: 'POST',
@@ -707,87 +796,62 @@
         } catch (err) {
           console.error('❌ Clear all sync failed:', err);
           setSyncStatus('offline', 'sync failed');
-        } finally {
-          syncInProgress = false;
         }
       }
     }
 
-    // ---------- POLLING ----------
-    async function pollForUpdates() {
-      if (!isSyncEnabled || syncInProgress || !isInitialized) return;
+    // ---------- INITIALIZATION ----------
 
-      const remoteLogs = await fetchFromCloud();
-      if (remoteLogs && Array.isArray(remoteLogs)) {
-        // Only update if remote has data and it's different
-        if (remoteLogs.length > 0) {
-          const localIds = new Set(logsCache.map(l => l.id));
-          const remoteIds = new Set(remoteLogs.map(l => l.id));
-          let hasChanges = false;
-
-          if (localIds.size !== remoteIds.size) {
-            hasChanges = true;
-          } else {
-            for (let id of localIds) {
-              if (!remoteIds.has(id)) { hasChanges = true; break; }
-            }
-          }
-
-          if (hasChanges) {
-            console.log('🔄 Remote data changed, updating...');
-            logsCache = remoteLogs;
-            saveLocalLogs(logsCache);
-            renderAll(true);
-            setSyncStatus('online');
-          }
-        }
-      }
-    }
-
-    // ---------- INIT ----------
+    /**
+     * Initialize the app with correct sync sequence:
+     * 1. Load localStorage for instant UI
+     * 2. GET from Cloudflare
+     * 3. If remote has data → use it
+     * 4. If remote empty but local has data → POST local data
+     * 5. Start polling
+     */
     async function initApp() {
       console.log('🚀 Initializing app...');
 
-      // Load local data first for immediate display
+      // STEP 1: Load local data for immediate UI
       logsCache = loadLocalLogs();
       renderAll(false);
 
+      // Check worker URL
       if (!WORKER_URL || WORKER_URL === 'https://distraction-api.aungthantzin2007.workers.dev') {
         console.warn('⚠️ Worker URL not configured. Using local storage only.');
-        isSyncEnabled = false;
         setSyncStatus('offline', 'no endpoint');
         isInitialized = true;
         return;
       }
 
-      isSyncEnabled = true;
       setSyncStatus('syncing', 'connecting...');
 
-      // STEP 1: GET from cloud FIRST - DO NOT POST yet
-      const remoteLogs = await fetchFromCloud();
+      // STEP 2: GET from cloud (no POST yet)
+      const remoteLogs = await getFromCloudflare();
 
       if (remoteLogs && Array.isArray(remoteLogs) && remoteLogs.length > 0) {
-        // Remote has data - use it
+        // Remote has data → use it
         console.log('📥 Loaded data from cloud:', remoteLogs.length, 'logs');
         logsCache = remoteLogs;
         saveLocalLogs(logsCache);
         renderAll(false);
         setSyncStatus('online');
       } else if (logsCache.length > 0) {
-        // No remote data, but we have local data - push it
+        // Remote empty, local has data → push local
         console.log('📤 No remote data, pushing local data...');
-        isInitialized = true;
-        await syncToCloudflare();
+        isInitialized = true; // Allow POST
+        await postToCloudflare();
       } else {
-        // No data anywhere
+        // Both empty → fresh start
         console.log('📭 No data found, starting fresh');
         setSyncStatus('online');
       }
 
-      // Mark as initialized - now sync is allowed
+      // STEP 3: Mark as initialized
       isInitialized = true;
 
-      // Start polling for updates
+      // STEP 4: Start polling
       if (pollTimer) clearInterval(pollTimer);
       pollTimer = setInterval(pollForUpdates, POLL_INTERVAL);
 
@@ -796,8 +860,10 @@
 
     // ---------- EVENT BINDING ----------
     $(document).ready(function() {
+      // Start the app
       initApp();
 
+      // Quick log buttons
       $('#quickBtnGroup').on('click', 'button', function() {
         const cat = $(this).data('cat');
         if (cat) {
@@ -806,11 +872,13 @@
         }
       });
 
+      // Log with detail
       $('#logWithDetailBtn').on('click', function() {
         const note = $detailInput.val().trim();
         addLog('Other / Custom', note || 'manual log');
       });
 
+      // Enter key on detail input
       $detailInput.on('keydown', function(e) {
         if (e.key === 'Enter') {
           e.preventDefault();
@@ -818,6 +886,7 @@
         }
       });
 
+      // Filter buttons
       $('.filter-btn').on('click', function() {
         $('.filter-btn').removeClass('active');
         $(this).addClass('active');
@@ -825,10 +894,12 @@
         renderAll(true);
       });
 
+      // Clear all
       $('#clearAllBtn').on('click', function() {
         clearAllLogs();
       });
 
+      // Live clock
       function updateClock() {
         const now = new Date();
         $('#liveClock').text(now.toLocaleTimeString(undefined, { hour: '2-digit', minute: '2-digit', second: '2-digit' }));
@@ -836,10 +907,12 @@
       updateClock();
       setInterval(updateClock, 1000);
 
+      // Focus input
       $detailInput.focus();
 
+      // Refresh on tab visibility change
       document.addEventListener('visibilitychange', function() {
-        if (document.visibilityState === 'visible' && isSyncEnabled && isInitialized) {
+        if (document.visibilityState === 'visible' && isInitialized) {
           pollForUpdates();
         }
       });
