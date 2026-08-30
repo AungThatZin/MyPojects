@@ -411,542 +411,24 @@
           <span class="text-[10px] lg:text-xs text-slate-400 ml-1">(tap button → instant)</span>
         </div>
 
-        <div class="flex flex-wrap gap-2 mb-3" id="quickBtnGroup">
-          <button class="quick-btn cat-telegram desktop-quick-btn" data-cat="Telegram Notifications"><i class="fab fa-telegram"></i> Telegram</button>
-          <button class="quick-btn cat-tiktok desktop-quick-btn" data-cat="TikTok / Short Videos"><i class="fab fa-tiktok"></i> TikTok</button>
-          <button class="quick-btn cat-adult desktop-quick-btn" data-cat="Adult Content / Pornography"><i class="fas fa-ban"></i> Adult</button>
-          <button class="quick-btn cat-social desktop-quick-btn" data-cat="Social Media / Browsing"><i class="fas fa-globe"></i> Social</button>
-          <button class="quick-btn cat-other desktop-quick-btn" data-cat="Other / Custom"><i class="fas fa-ellipsis"></i> Other</button>
-        </div>
-
-        <div class="flex flex-wrap items-center gap-2 mt-1">
-          <div class="flex-1 min-w-[140px]">
-            <input id="detailInput" type="text" placeholder="Optional note (e.g. 'scrolled 15m')" class="w-full bg-slate-50 border border-slate-200 rounded-xl px-4 py-3 lg:py-4 text-base lg:text-lg text-slate-800 placeholder-slate-400 focus:ring-2 focus:ring-indigo-500 focus:border-transparent focus:outline-none desktop-input" autocomplete="off">
+        <form id="logForm" class="w-full">
+          <div class="flex flex-wrap gap-2 mb-3" id="quickBtnGroup">
+            <button type="button" class="quick-btn cat-telegram desktop-quick-btn" data-cat="Telegram Notifications"><i class="fab fa-telegram"></i> Telegram</button>
+            <button type="button" class="quick-btn cat-tiktok desktop-quick-btn" data-cat="TikTok / Short Videos"><i class="fab fa-tiktok"></i> TikTok</button>
+            <button type="button" class="quick-btn cat-adult desktop-quick-btn" data-cat="Adult Content / Pornography"><i class="fas fa-ban"></i> Adult</button>
+            <button type="button" class="quick-btn cat-social desktop-quick-btn" data-cat="Social Media / Browsing"><i class="fas fa-globe"></i> Social</button>
+            <button type="button" class="quick-btn cat-other desktop-quick-btn" data-cat="Other / Custom"><i class="fas fa-ellipsis"></i> Other</button>
           </div>
-          <button id="logWithDetailBtn" class="bg-indigo-600 hover:bg-indigo-700 text-white text-sm lg:text-base font-medium px-5 lg:px-6 py-3 lg:py-4 rounded-xl transition flex items-center gap-1.5 touch-manipulation min-h-[48px] lg:min-h-[56px] shadow-sm desktop-btn">
-            <i class="fas fa-plus"></i> <span class="hidden sm:inline">Log with note</span><span class="sm:hidden">Log</span>
-          </button>
-        </div>
-        <p class="text-[10px] lg:text-xs text-slate-400 mt-2 flex items-center gap-1"><i class="far fa-clock"></i> timestamp auto‑captured</p>
-      </section>
 
-      <!-- DASHBOARD METRICS -->
-      <section class="grid grid-cols-1 sm:grid-cols-3 gap-3 lg:gap-4">
-        <div class="card-light rounded-2xl p-3 lg:p-4 flex items-center gap-3 min-h-[72px] lg:min-h-[88px] shadow-sm">
-          <div class="w-10 h-10 lg:w-14 lg:h-14 rounded-full bg-indigo-100 flex items-center justify-center text-indigo-600 text-lg lg:text-2xl flex-shrink-0"><i class="fas fa-list"></i></div>
-          <div class="min-w-0">
-            <p class="text-[10px] lg:text-xs text-slate-500 font-medium">Today's interruptions</p>
-            <p id="totalToday" class="stat-number font-bold text-slate-900 desktop-stat">0</p>
+          <div class="flex flex-wrap items-center gap-2 mt-1">
+            <div class="flex-1 min-w-[140px]">
+              <input id="detailInput" type="text" placeholder="Optional note (e.g. 'scrolled 15m')" class="w-full bg-slate-50 border border-slate-200 rounded-xl px-4 py-3 lg:py-4 text-base lg:text-lg text-slate-800 placeholder-slate-400 focus:ring-2 focus:ring-indigo-500 focus:border-transparent focus:outline-none desktop-input" autocomplete="off">
+            </div>
+            <button type="button" id="logWithDetailBtn" class="bg-indigo-600 hover:bg-indigo-700 text-white text-sm lg:text-base font-medium px-5 lg:px-6 py-3 lg:py-4 rounded-xl transition flex items-center gap-1.5 touch-manipulation min-h-[48px] lg:min-h-[56px] shadow-sm desktop-btn">
+              <i class="fas fa-plus"></i> <span class="hidden sm:inline">Log with note</span><span class="sm:hidden">Log</span>
+            </button>
           </div>
-        </div>
-        <div class="card-light rounded-2xl p-3 lg:p-4 flex items-center gap-3 min-h-[72px] lg:min-h-[88px] shadow-sm">
-          <div class="w-10 h-10 lg:w-14 lg:h-14 rounded-full bg-amber-100 flex items-center justify-center text-amber-600 text-lg lg:text-2xl flex-shrink-0"><i class="fas fa-crown"></i></div>
-          <div class="min-w-0">
-            <p class="text-[10px] lg:text-xs text-slate-500 font-medium">Top distractor</p>
-            <p id="topDistractor" class="text-base lg:text-xl font-bold text-slate-900 truncate">—</p>
-          </div>
-        </div>
-        <div class="card-light rounded-2xl p-3 lg:p-4 flex items-center gap-3 min-h-[72px] lg:min-h-[88px] shadow-sm">
-          <div class="w-10 h-10 lg:w-14 lg:h-14 rounded-full bg-emerald-100 flex items-center justify-center text-emerald-600 text-lg lg:text-2xl flex-shrink-0"><i class="fas fa-stopwatch"></i></div>
-          <div class="min-w-0">
-            <p class="text-[10px] lg:text-xs text-slate-500 font-medium">Focus streak</p>
-            <p id="focusStreak" class="text-base lg:text-xl font-bold text-slate-900 truncate">—</p>
-          </div>
-        </div>
-      </section>
-    </div>
-
-    <!-- RIGHT COLUMN: History Table -->
-    <section class="card-light rounded-2xl p-4 lg:p-6 shadow-sm">
-      <div class="flex flex-wrap items-center justify-between gap-2 mb-3">
-        <h2 class="text-sm lg:text-base font-medium text-slate-600 uppercase tracking-wider flex items-center gap-2 desktop-heading">
-          <i class="fas fa-clock-rotate-left text-indigo-500"></i> History
-        </h2>
-        <div class="flex flex-wrap items-center gap-1.5">
-          <button class="filter-btn active desktop-filter" data-filter="all">All</button>
-          <button class="filter-btn desktop-filter" data-filter="Telegram Notifications">Telegram</button>
-          <button class="filter-btn desktop-filter" data-filter="TikTok / Short Videos">TikTok</button>
-          <button class="filter-btn desktop-filter" data-filter="Adult Content / Pornography">Adult</button>
-          <button class="filter-btn desktop-filter" data-filter="Social Media / Browsing">Social</button>
-          <button class="filter-btn desktop-filter" data-filter="Other / Custom">Other</button>
-          <button id="clearAllBtn" class="text-xs lg:text-sm bg-rose-50 hover:bg-rose-100 text-rose-600 px-3 lg:px-4 py-1.5 lg:py-2 rounded-full transition flex items-center gap-1 border border-rose-200 min-h-[32px] lg:min-h-[38px]">
-            <i class="fas fa-trash-can"></i> <span class="hidden xs:inline">Clear</span>
-          </button>
-        </div>
-      </div>
-
-      <div class="scroll-container" id="logContainer">
-        <!-- Desktop Table -->
-        <div class="desktop-log-table table-wrap">
-          <table class="w-full text-sm lg:text-base desktop-table">
-            <thead class="text-left text-xs lg:text-sm text-slate-500 border-b border-slate-200">
-              <tr>
-                <th class="pb-2 pr-2 font-medium">Time</th>
-                <th class="pb-2 pr-2 font-medium">Category</th>
-                <th class="pb-2 pr-2 font-medium">Note</th>
-                <th class="pb-2 text-right font-medium">Action</th>
-              </tr>
-            </thead>
-            <tbody id="logTableBody"></tbody>
-          </table>
-        </div>
-
-        <!-- Mobile Cards -->
-        <div id="mobileLogList" class="mobile-log-list"></div>
-
-        <!-- Empty state -->
-        <div id="emptyState" class="text-center text-slate-400 text-sm lg:text-base py-8">
-          <i class="fas fa-inbox text-3xl lg:text-4xl block mb-2 text-slate-300"></i>
-          No distractions logged. Stay in flow.
-        </div>
-      </div>
-    </section>
-  </div>
-</div>
-
-<!-- ===== MODAL OVERLAY ===== -->
-<div class="modal-overlay" id="actionModal">
-  <div class="modal-box">
-    <div class="text-center">
-      <div class="modal-icon" id="modalIcon">⚡</div>
-      <h3 class="modal-header" id="modalHeader">Stay Focused!</h3>
-      <p class="modal-message" id="modalMessage">Take a moment to refocus.</p>
-      <button class="modal-btn" id="modalCloseBtn">
-        <i class="fas fa-check-circle mr-2"></i> Done - Back to Work
-      </button>
-    </div>
-  </div>
-</div>
-
-<!DOCTYPE html>
-<html lang="en">
-<head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.5" />
-  <title>Focus · Distraction Tracker</title>
-  <!-- Tailwind CSS via CDN -->
-  <script src="https://cdn.tailwindcss.com"></script>
-  <!-- jQuery -->
-  <script src="https://code.jquery.com/jquery-3.7.1.min.js" integrity="sha256-/JqT3SQfawRcv/BIHPThkBvs0OEvtFFmqPF/lYI/Cxo=" crossorigin="anonymous"></script>
-  <!-- Font Awesome 6 -->
-  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css" />
-
-  <style>
-    body {
-      background: #f1f5f9;
-      font-family: system-ui, -apple-system, 'Segoe UI', Roboto, sans-serif;
-      -webkit-tap-highlight-color: transparent;
-    }
-
-    .card-light {
-      background: #ffffff;
-      border: 1px solid #e2e8f0;
-      transition: box-shadow 0.2s ease, transform 0.1s ease;
-    }
-    .card-light:hover {
-      box-shadow: 0 4px 16px rgba(0,0,0,0.06);
-    }
-
-    .badge-cat {
-      font-weight: 500;
-      letter-spacing: 0.01em;
-      padding: 0.25rem 0.85rem;
-      border-radius: 9999px;
-      font-size: 0.7rem;
-      display: inline-block;
-      min-height: 28px;
-    }
-    .cat-telegram { background: #dbeafe; color: #1e40af; }
-    .cat-tiktok { background: #fce7f3; color: #9d174d; }
-    .cat-adult { background: #fee2e2; color: #991b1b; }
-    .cat-social { background: #e0e7ff; color: #4338ca; }
-    .cat-other { background: #e2e8f0; color: #334155; }
-
-    .filter-btn {
-      background: #f1f5f9;
-      color: #475569;
-      border: 1px solid #e2e8f0;
-      transition: 0.15s ease;
-      font-size: 0.7rem;
-      padding: 0.4rem 0.85rem;
-      border-radius: 9999px;
-      cursor: pointer;
-      min-height: 32px;
-      touch-action: manipulation;
-    }
-    .filter-btn.active {
-      background: #4f46e5;
-      color: white;
-      border-color: #4f46e5;
-    }
-    .filter-btn:hover {
-      background: #e2e8f0;
-    }
-    .filter-btn.active:hover {
-      background: #4338ca;
-    }
-
-    .quick-btn {
-      padding: 0.8rem 1rem;
-      font-size: 0.85rem;
-      font-weight: 500;
-      border-radius: 1rem;
-      transition: all 0.1s ease;
-      text-align: center;
-      flex: 1 0 auto;
-      min-width: 70px;
-      min-height: 52px;
-      border: 1px solid transparent;
-      cursor: pointer;
-      touch-action: manipulation;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      background: #f8fafc;
-      color: #1e293b;
-      border-color: #e2e8f0;
-    }
-    .quick-btn:hover {
-      background: #f1f5f9;
-      transform: translateY(-1px);
-    }
-    .quick-btn:active {
-      transform: scale(0.94);
-    }
-    .quick-btn i {
-      margin-right: 6px;
-      font-size: 1rem;
-    }
-    .quick-btn.cat-telegram:hover { background: #dbeafe; border-color: #93c5fd; }
-    .quick-btn.cat-tiktok:hover { background: #fce7f3; border-color: #f9a8d4; }
-    .quick-btn.cat-adult:hover { background: #fee2e2; border-color: #fca5a5; }
-    .quick-btn.cat-social:hover { background: #e0e7ff; border-color: #a5b4fc; }
-    .quick-btn.cat-other:hover { background: #e2e8f0; border-color: #cbd5e1; }
-
-    @media (max-width: 480px) {
-      .quick-btn {
-        font-size: 0.7rem;
-        padding: 0.6rem 0.5rem;
-        min-width: 55px;
-        min-height: 44px;
-      }
-      .quick-btn i {
-        font-size: 0.85rem;
-        margin-right: 4px;
-      }
-    }
-
-    .sync-dot {
-      display: inline-block;
-      width: 10px;
-      height: 10px;
-      border-radius: 50%;
-      margin-right: 6px;
-      flex-shrink: 0;
-    }
-    .sync-online { background: #22c55e; box-shadow: 0 0 12px #22c55e66; }
-    .sync-offline { background: #ef4444; box-shadow: 0 0 12px #ef444466; }
-    .sync-syncing { background: #f59e0b; box-shadow: 0 0 12px #f59e0b66; animation: pulse 1s infinite; }
-    @keyframes pulse {
-      0%, 100% { opacity: 0.6; transform: scale(0.95); }
-      50% { opacity: 1; transform: scale(1.05); }
-    }
-
-    .log-card {
-      background: #f8fafc;
-      border: 1px solid #e2e8f0;
-      border-radius: 0.75rem;
-      padding: 0.85rem 1rem;
-      transition: all 0.2s ease;
-      min-height: 60px;
-    }
-    .log-card:hover {
-      background: #f1f5f9;
-    }
-    .log-card .log-time {
-      font-size: 0.7rem;
-      color: #64748b;
-    }
-    .log-card .log-note {
-      font-size: 0.85rem;
-      color: #1e293b;
-      margin-top: 4px;
-      word-break: break-word;
-    }
-
-    .fade-in {
-      opacity: 0;
-      transform: translateY(10px);
-      transition: opacity 0.3s ease, transform 0.3s ease;
-    }
-    .fade-in.show {
-      opacity: 1;
-      transform: translateY(0);
-    }
-
-    input, select, textarea {
-      font-size: 16px !important;
-      min-height: 48px;
-    }
-    input:focus, select:focus, textarea:focus {
-      outline: 2px solid #4f46e5;
-      outline-offset: 1px;
-    }
-
-    button, .btn-like {
-      min-height: 44px;
-      touch-action: manipulation;
-    }
-
-    .table-wrap {
-      overflow-x: auto;
-      -webkit-overflow-scrolling: touch;
-    }
-
-    .mobile-log-list {
-      display: flex;
-      flex-direction: column;
-      gap: 0.6rem;
-    }
-    @media (min-width: 768px) {
-      .mobile-log-list {
-        display: none;
-      }
-    }
-
-    .desktop-log-table {
-      display: none;
-    }
-    @media (min-width: 768px) {
-      .desktop-log-table {
-        display: table;
-      }
-    }
-
-    .scroll-container {
-      max-height: 55vh;
-      overflow-y: auto;
-      scroll-behavior: smooth;
-      -webkit-overflow-scrolling: touch;
-    }
-    .scroll-container::-webkit-scrollbar {
-      width: 4px;
-    }
-    .scroll-container::-webkit-scrollbar-track {
-      background: #f1f5f9;
-    }
-    .scroll-container::-webkit-scrollbar-thumb {
-      background: #94a3b8;
-      border-radius: 9999px;
-    }
-
-    .stat-number {
-      font-size: 1.5rem;
-      line-height: 1.2;
-    }
-    @media (min-width: 768px) {
-      .stat-number {
-        font-size: 1.875rem;
-      }
-    }
-
-    .table-row-hover:hover {
-      background: #f8fafc;
-    }
-
-    .delete-btn:hover {
-      color: #ef4444;
-    }
-
-    /* Modal overlay */
-    .modal-overlay {
-      position: fixed;
-      inset: 0;
-      background: rgba(0, 0, 0, 0.6);
-      backdrop-filter: blur(4px);
-      z-index: 999;
-      display: none;
-      align-items: center;
-      justify-content: center;
-      padding: 1rem;
-      animation: fadeIn 0.3s ease;
-    }
-    .modal-overlay.active {
-      display: flex;
-    }
-
-    .modal-box {
-      max-width: 500px;
-      width: 100%;
-      background: #ffffff;
-      border-radius: 1.5rem;
-      padding: 2rem;
-      box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.25);
-      animation: slideUp 0.35s ease;
-      position: relative;
-    }
-
-    @keyframes fadeIn {
-      from { opacity: 0; }
-      to { opacity: 1; }
-    }
-
-    @keyframes slideUp {
-      from { opacity: 0; transform: translateY(30px) scale(0.95); }
-      to { opacity: 1; transform: translateY(0) scale(1); }
-    }
-
-    .modal-icon {
-      font-size: 2.5rem;
-      margin-bottom: 0.5rem;
-    }
-    .modal-header {
-      font-size: 1.25rem;
-      font-weight: 700;
-      color: #1e293b;
-      margin-bottom: 0.75rem;
-      line-height: 1.3;
-    }
-    .modal-message {
-      color: #475569;
-      font-size: 1rem;
-      line-height: 1.6;
-      margin-bottom: 1.5rem;
-    }
-    .modal-btn {
-      background: #4f46e5;
-      color: white;
-      font-weight: 600;
-      padding: 0.75rem 2rem;
-      border-radius: 9999px;
-      border: none;
-      cursor: pointer;
-      transition: background 0.2s;
-      font-size: 1rem;
-      min-height: 48px;
-    }
-    .modal-btn:hover {
-      background: #4338ca;
-    }
-
-    /* Desktop 2-column layout */
-    .desktop-grid {
-      display: grid;
-      gap: 1.5rem;
-    }
-    @media (min-width: 1024px) {
-      .desktop-grid {
-        grid-template-columns: 1fr 1.2fr;
-      }
-    }
-
-    /* Desktop typography */
-    @media (min-width: 1024px) {
-      .desktop-title {
-        font-size: 1.875rem !important;
-        line-height: 2.25rem !important;
-      }
-      .desktop-stat {
-        font-size: 2.25rem !important;
-        line-height: 2.5rem !important;
-      }
-      .desktop-btn {
-        font-size: 1rem !important;
-        padding: 0.75rem 1.25rem !important;
-        min-height: 56px !important;
-      }
-      .desktop-table {
-        font-size: 0.95rem !important;
-      }
-      .desktop-table th,
-      .desktop-table td {
-        padding: 0.75rem 0.5rem !important;
-      }
-      .desktop-badge {
-        font-size: 0.8rem !important;
-        padding: 0.35rem 1rem !important;
-        min-height: 32px !important;
-      }
-      .desktop-heading {
-        font-size: 1.1rem !important;
-      }
-      .desktop-filter {
-        font-size: 0.8rem !important;
-        padding: 0.5rem 1rem !important;
-        min-height: 38px !important;
-      }
-      .desktop-input {
-        font-size: 1rem !important;
-        min-height: 56px !important;
-        padding: 0.75rem 1.25rem !important;
-      }
-      .desktop-quick-btn {
-        font-size: 0.95rem !important;
-        padding: 0.9rem 1.25rem !important;
-        min-height: 56px !important;
-      }
-    }
-  </style>
-</head>
-<body>
-
-<div class="max-w-7xl mx-auto px-4 sm:px-6 py-4 md:py-8 text-slate-800">
-
-  <!-- HEADER -->
-  <header class="flex flex-wrap items-center justify-between mb-5 gap-2">
-    <div>
-      <h1 class="text-xl lg:text-3xl font-semibold tracking-tight flex items-center gap-2 text-slate-900 desktop-title">
-        <i class="fas fa-brain text-indigo-600 text-2xl lg:text-3xl"></i> Focus<span class="text-indigo-500">/</span>track
-      </h1>
-      <p class="text-slate-500 text-xs lg:text-sm mt-0.5 flex flex-wrap items-center gap-2">
-        <span>zero‑friction · private</span>
-        <span class="bg-slate-100 text-slate-600 text-[0.6rem] lg:text-xs px-2 py-0.5 rounded-full border border-slate-200 inline-flex items-center gap-1">
-          <i class="fas fa-cloud text-indigo-500"></i> Cloudflare KV
-        </span>
-      </p>
-    </div>
-    <div class="flex items-center gap-2 md:gap-3">
-      <div id="syncStatus" class="text-[10px] lg:text-xs text-slate-600 bg-white px-2.5 lg:px-3 py-1.5 rounded-full border border-slate-200 flex items-center gap-1.5 min-h-[32px] shadow-sm">
-        <span class="sync-dot sync-offline" id="syncDot"></span>
-        <span id="syncLabel" class="whitespace-nowrap">offline</span>
-      </div>
-      <div class="text-[10px] lg:text-xs text-slate-600 bg-white px-2.5 lg:px-3 py-1.5 rounded-full border border-slate-200 flex items-center gap-1.5 min-h-[32px] shadow-sm">
-        <i class="far fa-clock text-indigo-500"></i> <span id="liveClock" class="font-mono text-slate-700"></span>
-      </div>
-    </div>
-  </header>
-
-  <!-- DESKTOP 2-COLUMN GRID -->
-  <div class="desktop-grid">
-
-    <!-- LEFT COLUMN: Quick Log + Metrics -->
-    <div class="space-y-4 lg:space-y-5">
-
-      <!-- QUICK LOG SECTION -->
-      <section class="card-light rounded-2xl p-4 lg:p-6 shadow-sm">
-        <div class="flex flex-wrap items-center gap-1.5 mb-3">
-          <span class="text-xs lg:text-sm font-medium text-slate-500 uppercase tracking-wider flex items-center gap-1.5 desktop-heading">
-            <i class="fas fa-bolt text-amber-500"></i> 1‑click log
-          </span>
-          <span class="text-[10px] lg:text-xs text-slate-400 ml-1">(tap button → instant)</span>
-        </div>
-
-        <div class="flex flex-wrap gap-2 mb-3" id="quickBtnGroup">
-          <button class="quick-btn cat-telegram desktop-quick-btn" data-cat="Telegram Notifications"><i class="fab fa-telegram"></i> Telegram</button>
-          <button class="quick-btn cat-tiktok desktop-quick-btn" data-cat="TikTok / Short Videos"><i class="fab fa-tiktok"></i> TikTok</button>
-          <button class="quick-btn cat-adult desktop-quick-btn" data-cat="Adult Content / Pornography"><i class="fas fa-ban"></i> Adult</button>
-          <button class="quick-btn cat-social desktop-quick-btn" data-cat="Social Media / Browsing"><i class="fas fa-globe"></i> Social</button>
-          <button class="quick-btn cat-other desktop-quick-btn" data-cat="Other / Custom"><i class="fas fa-ellipsis"></i> Other</button>
-        </div>
-
-        <div class="flex flex-wrap items-center gap-2 mt-1">
-          <div class="flex-1 min-w-[140px]">
-            <input id="detailInput" type="text" placeholder="Optional note (e.g. 'scrolled 15m')" class="w-full bg-slate-50 border border-slate-200 rounded-xl px-4 py-3 lg:py-4 text-base lg:text-lg text-slate-800 placeholder-slate-400 focus:ring-2 focus:ring-indigo-500 focus:border-transparent focus:outline-none desktop-input" autocomplete="off">
-          </div>
-          <button id="logWithDetailBtn" class="bg-indigo-600 hover:bg-indigo-700 text-white text-sm lg:text-base font-medium px-5 lg:px-6 py-3 lg:py-4 rounded-xl transition flex items-center gap-1.5 touch-manipulation min-h-[48px] lg:min-h-[56px] shadow-sm desktop-btn">
-            <i class="fas fa-plus"></i> <span class="hidden sm:inline">Log with note</span><span class="sm:hidden">Log</span>
-          </button>
-        </div>
+        </form>
         <p class="text-[10px] lg:text-xs text-slate-400 mt-2 flex items-center gap-1"><i class="far fa-clock"></i> timestamp auto‑captured</p>
       </section>
 
@@ -1058,6 +540,8 @@
       'Other / Custom': 'cat-other'
     };
     const POLL_INTERVAL = 3500;
+    const MAX_RETRY_ATTEMPTS = 3;
+    const RETRY_DELAY = 2000;
 
     // ---------- ACTION MODAL CONFIG ----------
     const ACTION_MESSAGES = {
@@ -1109,6 +593,7 @@
     let isPolling = false;
     let isInitialized = false;
     let pollTimer = null;
+    let retryCount = 0;
 
     // ---------- DOM REFS ----------
     const $syncDot = $('#syncDot');
@@ -1120,6 +605,7 @@
     const $mobileLogList = $('#mobileLogList');
     const $emptyState = $('#emptyState');
     const $detailInput = $('#detailInput');
+    const $logForm = $('#logForm');
     const $modalOverlay = $('#actionModal');
     const $modalIcon = $('#modalIcon');
     const $modalHeader = $('#modalHeader');
@@ -1131,7 +617,6 @@
       const config = ACTION_MESSAGES[category];
       if (!config) return;
 
-      // Randomly pick an action for categories with multiple options
       let actionMessage = config.actions[0];
       if (config.actions.length > 1) {
         const randomIndex = Math.floor(Math.random() * config.actions.length);
@@ -1148,7 +633,9 @@
     function closeModal() {
       $modalOverlay.removeClass('active');
       $('body').css('overflow', '');
-      $detailInput.focus();
+      setTimeout(() => {
+        $detailInput.focus();
+      }, 100);
     }
 
     // Close modal on overlay click
@@ -1159,7 +646,10 @@
     });
 
     // Close modal on button click
-    $modalCloseBtn.on('click', closeModal);
+    $modalCloseBtn.on('click', function(e) {
+      e.preventDefault();
+      closeModal();
+    });
 
     // Close modal on Escape key
     $(document).on('keydown', function(e) {
@@ -1310,6 +800,7 @@
       });
 
       $('.deleteBtn, .deleteBtnMobile').off('click').on('click', function(e) {
+        e.preventDefault();
         e.stopPropagation();
         const id = $(this).data('id');
         deleteLogById(id);
@@ -1317,15 +808,17 @@
     }
 
     // ---------- CORE SYNC ENGINE ----------
-    async function postToCloudflare() {
+    async function postToCloudflare(retryAttempt = 0) {
       if (isPosting) {
         console.log('⏳ POST already in progress, skipping');
         return false;
       }
+
       if (!isInitialized) {
         console.log('⏳ App not initialized, skipping POST');
         return false;
       }
+
       if (!Array.isArray(logsCache)) {
         console.warn('⚠️ logsCache is not an array, skipping POST');
         return false;
@@ -1349,12 +842,20 @@
         console.log('✅ POST success:', result);
         setSyncStatus('online');
         saveLocalLogs(logsCache);
+        retryCount = 0;
         isPosting = false;
         return true;
       } catch (err) {
         console.error('❌ POST error:', err);
         setSyncStatus('offline', 'sync failed');
         isPosting = false;
+
+        if (retryAttempt < MAX_RETRY_ATTEMPTS) {
+          console.log(`🔄 Retry ${retryAttempt + 1}/${MAX_RETRY_ATTEMPTS} in ${RETRY_DELAY}ms...`);
+          await new Promise(resolve => setTimeout(resolve, RETRY_DELAY));
+          return postToCloudflare(retryAttempt + 1);
+        }
+
         return false;
       }
     }
@@ -1388,18 +889,9 @@
     }
 
     async function pollForUpdates() {
-      if (isPolling) {
-        console.log('⏳ Poll already in progress, skipping');
-        return;
-      }
-      if (isPosting) {
-        console.log('⏳ POST in progress, skipping poll');
-        return;
-      }
-      if (!isInitialized) {
-        console.log('⏳ App not initialized, skipping poll');
-        return;
-      }
+      if (isPolling) return;
+      if (isPosting) return;
+      if (!isInitialized) return;
 
       isPolling = true;
 
@@ -1431,6 +923,11 @@
 
     // ---------- CRUD OPERATIONS ----------
     async function addLog(category, note) {
+      if (isPosting) {
+        console.log('⏳ Sync in progress, please wait...');
+        return;
+      }
+
       const entry = {
         id: generateId(),
         timestamp: new Date().toISOString(),
@@ -1438,22 +935,26 @@
         note: (note || '').trim() || ''
       };
 
+      // 1. IMMEDIATE optimistic update
       logsCache.unshift(entry);
       saveLocalLogs(logsCache);
       renderAll(true);
 
-      // Show action modal based on category
+      // 2. Show action modal
       if (category && ACTION_MESSAGES[category]) {
         showActionModal(category);
       }
 
-      postToCloudflare().then(success => {
-        if (success) {
-          console.log('✅ Add log synced to cloud');
-        }
-      });
-
+      // 3. Clear input and maintain focus
       $detailInput.val('');
+      $detailInput.focus();
+
+      // 4. Async sync to Cloudflare with retry
+      try {
+        await postToCloudflare();
+      } catch (err) {
+        console.warn('⚠️ Background sync failed, data retained locally');
+      }
     }
 
     async function deleteLogById(id) {
@@ -1465,10 +966,8 @@
         saveLocalLogs(logsCache);
         renderAll(true);
 
-        postToCloudflare().then(success => {
-          if (success) {
-            console.log('✅ Delete log synced to cloud');
-          }
+        postToCloudflare().catch(err => {
+          console.warn('⚠️ Delete sync failed, data retained locally');
         });
       };
 
@@ -1522,7 +1021,7 @@
       logsCache = loadLocalLogs();
       renderAll(false);
 
-      if (!WORKER_URL || WORKER_URL === 'https://distraction-api.aungthantzin2007.workers.dev') {
+      if (!WORKER_URL) {
         console.warn('⚠️ Worker URL not configured. Using local storage only.');
         setSyncStatus('offline', 'no endpoint');
         isInitialized = true;
@@ -1560,37 +1059,58 @@
     $(document).ready(function() {
       initApp();
 
-      $('#quickBtnGroup').on('click', 'button', function() {
+      // Form submission prevention (critical for mobile)
+      $logForm.on('submit', function(e) {
+        e.preventDefault();
+        return false;
+      });
+
+      // Quick log buttons with touch support
+      $('#quickBtnGroup').on('click touchend', 'button', function(e) {
+        e.preventDefault();
         const cat = $(this).data('cat');
         if (cat) {
           const note = $detailInput.val().trim();
           addLog(cat, note);
         }
+        return false;
       });
 
-      $('#logWithDetailBtn').on('click', function() {
+      // Log with detail button
+      $('#logWithDetailBtn').on('click touchend', function(e) {
+        e.preventDefault();
         const note = $detailInput.val().trim();
         addLog('Other / Custom', note || 'manual log');
+        return false;
       });
 
+      // Enter key on detail input
       $detailInput.on('keydown', function(e) {
         if (e.key === 'Enter') {
           e.preventDefault();
-          $('#logWithDetailBtn').click();
+          const note = $(this).val().trim();
+          addLog('Other / Custom', note || 'manual log');
+          return false;
         }
       });
 
-      $('.filter-btn').on('click', function() {
+      // Filter buttons
+      $('.filter-btn').on('click', function(e) {
+        e.preventDefault();
         $('.filter-btn').removeClass('active');
         $(this).addClass('active');
         currentFilter = $(this).data('filter') || 'all';
         renderAll(true);
       });
 
-      $('#clearAllBtn').on('click', function() {
+      // Clear all
+      $('#clearAllBtn').on('click touchend', function(e) {
+        e.preventDefault();
         clearAllLogs();
+        return false;
       });
 
+      // Live clock
       function updateClock() {
         const now = new Date();
         $('#liveClock').text(now.toLocaleTimeString(undefined, { hour: '2-digit', minute: '2-digit', second: '2-digit' }));
@@ -1600,16 +1120,28 @@
 
       $detailInput.focus();
 
+      // Refresh on tab visibility change
       document.addEventListener('visibilitychange', function() {
         if (document.visibilityState === 'visible' && isInitialized) {
           pollForUpdates();
         }
       });
+
+      // Handle mobile network status changes
+      window.addEventListener('online', function() {
+        console.log('📶 Network online, attempting sync...');
+        if (isInitialized && logsCache.length > 0) {
+          postToCloudflare();
+        }
+      });
+
+      window.addEventListener('offline', function() {
+        console.log('📶 Network offline, data retained locally');
+        setSyncStatus('offline', 'offline');
+      });
     });
 
   })(jQuery);
 </script>
-</body>
-</html>
 </body>
 </html>
